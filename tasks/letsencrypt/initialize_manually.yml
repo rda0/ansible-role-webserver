@@ -1,0 +1,6 @@
+- name: ensure presence of letsencrypt certificate
+  stat: path=/opt/letsencrypt/{{ inventory_hostname }}.crt
+  register: letsencrypt_crt
+- name: fail if letsencrypt certificate is missing
+  fail: msg="Letsencrypt certificate is missing. Please generate it manually before proceding."
+  when: "letsencrypt_crt.stat.exists == False"

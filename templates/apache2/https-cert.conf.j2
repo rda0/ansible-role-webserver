@@ -1,0 +1,5 @@
+<IfModule mod_ssl.c>
+    SSLEngine on
+    SSLCertificateFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.crt
+    SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.key
+</IfModule>

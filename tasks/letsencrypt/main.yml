@@ -1,0 +1,35 @@
+- import_tasks: dependencies.yml
+  tags: webserver_letsencrypt_dependencies
+  when: import_webserver_letsencrypt_dependencies
+
+- import_tasks: user.yml
+  tags: webserver_letsencrypt_user
+  when: import_webserver_letsencrypt_user
+
+- block:
+  - name: include clone repo
+    include_tasks: clone_repo.yml
+    when: not webserver_letsencrypt_restore_from_backup
+  tags: webserver_letsencrypt_clone_repo
+
+- block:
+  - name: include restore from backup
+    include_tasks: restore_from_backup.yml
+    when: webserver_letsencrypt_restore_from_backup
+  tags: webserver_letsencrypt_restore_from_backup
+
+- block:
+  - name: include initialize automatic
+    include_tasks: initialize_automatic.yml
+    when: not webserver_letsencrypt_initialize_manually
+  tags: webserver_letsencrypt_initialize_automatic
+
+- block:
+  - name: include initialize manually
+    include_tasks: initialize_manually.yml
+    when: webserver_letsencrypt_initialize_manually
+  tags: webserver_letsencrypt_initialize_manually
+
+- import_tasks: cronjob.yml
+  tags: webserver_letsencrypt_cronjob
+  when: import_webserver_letsencrypt_cronjob

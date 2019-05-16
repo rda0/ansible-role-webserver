@@ -1,0 +1,50 @@
+include_webserver_apache2: True
+include_webserver_letsencrypt: True
+import_webserver_letsencrypt_dependencies: True
+import_webserver_letsencrypt_user: True
+import_webserver_letsencrypt_cronjob: True
+
+webserver_tls_enable_insecure_compatibility: False
+webserver_tls_v1_2_cipher_spec: "{{ 'non_aead' if webserver_tls_enable_insecure_compatibility else 'aead' }}"
+webserver_tls_cipher_order:
+  tlsv1_3: chacha20_aes128_aes256
+  tlsv1_2: chacha20_aes128_aes256
+webserver_tls_cipher_specs:
+  tlsv1_3:
+    openssl_default: TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
+    aes256_aes128_chacha20: TLS_AES_256_GCM_SHA384:TLS_AES_128_GCM_SHA256:TLS_CHACHA20_POLY1305_SHA256
+    aes128_aes256_chacha20: TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256
+    chacha20_aes128_aes256: TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384
+  tlsv1_2:
+    aead:
+      aes256_aes128_chacha20: kECDHE+aECDSA+AESGCM:kECDHE+aECDSA+CHACHA20:kECDHE+aRSA+AESGCM:kECDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM:kDHE+aRSA+CHACHA20
+      aes128_aes256_chacha20: kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+CHACHA20:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+CHACHA20
+      chacha20_aes128_aes256: kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256
+    non_aead:
+      aes256_aes128_chacha20: kECDHE+aECDSA+AESGCM:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA384:kECDHE+aECDSA+AES+SHA256:kECDHE+aRSA+AESGCM:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA384:kECDHE+aRSA+AES+SHA256:kDHE+aRSA+AESGCM:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES+SHA256
+      aes128_aes256_chacha20: kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
+      chacha20_aes128_aes256: kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
+
+webserver_https_ssl_honor_cipher_order: 'on'
+webserver_https_ssl_protocol: '-all +TLSv1.3 +TLSv1.2'
+webserver_https_ssl_cipher_suite:
+  tlsv1_3: "{{ webserver_tls_cipher_specs['tlsv1_3'][webserver_tls_cipher_order['tlsv1_3']] }}"
+  tlsv1_2: "{{ webserver_tls_cipher_specs['tlsv1_2'][webserver_tls_v1_2_cipher_spec][webserver_tls_cipher_order['tlsv1_3']] }}"
+webserver_https_curves: X25519:secp521r1:secp384r1:prime256v1
+webserver_https_dh_params_custom: True
+webserver_https_dh_params_size: 4096
+webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+
+# The certificates can optionally be initialized manually or restored from backup
+webserver_letsencrypt_restore_from_backup: False
+webserver_letsencrypt_initialize_manually: False
+
+webserver_letsencrypt_path: /opt/letsencrypt
+webserver_letsencrypt_branch: "{{ 'master' if webserver_letsencrypt_initialize_manually else 'ansible' }}"
+webserver_letsencrypt_aliases:
+  - name: '{{ ansible_hostname }}'
+    domains:
+      - '{{ ansible_fqdn }}'
+
+webserver_letsencrypt_restore_from_backup_path: ''
+#webserver_letsencrypt_restore_from_backup_path: 'phd-bkp-gw.ethz.ch:/export/backup/system/phd-hostname/current/opt/letsencrypt/'

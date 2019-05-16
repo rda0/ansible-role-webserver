@@ -1,0 +1,10 @@
+- name: create local letsencrypt user
+  user:
+    name: letsencrypt
+    comment: LetsEncrypt
+    home: /opt/letsencrypt
+    create_home: no
+    shell: /bin/bash
+    system: yes
+    group: ssl-cert
+    groups: ssl-cert

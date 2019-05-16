@@ -1,0 +1,39 @@
+- name: create local directories
+  file:
+    path: '{{ webserver_letsencrypt_path }}/{{ item }}'
+    state: directory
+  loop:
+    - hosts
+    - cron
+
+- name: create hosts file
+  template:
+    src: letsencrypt/domains.j2
+    dest: '{{ webserver_letsencrypt_path }}/hosts/{{ item.name }}'
+  vars:
+    domains: '{{ item.domains }}'
+  register: hosts_file
+  loop: '{{ webserver_letsencrypt_aliases }}'
+
+- name: make check
+  make:
+    chdir: '{{ webserver_letsencrypt_path }}'
+    target: check
+  changed_when: False
+
+- name: make certificate
+  make:
+    chdir: '{{ webserver_letsencrypt_path }}'
+  when: hosts_file.changed
+  notify: restart apache2
+
+- name: check if cron exists
+  stat:
+    path: /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
+  register: cron_letsencrypt_renewal
+
+- name: make cron
+  make:
+    chdir: '{{ webserver_letsencrypt_path }}'
+    target: cron
+  when: cron_letsencrypt_renewal.stat.islnk is not defined or cron_letsencrypt_renewal.stat.islnk == False

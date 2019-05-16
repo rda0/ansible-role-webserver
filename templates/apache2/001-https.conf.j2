@@ -1,0 +1,11 @@
+<IfModule mod_ssl.c>
+    SSLCompression off
+    SSLHonorCipherOrder {{ webserver_https_ssl_honor_cipher_order }}
+    SSLProtocol {{ webserver_https_ssl_protocol }}
+    SSLCipherSuite TLSv1.3 {{ webserver_https_ssl_cipher_suite['tlsv1_3'] }}
+    SSLCipherSuite SSL {{ webserver_https_ssl_cipher_suite['tlsv1_2'] }}
+    SSLOpenSSLConfCmd Curves {{ webserver_https_curves }}
+{% if webserver_https_dh_params_custom  %}
+    SSLOpenSSLConfCmd DHParameters {{ webserver_https_dh_params_path }}
+{% endif %}
+</IfModule>

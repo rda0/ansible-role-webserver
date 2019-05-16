@@ -1,0 +1,7 @@
+- name: install letsencrypt dependencies
+  package:
+    pkg:
+      - git
+      - libwww-perl
+      - make
+      - ssl-cert

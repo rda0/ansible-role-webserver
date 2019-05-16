@@ -1,0 +1,7 @@
+- name: clone git repo to /opt/letsencrypt
+  git:
+    repo: git@gitlab.phys.ethz.ch:Misc/letsencrypt-acmetiny.git
+    dest: /opt/letsencrypt
+    accept_hostkey: true
+    update: no
+    version: '{{ webserver_letsencrypt_branch }}'

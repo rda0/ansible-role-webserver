@@ -1,0 +1,72 @@
+- name: install apache2
+  package:
+    pkg:
+      - apache2
+
+- name: enable modules
+  apache2_module:
+    state: present
+    name: '{{ item }}'
+  notify: restart apache2
+  loop:
+    - ssl
+    - macro
+
+- name: restart apache
+  meta: flush_handlers
+
+- name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
+  command: 'openssl dhparam -out /etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem {{ webserver_https_dh_params_size }}'
+  args:
+    creates: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+  when: webserver_https_dh_params_custom
+
+- name: set custom dh params permissions
+  file:
+    path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+    owner: root
+    group: ssl-cert
+    mode: '0640'
+  when: webserver_https_dh_params_custom
+
+- name: deploy conf-available from templates
+  template:
+    src: 'apache2/{{ item }}.conf.j2'
+    dest: '/etc/apache2/conf-available/{{ item }}.conf'
+  loop:
+    - 001-https
+
+- name: deploy conf-available
+  copy:
+    src: 'apache2/{{ item }}.conf'
+    dest: '/etc/apache2/conf-available/{{ item }}.conf'
+  loop:
+    - 010-well-known
+    - 020-macro
+
+- name: enable server config
+  file:
+    src: '../conf-available/{{ item }}.conf'
+    dest: '/etc/apache2/conf-enabled/{{ item }}.conf'
+    state: link
+  notify: reload apache2
+  loop:
+    - 001-https
+    - 010-well-known
+    - 020-macro
+
+- name: reload apache
+  meta: flush_handlers
+
+- name: create sites-common
+  file:
+    path: /etc/apache2/sites-common
+    state: directory
+
+- name: create sites-common https config
+  template:
+    src: apache2/https-cert.conf.j2
+    dest: '/etc/apache2/sites-common/https-{{ item.name }}.conf'
+  vars:
+    cert_name: '{{ item.name }}'
+  loop: '{{ webserver_letsencrypt_aliases }}'
