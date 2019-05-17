@@ -1,5 +1,11 @@
 <IfModule mod_ssl.c>
     SSLEngine on
-    SSLCertificateFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.crt
-    SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.key
+{% if webserver_https_certificate_ecdsa %}
+    SSLCertificateFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.ecdsa.crt
+    SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.ecdsa.key
+{% endif %}
+{% if webserver_https_certificate_rsa %}
+    SSLCertificateFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.rsa.crt
+    SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/{{ cert_name }}.rsa.key
+{% endif %}
 </IfModule>
