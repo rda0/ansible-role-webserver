@@ -1,19 +1,10 @@
+- name: flush handlers
+  meta: flush_handlers
+
 - name: install apache2
   package:
     pkg:
       - apache2
-
-- name: enable modules
-  apache2_module:
-    state: present
-    name: '{{ item }}'
-  notify: restart apache2
-  loop:
-    - ssl
-    - macro
-
-- name: restart apache
-  meta: flush_handlers
 
 - name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
   command: 'openssl dhparam -out /etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem {{ webserver_https_dh_params_size }}'
@@ -28,6 +19,18 @@
     group: ssl-cert
     mode: '0640'
   when: webserver_https_dh_params_custom
+
+- name: enable modules
+  apache2_module:
+    state: present
+    name: '{{ item }}'
+  notify: restart apache2
+  loop:
+    - ssl
+    - macro
+
+- name: restart apache
+  meta: flush_handlers
 
 - name: deploy conf-available from templates
   template:
