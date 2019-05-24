@@ -38,8 +38,11 @@ webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 
 # The certificates can optionally be initialized manually or restored from backup
-webserver_letsencrypt_restore_from_backup: False
 webserver_letsencrypt_initialize_manually: False
+webserver_letsencrypt_restore_from_backup: False
+
+webserver_letsencrypt_restore_from_backup_path: ''
+#webserver_letsencrypt_restore_from_backup_path: 'phd-bkp-gw.ethz.ch:/export/backup/system/phd-hostname/current/opt/letsencrypt/'
 
 webserver_letsencrypt_path: /opt/letsencrypt
 webserver_letsencrypt_branch: "{{ 'master' if webserver_letsencrypt_initialize_manually else 'ansible' }}"
@@ -47,6 +50,3 @@ webserver_letsencrypt_aliases:
   - name: '{{ ansible_hostname }}'
     domains:
       - '{{ ansible_fqdn }}'
-
-webserver_letsencrypt_restore_from_backup_path: ''
-#webserver_letsencrypt_restore_from_backup_path: 'phd-bkp-gw.ethz.ch:/export/backup/system/phd-hostname/current/opt/letsencrypt/'
