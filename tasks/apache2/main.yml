@@ -20,6 +20,16 @@
     mode: '0640'
   when: webserver_https_dh_params_custom
 
+- name: create /var/www/empty
+  file:
+    path: /var/www/empty
+    state: directory
+
+- name: deploy envvars
+  blockinfile:
+    path: /etc/apache2/envvars
+    block: '{{ webserver_envvars }}'
+
 - name: enable modules
   apache2_module:
     state: present

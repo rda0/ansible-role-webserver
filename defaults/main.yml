@@ -24,7 +24,6 @@ webserver_tls_cipher_specs:
       aes256_aes128_chacha20: kECDHE+aECDSA+AESGCM:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA384:kECDHE+aECDSA+AES+SHA256:kECDHE+aRSA+AESGCM:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA384:kECDHE+aRSA+AES+SHA256:kDHE+aRSA+AESGCM:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES+SHA256
       aes128_aes256_chacha20: kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
       chacha20_aes128_aes256: kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
-
 webserver_https_ssl_honor_cipher_order: 'on'
 webserver_https_ssl_protocol: '-all +TLSv1.3 +TLSv1.2'
 webserver_https_ssl_cipher_suite:
@@ -36,6 +35,10 @@ webserver_https_dh_params_size: 4096
 webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
 webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
+webserver_envvars: |
+  export hostname=$(hostname -s)
+  export doc_root=/var/www/html
+  export safe_doc_root=/var/www/empty
 
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
