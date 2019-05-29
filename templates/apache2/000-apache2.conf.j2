@@ -1,0 +1,61 @@
+Mutex file:${APACHE_LOCK_DIR} default
+PidFile ${APACHE_PID_FILE}
+Timeout 300
+KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5
+User ${APACHE_RUN_USER}
+Group ${APACHE_RUN_GROUP}
+HostnameLookups Off
+ErrorLog ${APACHE_LOG_DIR}/error.log
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+LogLevel warn
+
+# Deny all access by default
+<Directory />
+  Options None
+  AllowOverride None
+  Require all denied
+</Directory>
+<Directory /usr/share>
+  Options None
+  AllowOverride None
+  Require all denied
+</Directory>
+<Directory /var/www/>
+  Options None
+  AllowOverride None
+  Require all denied
+</Directory>
+# Deny all hidden directories
+<DirectoryMatch "/\.">
+  Options None
+  AllowOverride None
+  Require all denied
+</DirectoryMatch>
+# Deny all hidden files
+<FilesMatch "^\.">
+  Require all denied
+</FilesMatch>
+AccessFileName .htaccess
+<FilesMatch "^\.ht">
+  Require all denied
+</FilesMatch>
+
+# vhost_combined including TLS data
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_tls
+# reduced log entry for LastUse database with virtual host
+LogFormat "%u %v %>s %h" lastuse
+
+<IfModule !env_module>
+  Error "mod_env is required. To enable it run:  a2enmod env"
+</IfModule>
+
+PassEnv hostname
+PassEnv doc_root
+PassEnv doc_root_default
+PassEnv doc_root_empty
+
+DocumentRoot ${doc_root_default}
+ServerName {{ webserver_server_name }}
+ServerAdmin {{ webserver_server_admin }}

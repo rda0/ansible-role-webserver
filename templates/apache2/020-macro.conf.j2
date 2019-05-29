@@ -1,0 +1,195 @@
+<IfModule !macro_module>
+  Error "mod_macro is required. To enable it run:  a2enmod macro"
+</IfModule>
+
+<Macro CheckIfWellKnown>
+  SetEnvIfExpr "'${well_known_enabled}' == 'On' && %{REQUEST_URI} =~ m#^/\.well-known(/|$)#" well_known
+</Macro>
+
+<Macro RedirectTo $protocol $domain>
+  #<If "'${well_known_enabled}' == 'On' && %{REQUEST_URI} =~ m#^/\.well-known(/|$)#">
+  Use CheckIfWellKnown
+  <If "-n reqenv('well_known')">
+    # Do nothing
+  </If>
+  <ElseIf "tolower(req('Host')) != '$domain' || tolower(%{REQUEST_SCHEME}) != '$protocol'">
+    Redirect permanent / $protocol://$domain/
+  </ElseIf>
+  <Else>
+    # Do nothing
+  </Else>
+</Macro>
+
+<Macro RedirectToSubdir $protocol $domain $subdir>
+  #<If "'${well_known_enabled}' == 'On' && %{REQUEST_URI} =~ m#^/\.well-known(/|$)#">
+  Use CheckIfWellKnown
+  <If "-n reqenv('well_known')">
+    # Do nothing
+  </If>
+  <ElseIf "tolower(req('Host')) != '$domain' || tolower(%{REQUEST_SCHEME}) != '$protocol'">
+    Redirect permanent / $protocol://$domain/$subdir
+  </ElseIf>
+  <Else>
+    # Do nothing
+  </Else>
+</Macro>
+
+<Macro EnableSSLCustom ${certname}>
+  <IfModule !ssl_module>
+    Error "mod_ssl is required. To enable it run:  a2enmod ssl"
+  </IfModule>
+  <IfModule ssl_module>
+{% if webserver_https_certificate_ecdsa %}
+    <IfFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt>
+      SSLEngine On
+      SSLCertificateFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt
+      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.key
+    </IfFile>
+    <IfFile !{{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt>
+      Error "No certificate file: {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt"
+    </IfFile>
+{% endif %}
+{% if webserver_https_certificate_rsa %}
+    <IfFile {{ webserver_letsencrypt_path }}/${certname}.rsa.crt>
+      SSLEngine On
+      SSLCertificateFile {{ webserver_letsencrypt_path }}/${certname}.rsa.crt
+      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/${certname}.rsa.key
+    </IfFile>
+    <IfFile !{{ webserver_letsencrypt_path }}/${certname}.rsa.crt>
+      Error "No certificate file: {{ webserver_letsencrypt_path }}/${certname}.rsa.crt"
+    </IfFile>
+{% endif %}
+  </IfModule>
+</Macro>
+
+<Macro EnableSSL>
+  Use EnableSSLCustom ${hostname}
+</Macro>
+
+### VHost macros
+
+<Macro VHostLog $domain $port>
+  LogLevel warn
+  ErrorLog ${APACHE_LOG_DIR}/error_$domain_$port.log
+  CustomLog ${APACHE_LOG_DIR}/access_$domain_$port.log combined
+  CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_tls
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse
+{% endif %}
+</Macro>
+
+<Macro NoVHost404 $server_name>
+    SetEnvIfExpr "tolower(req('Host')) == '$server_name'" server_name_match
+</Macro>
+
+<Macro ShowVHost404>
+  Use CheckIfWellKnown
+  ErrorDocument 404 /404_file.shtml
+  <If "-z reqenv('server_name_match') && -z %{ENV:REDIRECT_STATUS} && -z reqenv('well_known')">
+    ErrorDocument 404 /404_vhost.shtml
+    Redirect 404 /
+  </If>
+</Macro>
+
+<Macro EnableProxy $port>
+  # check wich proxy module required?
+  <IfModule !proxy_module>
+    Error "mod_proxy is required. To enable it run:  a2enmod proxy"
+  </IfModule>
+  <IfModule !proxy_http_module>
+    Error "mod_proxy_http is required. To enable it run:  a2enmod proxy_http"
+  </IfModule>
+  HostnameLookups On
+  ProxyPass / http://localhost:$port/ retry=0
+  ProxyPassReverse / http://localhost:$port/
+</Macro>
+
+### VHostBlackHole
+
+<Macro VHostBlackHole>
+  <VirtualHost *:80>
+    ServerName 0
+    DocumentRoot /var/www/html
+    Use VHostLog blackhole 80
+  </VirtualHost>
+  <VirtualHost *:443>
+    ServerName 0
+    DocumentRoot /var/www/html
+    Use EnableSSL
+    Use VHostLog blackhole 443
+  </VirtualHost>
+</Macro>
+
+<Macro DirGrantAll $dir>
+  <Directory "$dir">
+    Require all granted
+  </Directory>
+</Macro>
+
+### VHostStandard
+
+<Macro VHost $port $domain>
+  Use VHostCustom $port $domain ${doc_root}/$domain
+  Use DirGrantAll ${doc_root}/$domain
+</Macro>
+
+<Macro VHostHTTP $domain>
+  Use VHostCustomHTTP $domain ${doc_root}/$domain
+  Use DirGrantAll ${doc_root}/$domain
+</Macro>
+
+<Macro VHostHTTPS $domain>
+  Use VHostCustomHTTPS $domain ${doc_root}/$domain
+  Use DirGrantAll ${doc_root}/$domain
+</Macro>
+
+### VHostCustom
+
+<Macro VHostCustom $port $domain $dir>
+  ServerName $domain
+  DocumentRoot "$dir"
+  Use VHostLog $domain $port
+</Macro>
+
+<Macro VHostCustomHTTP $domain $dir>
+  Use VHostCustom 80 $domain $dir
+</Macro>
+
+<Macro VHostCustomHTTPS $domain $dir>
+  Use VHostCustom 443 $domain $dir
+  Use EnableSSL
+</Macro>
+
+### VHostRedirect
+
+<Macro VHostRedirect $port $server $redirect_protocol $redirect_domain>
+  Use VHostCustom $port $server ${doc_root_empty}
+  <Location />
+    Require all granted
+  </Location>
+  Use RedirectTo $redirect_protocol $redirect_domain
+</Macro>
+
+<Macro VHostRedirectHTTP $server $redirect_protocol $redirect_domain>
+  Use VHostRedirect 80 $server $redirect_protocol $redirect_domain
+</Macro>
+
+<Macro VHostRedirectHTTPS $server $redirect_protocol $redirect_domain>
+  Use VHostRedirect 443 $server $redirect_protocol $redirect_domain
+</Macro>
+
+### VHostAlias
+
+<Macro VHostAlias $port $server $redirect_protocol $redirect_domain>
+  <VirtualHost *:$port>
+    Use VHostRedirect $port $server $redirect_protocol $redirect_domain
+  </VirtualHost>
+</Macro>
+
+<Macro VHostAliasHTTP $server $redirect_protocol $redirect_domain>
+  Use VHostAlias 80 $server $redirect_protocol $redirect_domain
+</Macro>
+
+<Macro VHostAliasHTTPS $server $redirect_protocol $redirect_domain>
+  Use VHostAlias 443 $server $redirect_protocol $redirect_domain
+</Macro>

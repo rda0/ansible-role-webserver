@@ -37,8 +37,12 @@ webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 webserver_envvars: |
   export hostname=$(hostname -s)
-  export doc_root=/var/www/html
-  export safe_doc_root=/var/www/empty
+  export doc_root=/var/www
+  export doc_root_default=${doc_root}/html
+  export doc_root_empty=${doc_root}/empty
+webserver_log_lastuse: False
+webserver_server_name: ${hostname}.ethz.ch
+webserver_server_admin: isg@phys.ethz.ch
 
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
