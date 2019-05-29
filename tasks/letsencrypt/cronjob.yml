@@ -1,5 +1,5 @@
 - name: symlink letsencrypt renewal cronjob
   file:
-    src: '/opt/letsencrypt/cron/{{ inventory_hostname }}.cronjob'
+    src: '{{ webserver_letsencrypt_path }}/cron/{{ inventory_hostname }}.cronjob'
     dest: /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
     state: link

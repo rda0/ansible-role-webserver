@@ -24,6 +24,7 @@
   apache2_module:
     state: present
     name: '{{ item }}'
+    ignore_configcheck: True
   notify: restart apache2
   loop:
     - ssl

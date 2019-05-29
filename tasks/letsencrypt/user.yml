@@ -2,7 +2,7 @@
   user:
     name: letsencrypt
     comment: LetsEncrypt
-    home: /opt/letsencrypt
+    home: '{{ webserver_letsencrypt_path }}'
     create_home: no
     shell: /bin/bash
     system: yes

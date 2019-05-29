@@ -1,6 +1,6 @@
-- name: initialize /opt/letsencrypt/ by restoring from backup
+- name: 'initialize {{ webserver_letsencrypt_path }} by restoring from backup'
   command: >
     rsync -av -e 'ssh -o StrictHostKeyChecking=no' --usermap=1-999:letsencrypt --groupmap=1-999:ssl-cert
-    {{ webserver_letsencrypt_restore_from_backup_path }} /opt/letsencrypt/
+    {{ webserver_letsencrypt_restore_from_backup_path }} {{ webserver_letsencrypt_path }}/
   args:
-    creates: /opt/letsencrypt/.git
+    creates: '{{ webserver_letsencrypt_path }}/.git'
