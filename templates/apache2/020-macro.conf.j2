@@ -68,10 +68,25 @@
 
 ### VHost macros
 
-<Macro VHostLog $name $protocol>
+<Macro ServerLog $name $protocol>
   LogLevel warn
   ErrorLog ${APACHE_LOG_DIR}/$name_$protocol_error.log
   CustomLog ${APACHE_LOG_DIR}/$name_$protocol_access.log combined
+  <IfModule !ssl_module>
+    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined
+  </IfModule>
+  <IfModule ssl_module>
+    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_tls
+  </IfModule>
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse
+{% endif %}
+</Macro>
+
+<Macro ShareLog $protocol>
+  LogLevel warn
+  ErrorLog ${webshare_doc_root}/$protocol_error.log
+  CustomLog ${webshare_doc_root}/$protocol_access.log combined
   <IfModule !ssl_module>
     CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined
   </IfModule>
@@ -109,12 +124,21 @@
   ProxyPassReverse / http://localhost:$port/
 </Macro>
 
+### Permissions
+
+<Macro DirGrantAll $dir>
+  <Directory "$dir">
+    Require all granted
+  </Directory>
+</Macro>
+
 ### BlackHole
 
 <Macro BlackHoleCustom $protocol $dir>
   ServerName 0
   DocumentRoot $dir
-  Use VHostLog blackhole $protocol
+  Use DirGrantAll $dir
+  Use ServerLog blackhole $protocol
 </Macro>
 
 <Macro BlackHole $protocol>
@@ -131,20 +155,12 @@
   </VirtualHost>
 </Macro>
 
-### Permissions
-
-<Macro DirGrantAll $dir>
-  <Directory "$dir">
-    Require all granted
-  </Directory>
-</Macro>
-
-### VHost configurations
+### Server configurations
 
 <Macro ServerCustom $name $protocol $domain $dir>
   ServerName $domain
   DocumentRoot "$dir"
-  Use VHostLog $name $protocol
+  Use ServerLog $name $protocol
 </Macro>
 
 <Macro ServerDefault $name $protocol $domain>
@@ -166,7 +182,7 @@
 </Macro>
 {% if webserver_webshare %}
 
-<Macro ShareGrant ${name}>
+<Macro ShareGrantAll ${name}>
   <Directory "${webshare_doc_root}/${name}/htdocs">
     Require all granted
     AllowOverride All
@@ -179,13 +195,66 @@
   </Directory>
 </Macro>
 
-<Macro ServerShare $name $protocol $domain>
-  Use ServerShare $name $protocol $domain ${webshare_doc_root}/$name
+<Macro ShareGrantPhys ${name}>
+  <Directory "${webshare_doc_root}/${name}/htdocs">
+    Use PhysLDAP
+    Require valid-user
+    AllowOverride All
+    Options All MultiViews
+  </Directory>
+  <Directory "${webshare_doc_root}/${name}/cgi-bin">
+    Use PhysLDAP
+    Require valid-user
+    AllowOverride None
+    Options ExecCGI
+  </Directory>
+</Macro>
+
+<Macro ShareGrantPhysOrFromNetwork ${name}>
+  <Directory "${webshare_doc_root}/${name}/htdocs">
+    Use PhysLDAP
+    <RequireAny>
+      Require valid-user
+      Require host ethz.ch
+    </RequireAny>
+    AllowOverride All
+    Options All MultiViews
+  </Directory>
+  <Directory "${webshare_doc_root}/${name}/cgi-bin">
+    Use PhysLDAP
+    <RequireAny>
+      Require valid-user
+      Require host ethz.ch
+    </RequireAny>
+    AllowOverride None
+    Options ExecCGI
+  </Directory>
+</Macro>
+
+<Macro ServerShareCustom ${name} $protocol $domain>
+  ServerName $domain
+  DocumentRoot "${webshare_doc_root}/${name}/htdocs"
+  ScriptAlias /cgi-bin/ "${webshare_doc_root}/${name}/cgi-bin/"
+  Use ShareLog $protocol
+</Macro>
+
+<Macro ServerShareDefault $name $protocol $domain>
+  Use ServerShareCustom $name $protocol $domain
   Use RedirectTo $protocol $domain
 </Macro>
 
-<Macro ServerShareGrant $name $protocol $domain>
-  Use ServerShare $name $protocol $domain
-  Use ShareGrant $name
+<Macro ServerShareDefaultGrant $name $protocol $domain>
+  Use ServerShareDefault $name $protocol $domain
+  Use ShareGrantAll $name
+</Macro>
+
+<Macro ShareRedirect $name $protocol $domain $redirect_protocol $redirect_domain>
+  ServerName $domain
+  DocumentRoot "${empty_doc_root}"
+  Use ShareLog $protocol
+  <Location />
+    Require all granted
+  </Location>
+  Use RedirectTo $redirect_protocol $redirect_domain
 </Macro>
 {% endif %}
