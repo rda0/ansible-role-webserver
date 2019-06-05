@@ -30,19 +30,11 @@
     path: /etc/apache2/envvars
     block: '{{ webserver_envvars }}'
 
-- name: enable modules
-  apache2_module:
-    state: present
-    name: '{{ item }}'
-    ignore_configcheck: True
-  notify: restart apache2
-  loop:
-    - ssl
-    - macro
-    - env
-
-- name: restart apache
-  meta: flush_handlers
+- name: deploy envvar webshare
+  lineinfile:
+    path: /etc/apache2/envvars
+    line: '{{ webserver_webshare_doc_root }}'
+  when: webserver_webshare
 
 - name: deploy conf-available
   template:
@@ -67,6 +59,20 @@
     - 020-macro
 
 - name: reload apache
+  meta: flush_handlers
+
+- name: enable modules
+  apache2_module:
+    state: present
+    name: '{{ item }}'
+    ignore_configcheck: True
+  notify: restart apache2
+  loop:
+    - ssl
+    - macro
+    - env
+
+- name: restart apache
   meta: flush_handlers
 
 - name: create sites-common

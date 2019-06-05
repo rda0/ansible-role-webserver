@@ -53,9 +53,12 @@ LogFormat "%u %v %>s %h" lastuse
 
 PassEnv hostname
 PassEnv doc_root
-PassEnv doc_root_default
-PassEnv doc_root_empty
+PassEnv default_doc_root
+PassEnv empty_doc_root
+{% if webserver_webshare %}
+PassEnv webshare_doc_root
+{% endif %}
 
-DocumentRoot ${doc_root_default}
+DocumentRoot ${default_doc_root}
 ServerName {{ webserver_server_name }}
 ServerAdmin {{ webserver_server_admin }}
