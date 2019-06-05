@@ -28,7 +28,7 @@ LogLevel warn
   Require all denied
 </Directory>
 # Deny all hidden directories
-<DirectoryMatch "/\.">
+<DirectoryMatch "^\.|\/\.">
   Options None
   AllowOverride None
   Require all denied

@@ -36,6 +36,12 @@
     line: '{{ webserver_webshare_doc_root }}'
   when: webserver_webshare
 
+- name: deploy /etc/ssl/certs/id_bd+quovadis.pem
+  copy:
+    src: apache2/id_bd+quovadis.pem
+    dest: /etc/ssl/certs/id_bd+quovadis.pem
+  when: webserver_ldap_ethz
+
 - name: deploy conf-available
   template:
     src: 'apache2/{{ item }}.conf.j2'
@@ -43,8 +49,10 @@
   loop:
     - 000-apache2
     - 001-https
+    - 002-security
     - 010-well-known
     - 020-macro
+    - 030-ldap
 
 - name: enable server config
   file:
@@ -55,24 +63,50 @@
   loop:
     - 000-apache2
     - 001-https
+    - 002-security
     - 010-well-known
     - 020-macro
+    - 030-ldap
 
-- name: reload apache
-  meta: flush_handlers
+- name: disable server config
+  file:
+    path: '/etc/apache2/conf-enabled/{{ item }}.conf'
+    state: absent
+  notify: reload apache2
+  loop:
+    - security
 
-- name: enable modules
+- name: enable modules default
+  apache2_module:
+    state: present
+    name: '{{ item }}'
+    ignore_configcheck: True
+  notify: restart apache2
+  loop: '{{ webserver_modules_default }}'
+
+- name: enable modules ldap
   apache2_module:
     state: present
     name: '{{ item }}'
     ignore_configcheck: True
   notify: restart apache2
   loop:
-    - ssl
-    - macro
-    - env
+    - ldap
+    - authnz_ldap
+  when: webserver_ldap
+
+- name: enable modules custom
+  apache2_module:
+    state: present
+    name: '{{ item }}'
+    ignore_configcheck: True
+  notify: restart apache2
+  loop: '{{ webserver_modules_custom }}'
 
 - name: restart apache
+  meta: flush_handlers
+
+- name: reload apache
   meta: flush_handlers
 
 - name: create sites-common

@@ -1,0 +1,50 @@
+<IfModule ldap_module>
+    LDAPTrustedGlobalCert CA_BASE64 {{ webserver_ldap_trusted_ca_cert }}
+    LDAPVerifyServerCert On
+    LDAPTrustedMode TLS
+
+    <Macro PhysLDAP>
+        AuthType Basic
+        AuthName "ETH D-PHYS Account"
+        AuthBasicProvider ldap
+        AuthLDAPURL "ldap://ldap3.phys.ethz.ch ldap2.phys.ethz.ch ldap1.phys.ethz.ch/dc=phys,dc=ethz,dc=ch?uid?sub" TLS
+        AuthLDAPGroupAttribute memberUid
+        AuthLDAPGroupAttributeIsDN off
+    </Macro>
+
+    <Macro RequirePhysLDAPGroup $groupname>
+        Require ldap-group cn=$groupname,ou=groups,dc=phys,dc=ethz,dc=ch
+    </Macro>
+{% if webserver_ldap_ethz %}
+
+    <Macro NethzLDAPCommon>
+        AuthType Basic
+        AuthName "ETH Nethz Account"
+        AuthBasicProvider ldap
+        AuthLDAPBindDN "cn=dphys_web_proxy,ou=admins,ou=nethz,ou=id,ou=auth,o=ethz,c=ch"
+        AuthLDAPBindPassword "c4d2n.fg9.ag33s.g84cc"
+        SetEnv DoNotLogToFifo
+    </Macro>
+
+    <Macro NethzLDAP1>
+        Use NethzLDAPCommon
+        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
+    </Macro>
+
+    <Macro NethzLDAP2>
+        Use NethzLDAPCommon
+        AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-hit-1.ethz.ch ldaps-rz-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
+    </Macro>
+
+    # RT#157425
+    <Macro NethzLDAPTestAlt>
+        Use NethzLDAPCommon
+        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
+    </Macro>
+
+    <Macro NethzLDAPTestNeu>
+        Use NethzLDAPCommon
+        AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
+    </Macro>
+{% endif %}
+</IfModule>

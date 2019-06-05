@@ -1,0 +1,52 @@
+#daduke Wed Mar  8 10:53:34 CET 2017
+#hide server info
+ServerTokens Prod
+ServerSignature Off
+
+#disable content type sniffing
+Header always set X-Content-Type-Options: "nosniff"
+Header set X-XSS-Protection "1; mode=block"
+
+#disable track and trace http methods
+TraceEnable Off
+
+#further candidates:
+#Header set X-Frame-Options: "sameorigin"
+#Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
+
+## rda #188830 security scan report
+#  only allow secure cookies
+Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
+
+# hide MacOSX special files like `.DS_Store`
+<FilesMatch "^\.DS">
+    Require all denied
+</FilesMatch>
+
+# hide ssh directory
+<DirectoryMatch "^\.ssh|\/\.ssh" >
+    Require all denied
+</DirectoryMatch>
+
+# hide vcs
+<FilesMatch "^\.git">
+    Require all denied
+</FilesMatch>
+<FilesMatch "^\.hg">
+    Require all denied
+</FilesMatch>
+<DirectoryMatch "^\.git|\/\.git">
+    Require all denied
+</DirectoryMatch>
+<DirectoryMatch "^\.hg|\/\.hg">
+    Require all denied
+</DirectoryMatch>
+<DirectoryMatch "^\.svn|\/\.svn">
+    Require all denied
+</DirectoryMatch>
+<DirectoryMatch "^\CVS|\/CVS">
+    Require all denied
+</DirectoryMatch>
+<DirectoryMatch "^\_darcs|\/_darcs">
+    Require all denied
+</DirectoryMatch>
