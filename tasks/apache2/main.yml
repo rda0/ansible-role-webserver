@@ -10,6 +10,7 @@
   command: 'openssl dhparam -out /etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem {{ webserver_https_dh_params_size }}'
   args:
     creates: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+  notify: restart apache2
   when: webserver_https_dh_params_custom
 
 - name: set custom dh params permissions
@@ -29,23 +30,27 @@
   blockinfile:
     path: /etc/apache2/envvars
     block: '{{ webserver_envvars }}'
+  notify: restart apache2
 
 - name: deploy envvar webshare
   lineinfile:
     path: /etc/apache2/envvars
     line: '{{ webserver_webshare_doc_root }}'
+  notify: restart apache2
   when: webserver_webshare
 
 - name: deploy /etc/ssl/certs/id_bd+quovadis.pem
   copy:
     src: apache2/id_bd+quovadis.pem
     dest: /etc/ssl/certs/id_bd+quovadis.pem
+  notify: restart apache2
   when: webserver_ldap_ethz
 
 - name: deploy conf-available
   template:
     src: 'apache2/{{ item }}.conf.j2'
     dest: '/etc/apache2/conf-available/{{ item }}.conf'
+  notify: reload apache2
   loop:
     - 000-apache2
     - 001-https
@@ -103,10 +108,7 @@
   notify: restart apache2
   loop: '{{ webserver_modules_custom }}'
 
-- name: restart apache
-  meta: flush_handlers
-
-- name: reload apache
+- name: flush handlers
   meta: flush_handlers
 
 - name: create sites-common

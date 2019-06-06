@@ -2,10 +2,15 @@
     LDAPTrustedGlobalCert CA_BASE64 {{ webserver_ldap_trusted_ca_cert }}
     LDAPVerifyServerCert On
     LDAPTrustedMode TLS
+    LDAPSharedCacheSize 500000
+    LDAPCacheEntries 1024
+    LDAPCacheTTL 600
+    LDAPOpCacheEntries 1024
+    LDAPOpCacheTTL 600
 
     <Macro PhysLDAP>
         AuthType Basic
-        AuthName "ETH D-PHYS Account"
+        AuthName "ETH D-PHYS AccountSSS"
         AuthBasicProvider ldap
         AuthLDAPURL "ldap://ldap3.phys.ethz.ch ldap2.phys.ethz.ch ldap1.phys.ethz.ch/dc=phys,dc=ethz,dc=ch?uid?sub" TLS
         AuthLDAPGroupAttribute memberUid
@@ -47,4 +52,13 @@
         AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
     </Macro>
 {% endif %}
+
+    <Location "/ldap-status">
+        SetHandler ldap-status
+        Use PhysLDAP
+        <RequireAll>
+            Require host ethz.ch
+            Use RequirePhysLDAPGroup isg
+        </RequireAll>
+    </Location>
 </IfModule>
