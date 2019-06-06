@@ -91,6 +91,8 @@
   #    name: '{{ item }}'
   #    ignore_configcheck: True
   command: 'a2enmod {{ item }}'
+  args:
+    creates: '/etc/apache2/mods-enabled/{{ item }}.load'
   notify: restart apache2
   loop: '{{ webserver_modules_default }}'
 
@@ -100,6 +102,8 @@
   #    name: '{{ item }}'
   #    ignore_configcheck: True
   command: 'a2enmod {{ item }}'
+  args:
+    creates: '/etc/apache2/mods-enabled/{{ item }}.load'
   notify: restart apache2
   loop:
     - authnz_ldap
