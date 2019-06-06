@@ -248,7 +248,7 @@
   Use ShareGrantAll $name
 </Macro>
 
-<Macro ShareRedirect $name $protocol $domain $redirect_protocol $redirect_domain>
+<Macro ShareRedirect $protocol $domain $redirect_protocol $redirect_domain>
   ServerName $domain
   DocumentRoot "${empty_doc_root}"
   Use ShareLog $protocol
