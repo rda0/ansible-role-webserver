@@ -63,7 +63,11 @@
 </Macro>
 
 <Macro EnableSSL>
-  Use EnableSSLCustom ${hostname}
+{% if webserver_letsencrypt_aliases|length == 1 %}
+  Use EnableSSLCustom {{ webserver_letsencrypt_aliases[0]['name'] }}
+{% else %}
+  Error "Multiple certificates available, use explicit certificate: EnableSSLCustom <name>"
+{% endif %}
 </Macro>
 
 ### VHost macros

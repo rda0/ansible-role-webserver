@@ -119,11 +119,3 @@
   file:
     path: /etc/apache2/sites-common
     state: directory
-
-- name: create sites-common https config
-  template:
-    src: apache2/https-cert.conf.j2
-    dest: '/etc/apache2/sites-common/https-{{ item.name }}.conf'
-  vars:
-    cert_name: '{{ item.name }}'
-  loop: '{{ webserver_letsencrypt_aliases }}'
