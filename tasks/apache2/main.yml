@@ -86,22 +86,24 @@
     - security
 
 - name: enable modules default
-  apache2_module:
-    state: present
-    name: '{{ item }}'
-    ignore_configcheck: True
+  #  apache2_module:
+  #    state: present
+  #    name: '{{ item }}'
+  #    ignore_configcheck: True
+  command: 'a2enmod {{ item }}'
   notify: restart apache2
   loop: '{{ webserver_modules_default }}'
 
 - name: enable modules ldap
-  apache2_module:
-    state: present
-    name: '{{ item }}'
-    ignore_configcheck: True
+  #  apache2_module:
+  #    state: present
+  #    name: '{{ item }}'
+  #    ignore_configcheck: True
+  command: 'a2enmod {{ item }}'
   notify: restart apache2
   loop:
-    - ldap
     - authnz_ldap
+    - ldap
   when: webserver_ldap
 
 - name: enable modules custom

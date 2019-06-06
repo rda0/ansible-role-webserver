@@ -49,10 +49,10 @@ webserver_ldap: False
 webserver_ldap_ethz: False
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/quovadis_global_ica_g2.crt
 webserver_modules_default:
-  - ssl
-  - macro
   - env
   - headers
+  - macro
+  - ssl
 webserver_modules_custom: []
 
 # The certificates can optionally be initialized manually or restored from backup
