@@ -1,0 +1,34 @@
+- name: install pkg bsdutils for /usr/bin/logger
+  package:
+    pkg: bsdutils
+
+- name: create apache fifo
+  command: mkfifo /var/log/apache2/lastuse.fifo
+  args:
+    creates: /var/log/apache2/lastuse.fifo
+
+- name: create /opt/fifo2syslog
+  file:
+    path: /opt/fifo2syslog
+    state: directory
+
+- name: deploy fifo2syslog scripts
+  copy:
+    src: 'apache2/{{ item }}'
+    dest: '/opt/fifo2syslog/{{ item }}'
+    mode: '0755'
+  loop:
+    - apache_syslog_auth
+    - fifo2syslog
+
+- name: create fifo2syslog unit file
+  copy:
+    src: apache2/fifo2syslog.service
+    dest: /etc/systemd/system/fifo2syslog.service
+
+- name: enable and start service fifo2syslog
+  systemd:
+    name: fifo2syslog
+    enabled: yes
+    daemon_reload: yes
+    state: started

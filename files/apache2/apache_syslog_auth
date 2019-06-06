@@ -1,0 +1,20 @@
+#!/usr/bin/perl -w
+use strict;
+#
+# send all authenticated apache requests to our syslog server
+#
+# we expect a special LogFormat that we call "lastuse" of the form
+# LogFormat "%u %v %>s %h" lastuse
+# the first column is the authenticated user or "-" for anonymous access
+
+use Sys::Syslog qw( :DEFAULT setlogsock );
+
+openlog('apache', 'cons,pid', 'local2');
+
+my $log;
+while (<>) {
+	if (! m/^-/ ) {
+		# forward only authenticated access to syslog
+		syslog('notice', $_);
+	}
+}

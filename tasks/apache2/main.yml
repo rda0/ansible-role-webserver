@@ -6,6 +6,10 @@
     pkg:
       - apache2
 
+- name: include lastuse fifo
+  include_tasks: log_lastuse.yml
+  when: webserver_log_lastuse
+
 - name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
   command: 'openssl dhparam -out /etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem {{ webserver_https_dh_params_size }}'
   args:

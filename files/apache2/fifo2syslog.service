@@ -1,0 +1,10 @@
+[Unit]
+Description=apache fifo2syslog with respawn
+Before=apache2.target
+
+[Service]
+ExecStart=/opt/fifo2syslog/fifo2syslog > /dev/null 2>&1
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

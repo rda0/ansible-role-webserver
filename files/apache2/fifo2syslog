@@ -1,0 +1,2 @@
+#!/bin/sh
+/opt/fifo2syslog/apache_syslog_auth < /var/log/apache2/lastuse.fifo 2>&1 | logger -i -t apache_syslog_auth
