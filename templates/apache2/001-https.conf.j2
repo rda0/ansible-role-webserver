@@ -8,5 +8,4 @@
 {% if webserver_https_dh_params_custom  %}
     SSLOpenSSLConfCmd DHParameters {{ webserver_https_dh_params_path }}
 {% endif %}
-    SSLStrictSNIVHostCheck on
 </IfModule>
