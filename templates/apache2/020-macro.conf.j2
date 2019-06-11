@@ -34,37 +34,37 @@
   </Else>
 </Macro>
 
-<Macro EnableSSLCustom ${certname}>
+<Macro EnableSSLCustom $certname>
   <IfModule !ssl_module>
     Error "mod_ssl is required. To enable it run:  a2enmod ssl"
   </IfModule>
   <IfModule ssl_module>
 {% if webserver_https_certificate_ecdsa %}
-    <IfFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt>
+    <IfFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt>
       SSLEngine On
       <IfModule headers_module>
         Header always set Strict-Transport-Security "max-age=60; includeSubdomains;"
         Header always set X-Frame-Options deny
       </IfModule>
-      SSLCertificateFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt
-      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/${certname}.ecdsa.key
+      SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt
+      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.key
     </IfFile>
-    <IfFile !{{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt>
-      Error "No certificate file: {{ webserver_letsencrypt_path }}/${certname}.ecdsa.crt"
+    <IfFile !{{ webserver_letsencrypt_path }}/$certname.ecdsa.crt>
+      Error "No certificate file: {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt"
     </IfFile>
 {% endif %}
 {% if webserver_https_certificate_rsa %}
-    <IfFile {{ webserver_letsencrypt_path }}/${certname}.rsa.crt>
+    <IfFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt>
       SSLEngine On
       <IfModule headers_module>
         Header always set Strict-Transport-Security "max-age=60; includeSubdomains;"
         Header always set X-Frame-Options deny
       </IfModule>
-      SSLCertificateFile {{ webserver_letsencrypt_path }}/${certname}.rsa.crt
-      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/${certname}.rsa.key
+      SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt
+      SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.rsa.key
     </IfFile>
-    <IfFile !{{ webserver_letsencrypt_path }}/${certname}.rsa.crt>
-      Error "No certificate file: {{ webserver_letsencrypt_path }}/${certname}.rsa.crt"
+    <IfFile !{{ webserver_letsencrypt_path }}/$certname.rsa.crt>
+      Error "No certificate file: {{ webserver_letsencrypt_path }}/$certname.rsa.crt"
     </IfFile>
 {% endif %}
   </IfModule>
@@ -147,27 +147,27 @@
 </Macro>
 {% if webserver_webshare %}
 
-<Macro GrantShareAll ${name}>
-  <Directory "${webshare_doc_root}/${name}/htdocs">
+<Macro GrantShareAll $name>
+  <Directory "${webshare_doc_root}/$name/htdocs">
     Require all granted
     AllowOverride All
     Options All MultiViews
   </Directory>
-  <Directory "${webshare_doc_root}/${name}/cgi-bin">
+  <Directory "${webshare_doc_root}/$name/cgi-bin">
     Require all granted
     AllowOverride None
     Options ExecCGI
   </Directory>
 </Macro>
 
-<Macro GrantSharePhys ${name}>
-  <Directory "${webshare_doc_root}/${name}/htdocs">
+<Macro GrantSharePhys $name>
+  <Directory "${webshare_doc_root}/$name/htdocs">
     Use PhysLDAP
     Require valid-user
     AllowOverride All
     Options All MultiViews
   </Directory>
-  <Directory "${webshare_doc_root}/${name}/cgi-bin">
+  <Directory "${webshare_doc_root}/$name/cgi-bin">
     Use PhysLDAP
     Require valid-user
     AllowOverride None
@@ -175,8 +175,8 @@
   </Directory>
 </Macro>
 
-<Macro GrantSharePhysOrFromNetwork ${name}>
-  <Directory "${webshare_doc_root}/${name}/htdocs">
+<Macro GrantSharePhysOrFromNetwork $name>
+  <Directory "${webshare_doc_root}/$name/htdocs">
     Use PhysLDAP
     <RequireAny>
       Require valid-user
@@ -185,7 +185,7 @@
     AllowOverride All
     Options All MultiViews
   </Directory>
-  <Directory "${webshare_doc_root}/${name}/cgi-bin">
+  <Directory "${webshare_doc_root}/$name/cgi-bin">
     Use PhysLDAP
     <RequireAny>
       Require valid-user
@@ -264,11 +264,11 @@
 
 ### Share (for webshares "wwwshare")
 
-<Macro Share ${name} $protocol $domain>
+<Macro Share $name $protocol $domain>
   ServerName $domain
-  DocumentRoot "${webshare_doc_root}/${name}/htdocs"
-  ScriptAlias /cgi-bin/ "${webshare_doc_root}/${name}/cgi-bin/"
-  Use ShareLog ${name} $protocol
+  DocumentRoot "${webshare_doc_root}/$name/htdocs"
+  ScriptAlias /cgi-bin/ "${webshare_doc_root}/$name/cgi-bin/"
+  Use ShareLog $name $protocol
 </Macro>
 
 <Macro ShareRedirect $name $protocol $domain>
