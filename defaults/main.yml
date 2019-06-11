@@ -36,14 +36,14 @@ webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_
 webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 webserver_envvars: |
-  export hostname=$(hostname -s)
+  export server_fqdn=$(hostname -f)
   export doc_root=/var/www
   export default_doc_root=${doc_root}/html
   export empty_doc_root=${doc_root}/empty
 webserver_webshare: False
 webserver_webshare_doc_root: export webshare_doc_root=/export/data1
 webserver_log_lastuse: False
-webserver_server_name: ${hostname}.ethz.ch
+webserver_server_name: ${server_fqdn}
 webserver_server_admin: isg@phys.ethz.ch
 webserver_ldap: False
 webserver_ldap_ethz: False

@@ -51,7 +51,7 @@ LogFormat "%u %v %>s %h" lastuse
   Error "mod_env is required. To enable it run:  a2enmod env"
 </IfModule>
 
-PassEnv hostname
+PassEnv server_fqdn
 PassEnv doc_root
 PassEnv default_doc_root
 PassEnv empty_doc_root
