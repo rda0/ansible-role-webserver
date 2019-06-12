@@ -43,7 +43,7 @@
     <IfFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt>
       SSLEngine On
       <IfModule headers_module>
-        Header always set Strict-Transport-Security "max-age=60; includeSubdomains;"
+        Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
         Header always set X-Frame-Options deny
       </IfModule>
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt
@@ -57,7 +57,7 @@
     <IfFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt>
       SSLEngine On
       <IfModule headers_module>
-        Header always set Strict-Transport-Security "max-age=60; includeSubdomains;"
+        Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
         Header always set X-Frame-Options deny
       </IfModule>
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt
