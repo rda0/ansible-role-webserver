@@ -35,6 +35,7 @@ webserver_https_dh_params_size: 4096
 webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
 webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
+webserver_https_fail_if_certificate_missing: False
 webserver_envvars: |
   export server_fqdn=$(hostname -f)
   export doc_root=/var/www

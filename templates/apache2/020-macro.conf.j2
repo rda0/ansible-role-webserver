@@ -49,9 +49,11 @@
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt
       SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.key
     </IfFile>
+{% if webserver_https_fail_if_certificate_missing %}
     <IfFile !{{ webserver_letsencrypt_path }}/$certname.ecdsa.crt>
       Error "No certificate file: {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt"
     </IfFile>
+{% endif %}
 {% endif %}
 {% if webserver_https_certificate_rsa %}
     <IfFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt>
@@ -63,9 +65,11 @@
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt
       SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.rsa.key
     </IfFile>
+{% if webserver_https_fail_if_certificate_missing %}
     <IfFile !{{ webserver_letsencrypt_path }}/$certname.rsa.crt>
       Error "No certificate file: {{ webserver_letsencrypt_path }}/$certname.rsa.crt"
     </IfFile>
+{% endif %}
 {% endif %}
   </IfModule>
 </Macro>
