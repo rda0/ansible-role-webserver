@@ -255,8 +255,7 @@
 
 <Macro VHostDefault>
   <VirtualHost *:80>
-    Use ServerDefault http
-    Use RedirectTo https ${server_fqdn}
+    Use ServerEmptyRedirect default http ${server_fqdn}
   </VirtualHost>
   <VirtualHost *:443>
     Use ServerDefault https
