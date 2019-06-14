@@ -43,7 +43,7 @@ AccessFileName .htaccess
 </FilesMatch>
 
 # vhost_combined including TLS data
-LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_tls
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_tls
 # reduced log entry for LastUse database with virtual host
 LogFormat "%u %v %>s %h" lastuse
 
