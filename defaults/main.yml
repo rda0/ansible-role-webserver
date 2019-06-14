@@ -57,6 +57,11 @@ webserver_modules_default:
   - http2
 webserver_modules_custom: []
 
+webserver_extra_packages: []
+
+webserver_config_enable_custom: []
+webserver_config_disable_custom: []
+
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
 webserver_letsencrypt_restore_from_backup: False

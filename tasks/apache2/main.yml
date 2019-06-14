@@ -6,6 +6,10 @@
     pkg:
       - apache2
 
+- name: install webserver-specific packages
+  package:
+    pkg: "{{ webserver_extra_packages }}"
+
 - name: include lastuse fifo
   include_tasks: log_lastuse.yml
   when: webserver_log_lastuse
@@ -77,6 +81,14 @@
     - 020-macro
     - 030-ldap
 
+- name: enable custom server config
+  file:
+    src: '../conf-available/{{ item }}.conf'
+    dest: '/etc/apache2/conf-enabled/{{ item }}.conf'
+    state: link
+  notify: reload apache2
+  loop: "{{ webserver_config_enable_custom }}"
+
 - name: disable server config
   file:
     path: '/etc/apache2/conf-enabled/{{ item }}.conf'
@@ -84,6 +96,13 @@
   notify: reload apache2
   loop:
     - security
+
+- name: disable custom server config
+  file:
+    path: '/etc/apache2/conf-enabled/{{ item }}.conf'
+    state: absent
+  notify: reload apache2
+  loop: "{{ webserver_config_disable_custom }}"
 
 - name: enable modules default
   #  apache2_module:
