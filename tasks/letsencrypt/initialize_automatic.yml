@@ -4,16 +4,17 @@
     state: directory
   loop:
     - hosts
-    - cron
 
-- name: create hosts file
+- name: create hosts file(s)
   template:
     src: letsencrypt/domains.j2
-    dest: '{{ webserver_letsencrypt_path }}/hosts/{{ item.name }}'
+    dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name|default(''.join(['le',index|string]))) }}"
   vars:
     domains: '{{ item.domains }}'
   register: hosts_file
-  loop: '{{ webserver_letsencrypt_aliases }}'
+  loop: '{{ webserver_letsencrypt_aliases|flatten(levels=1) }}'
+  loop_control:
+    index_var: index
 
 - name: make check
   make:
@@ -26,14 +27,3 @@
     chdir: '{{ webserver_letsencrypt_path }}'
   when: hosts_file.changed
   notify: restart apache2
-
-- name: check if cron exists
-  stat:
-    path: /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
-  register: cron_letsencrypt_renewal
-
-- name: make cron
-  make:
-    chdir: '{{ webserver_letsencrypt_path }}'
-    target: cron
-  when: cron_letsencrypt_renewal.stat.islnk is not defined or cron_letsencrypt_renewal.stat.islnk == False

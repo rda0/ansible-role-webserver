@@ -76,7 +76,7 @@
 
 <Macro EnableSSL>
 {% if webserver_letsencrypt_aliases|length == 1 %}
-  Use EnableSSLCustom {{ webserver_letsencrypt_aliases[0]['name'] }}
+  Use EnableSSLCustom {{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}
 {% else %}
   Error "Multiple certificates available, use explicit certificate: EnableSSLCustom <name>"
 {% endif %}

@@ -1,5 +1,10 @@
-- name: symlink letsencrypt renewal cronjob
-  file:
-    src: '{{ webserver_letsencrypt_path }}/cron/{{ inventory_hostname }}.cronjob'
-    dest: /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
-    state: link
+- name: check if cron exists
+  stat:
+    path: /etc/cron.d/letsencrypt-acmetiny
+  register: webserver_letsencrypt_cronjob
+
+- name: make cron
+  make:
+    chdir: '{{ webserver_letsencrypt_path }}'
+    target: cron
+  when: webserver_letsencrypt_cronjob.stat.exists is not defined or webserver_letsencrypt_cronjob.stat.exists == False

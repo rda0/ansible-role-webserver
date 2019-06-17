@@ -73,6 +73,5 @@ webserver_letsencrypt_path: /opt/letsencrypt
 webserver_letsencrypt_repo: git@gitlab.phys.ethz.ch:Misc/letsencrypt-acmetiny.git
 webserver_letsencrypt_branch: "{{ 'master' if webserver_letsencrypt_initialize_manually else 'ansible' }}"
 webserver_letsencrypt_aliases:
-  - name: '{{ ansible_hostname }}'
-    domains:
+  - domains:
       - '{{ ansible_fqdn }}'
