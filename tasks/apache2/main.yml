@@ -6,6 +6,17 @@
     pkg:
       - apache2
 
+- name: create systemd apache2.service.d directory
+  file:
+    path: /etc/systemd/system/apache2.service.d/
+    state: directory
+
+- name: deploy systemd apache2.service override
+  template:
+    src: apache2/override.conf.j2
+    dest: /etc/systemd/system/apache2.service.d/override.conf
+  notify: reload systemd
+
 - name: install webserver-specific packages
   package:
     pkg: "{{ webserver_extra_packages }}"
