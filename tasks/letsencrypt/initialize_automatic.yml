@@ -31,6 +31,13 @@
     group: ssl-cert
     mode: '0110'
 
+- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
+  file:
+    path: '{{ webserver_letsencrypt_path }}/account.key'
+    owner: root
+    group: letsencrypt
+    mode: '0640'
+
 - name: make check
   make:
     chdir: '{{ webserver_letsencrypt_path }}'
