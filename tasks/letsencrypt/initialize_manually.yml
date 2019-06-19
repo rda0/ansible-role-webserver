@@ -1,6 +1,3 @@
-- name: ensure presence of letsencrypt certificate
-  stat: path={{ webserver_letsencrypt_path }}/{{ inventory_hostname }}.rsa.crt
-  register: letsencrypt_crt
-- name: fail if letsencrypt certificate is missing
-  fail: msg="Letsencrypt certificate is missing. Please generate it manually before proceding."
-  when: "letsencrypt_crt.stat.exists == False"
+- name: wait for manual initialization
+  pause:
+    prompt: "Letsencrypt is set to manual init. Please do that before proceding. (Continue: ctrl-c + c)"

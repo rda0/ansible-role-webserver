@@ -11,19 +11,35 @@
     dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name|default(''.join(['le',index|string]))) }}"
   vars:
     domains: '{{ item.domains }}'
-  register: hosts_file
+  register: webserver_letsencrypt_hosts_file
   loop: '{{ webserver_letsencrypt_aliases|flatten(levels=1) }}'
   loop_control:
     index_var: index
+
+- name: make permissions
+  make:
+    chdir: '{{ webserver_letsencrypt_path }}'
+    target: permissions
+  changed_when: False
+  when: webserver_letsencrypt_clone.changed
+
+- name: 'apply permissions to {{ webserver_letsencrypt_path }}'
+  file:
+    path: '{{ webserver_letsencrypt_path }}'
+    state: directory
+    owner: letsencrypt
+    group: ssl-cert
+    mode: '0110'
 
 - name: make check
   make:
     chdir: '{{ webserver_letsencrypt_path }}'
     target: check
+  when: webserver_letsencrypt_hosts_file.changed
   changed_when: False
 
 - name: make certificate
   make:
     chdir: '{{ webserver_letsencrypt_path }}'
-  when: hosts_file.changed
-  notify: restart apache2
+  when: webserver_letsencrypt_hosts_file.changed
+  notify: reload apache2

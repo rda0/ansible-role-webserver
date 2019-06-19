@@ -1,10 +1,8 @@
 - name: create local letsencrypt user
   user:
     name: letsencrypt
-    comment: LetsEncrypt
     home: '{{ webserver_letsencrypt_path }}'
     create_home: no
-    shell: /bin/bash
+    shell: /usr/sbin/nologin
     system: yes
-    group: ssl-cert
-    groups: ssl-cert
+    group: letsencrypt

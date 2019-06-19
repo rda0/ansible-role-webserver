@@ -4,3 +4,4 @@
     {{ webserver_letsencrypt_restore_from_backup_path }} {{ webserver_letsencrypt_path }}/
   args:
     creates: '{{ webserver_letsencrypt_path }}/.git'
+  notify: restart apache2

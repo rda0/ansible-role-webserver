@@ -1,21 +1,49 @@
-- import_tasks: dependencies.yml
+- name: install letsencrypt dependencies
+  package:
+    pkg:
+      - git
+      - libwww-perl
+      - make
+      - ssl-cert
   tags: webserver_letsencrypt_dependencies
   when: import_webserver_letsencrypt_dependencies
 
-- import_tasks: user.yml
+- name: create local letsencrypt system group
+  group:
+    name: letsencrypt
+    system: yes
+
+- name: create local letsencrypt system user
+  user:
+    name: letsencrypt
+    home: '{{ webserver_letsencrypt_path }}'
+    create_home: no
+    shell: /usr/sbin/nologin
+    system: yes
+    group: letsencrypt
   tags: webserver_letsencrypt_user
   when: import_webserver_letsencrypt_user
 
-- block:
-  - name: include clone repo
-    include_tasks: clone_repo.yml
-    when: not webserver_letsencrypt_restore_from_backup
+- name: 'clone git repo to {{ webserver_letsencrypt_path }}'
+  git:
+    repo: '{{ webserver_letsencrypt_repo }}'
+    dest: '{{ webserver_letsencrypt_path }}'
+    accept_hostkey: true
+    update: no
+    version: '{{ webserver_letsencrypt_branch }}'
+  notify: restart apache2
+  register: webserver_letsencrypt_clone
+  when: not webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_clone_repo
 
-- block:
-  - name: include restore from backup
-    include_tasks: restore_from_backup.yml
-    when: webserver_letsencrypt_restore_from_backup
+- name: 'initialize {{ webserver_letsencrypt_path }} by restoring from backup'
+  command: >
+    rsync -av -e 'ssh -o StrictHostKeyChecking=no' --usermap=1-999:letsencrypt --groupmap=1-999:ssl-cert
+    {{ webserver_letsencrypt_restore_from_backup_path }} {{ webserver_letsencrypt_path }}/
+  args:
+    creates: '{{ webserver_letsencrypt_path }}/.git'
+  notify: restart apache2
+  when: webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_restore_from_backup
 
 - block:

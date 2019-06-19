@@ -5,3 +5,4 @@
     accept_hostkey: true
     update: no
     version: '{{ webserver_letsencrypt_branch }}'
+  notify: restart apache2
