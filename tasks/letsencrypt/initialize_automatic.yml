@@ -23,7 +23,7 @@
   changed_when: False
   when: webserver_letsencrypt_clone.changed
 
-- name: 'apply permissions to {{ webserver_letsencrypt_path }}'
+- name: 'apply permissions on {{ webserver_letsencrypt_path }}'
   file:
     path: '{{ webserver_letsencrypt_path }}'
     state: directory
