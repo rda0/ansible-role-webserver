@@ -1,7 +1,5 @@
 include_webserver_apache2: True
 include_webserver_letsencrypt: True
-import_webserver_letsencrypt_dependencies: True
-import_webserver_letsencrypt_user: True
 import_webserver_letsencrypt_cronjob: True
 
 webserver_tls_enable_insecure_compatibility: False

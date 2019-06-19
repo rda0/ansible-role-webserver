@@ -1,8 +1,0 @@
-- name: 'clone git repo to {{ webserver_letsencrypt_path }}'
-  git:
-    repo: '{{ webserver_letsencrypt_repo }}'
-    dest: '{{ webserver_letsencrypt_path }}'
-    accept_hostkey: true
-    update: no
-    version: '{{ webserver_letsencrypt_branch }}'
-  notify: restart apache2

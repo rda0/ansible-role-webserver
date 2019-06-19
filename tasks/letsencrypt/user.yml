@@ -1,8 +1,0 @@
-- name: create local letsencrypt user
-  user:
-    name: letsencrypt
-    home: '{{ webserver_letsencrypt_path }}'
-    create_home: no
-    shell: /usr/sbin/nologin
-    system: yes
-    group: letsencrypt

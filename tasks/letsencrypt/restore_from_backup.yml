@@ -1,7 +1,0 @@
-- name: 'initialize {{ webserver_letsencrypt_path }} by restoring from backup'
-  command: >
-    rsync -av -e 'ssh -o StrictHostKeyChecking=no' --usermap=1-999:letsencrypt --groupmap=1-999:ssl-cert
-    {{ webserver_letsencrypt_restore_from_backup_path }} {{ webserver_letsencrypt_path }}/
-  args:
-    creates: '{{ webserver_letsencrypt_path }}/.git'
-  notify: restart apache2
