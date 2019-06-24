@@ -42,10 +42,6 @@
 {% if webserver_https_certificate_ecdsa %}
     <IfFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt>
       SSLEngine On
-      <IfModule headers_module>
-        Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
-        Header always set X-Frame-Options deny
-      </IfModule>
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.crt
       SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.ecdsa.key
     </IfFile>
@@ -58,10 +54,6 @@
 {% if webserver_https_certificate_rsa %}
     <IfFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt>
       SSLEngine On
-      <IfModule headers_module>
-        Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
-        Header always set X-Frame-Options deny
-      </IfModule>
       SSLCertificateFile {{ webserver_letsencrypt_path }}/$certname.rsa.crt
       SSLCertificateKeyFile {{ webserver_letsencrypt_path }}/$certname.rsa.key
     </IfFile>
@@ -80,6 +72,15 @@
 {% else %}
   Error "Multiple certificates available, use explicit certificate: EnableSSLCustom <name>"
 {% endif %}
+</Macro>
+
+<Macro SecurityTweaksSSL>
+  <IfModule headers_module>
+    # HSTS 1 week
+    #Header always set Strict-Transport-Security "max-age=604800;"
+    Header always set Strict-Transport-Security "max-age=60;"
+    Header always set X-Frame-Options deny
+  </IfModule>
 </Macro>
 
 ### VHost macros

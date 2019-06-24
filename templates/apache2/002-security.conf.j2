@@ -10,11 +10,6 @@ Header set X-XSS-Protection "1; mode=block"
 #disable track and trace http methods
 TraceEnable Off
 
-#further candidates:
-#needs to be set in https vhosts only, see macro conf
-#Header set X-Frame-Options: "sameorigin"
-#Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"
-
 ## rda #188830 security scan report
 #  only allow secure cookies
 Header edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
