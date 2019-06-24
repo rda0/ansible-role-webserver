@@ -70,7 +70,7 @@
 
 - name: deploy conf-available
   template:
-    src: 'apache2/{{ item }}.conf.j2'
+    src: 'apache2/conf/{{ item }}.conf.j2'
     dest: '/etc/apache2/conf-available/{{ item }}.conf'
   notify: reload apache2
   loop:
