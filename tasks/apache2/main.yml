@@ -40,10 +40,13 @@
     mode: '0640'
   when: webserver_https_dh_params_custom
 
-- name: create /var/www/empty
+- name: create directories in /var/www
   file:
-    path: /var/www/empty
+    path: '/var/www/{{ item }}'
     state: directory
+  loop:
+    - empty
+    - default
 
 - name: deploy envvars
   blockinfile:
