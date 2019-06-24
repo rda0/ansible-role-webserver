@@ -55,6 +55,23 @@ webserver_extra_packages: []
 webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False
+webserver_site_enable_default: True
+webserver_site_config_default: |
+  <VirtualHost *:80>
+    Use ServerEmptyRedirect default http {{ ansible_fqdn }}
+  </VirtualHost>
+  <VirtualHost *:443>
+    Use ServerRedirect default https {{ ansible_fqdn }}
+    Use EnableSSL
+    <Directory /var/www/default>
+      Use PhysLDAP
+      Use RequirePhysLDAPGroup isg
+    </Directory>
+  </VirtualHost>
+webserver_site_deploy_default: True
+webserver_site_content_default_title: '{{ ansible_hostname }}'
+webserver_site_content_default_description: This server is managed by the <a href="https://www.phys.ethz.ch/services/physics-isg.html">IT Services Group (ISG) in the Physics Department</a>.
+webserver_site_content_default_overview: ''
 
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
