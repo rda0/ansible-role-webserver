@@ -51,11 +51,10 @@ webserver_modules_default:
   - ssl
   - http2
 webserver_modules_custom: []
-
 webserver_extra_packages: []
-
 webserver_config_enable_custom: []
 webserver_config_disable_custom: []
+webserver_service_start_after_network_online: False
 
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False

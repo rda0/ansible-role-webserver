@@ -13,7 +13,7 @@
 
 - name: deploy systemd apache2.service override
   template:
-    src: apache2/override.conf.j2
+    src: apache2/service/override.conf.j2
     dest: /etc/systemd/system/apache2.service.d/override.conf
   notify: reload systemd
 
