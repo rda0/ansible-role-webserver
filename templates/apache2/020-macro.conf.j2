@@ -242,28 +242,6 @@
 <Macro ServerEmptyRedirect $name $protocol $domain>
   Use ServerEmptyRedirectCustom $name $protocol $domain https $domain
 </Macro>
-
-### ServerDefault (000-default site for hostname)
-
-<Macro ServerDefaultCustom $protocol $dir>
-  Use ServerCustom default $protocol ${server_fqdn} $dir
-  Use GrantDirAll $dir
-</Macro>
-
-<Macro ServerDefault $protocol>
-  Use ServerDefaultCustom $protocol ${default_doc_root}
-</Macro>
-
-<Macro VHostDefault>
-  <VirtualHost *:80>
-    Use ServerEmptyRedirect default http ${server_fqdn}
-  </VirtualHost>
-  <VirtualHost *:443>
-    Use ServerDefault https
-    Use RedirectTo https ${server_fqdn}
-    Use EnableSSL
-  </VirtualHost>
-</Macro>
 {% if webserver_webshare %}
 
 ### Share (for webshares "wwwshare")

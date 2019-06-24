@@ -35,14 +35,11 @@ webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 webserver_https_fail_if_certificate_missing: False
 webserver_envvars: |
-  export server_fqdn=$(hostname -f)
   export doc_root=/var/www
-  export default_doc_root=${doc_root}/html
   export empty_doc_root=${doc_root}/empty
 webserver_webshare: False
 webserver_webshare_doc_root: export webshare_doc_root=/export/data1
 webserver_log_lastuse: False
-webserver_server_name: ${server_fqdn}
 webserver_server_admin: isg@phys.ethz.ch
 webserver_ldap: False
 webserver_ldap_ethz: False
