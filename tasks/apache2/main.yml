@@ -119,10 +119,6 @@
   loop: "{{ webserver_config_disable_custom }}"
 
 - name: enable modules default
-  #  apache2_module:
-  #    state: present
-  #    name: '{{ item }}'
-  #    ignore_configcheck: True
   command: 'a2enmod {{ item }}'
   args:
     creates: '/etc/apache2/mods-enabled/{{ item }}.load'
@@ -130,10 +126,6 @@
   loop: '{{ webserver_modules_default }}'
 
 - name: enable modules ldap
-  #  apache2_module:
-  #    state: present
-  #    name: '{{ item }}'
-  #    ignore_configcheck: True
   command: 'a2enmod {{ item }}'
   args:
     creates: '/etc/apache2/mods-enabled/{{ item }}.load'
@@ -144,15 +136,11 @@
   when: webserver_ldap
 
 - name: enable modules custom
-  apache2_module:
-    state: present
-    name: '{{ item }}'
-    ignore_configcheck: True
+  command: 'a2enmod {{ item }}'
+  args:
+    creates: '/etc/apache2/mods-enabled/{{ item }}.load'
   notify: restart apache2
   loop: '{{ webserver_modules_custom }}'
-
-- name: flush handlers
-  meta: flush_handlers
 
 - name: create sites-common
   file:
@@ -179,4 +167,7 @@
     state: link
   notify: reload apache2
   when: webserver_site_enable_default
+
+- name: flush handlers
+  meta: flush_handlers
 
