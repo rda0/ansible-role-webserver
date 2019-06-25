@@ -142,9 +142,6 @@
   notify: restart apache2
   loop: '{{ webserver_modules_custom }}'
 
-- name: flush handlers
-  meta: flush_handlers
-
 - name: create sites-common
   file:
     path: /etc/apache2/sites-common
