@@ -50,6 +50,7 @@ webserver_modules_default:
   - macro
   - ssl
   - http2
+  - status
 webserver_modules_custom: []
 webserver_extra_packages: []
 webserver_config_enable_custom: []
