@@ -110,6 +110,7 @@
   notify: reload apache2
   loop:
     - security
+    - other-vhosts-access-log
 
 - name: disable custom server config
   file:
