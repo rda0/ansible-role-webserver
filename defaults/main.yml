@@ -86,7 +86,7 @@ webserver_site_config_default_vhost_local_http: |
       SetHandler server-status
       Require local
       # Hide requests from monitoring in debug.log
-      SetEnvIfExpr "%{REQUEST_URI} =~ m#^/server-status$# && %{QUERY_STRING} =~ m#^auto$#" dontdebug
+      SetEnvIfExpr "%{REQUEST_URI} =~ m#^/server-status$# && %{QUERY_STRING} =~ m#^auto$#" dontlogglobal
     </Location>
   </VirtualHost>
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL

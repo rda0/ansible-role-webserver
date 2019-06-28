@@ -54,6 +54,13 @@ LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combine
 LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
+CustomLog ${APACHE_LOG_DIR}/access.log combined
+<IfModule !ssl_module>
+  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined env=!dontlogglobal
+</IfModule>
+<IfModule ssl_module>
+  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined_tls env=!dontlogglobal
+</IfModule>
 IncludeOptional conf-enabled/*.conf
 IncludeOptional sites-enabled/*.conf
 <IfModule !env_module>
