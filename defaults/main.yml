@@ -2,6 +2,8 @@ include_webserver_apache2: True
 include_webserver_letsencrypt: True
 import_webserver_letsencrypt_cronjob: True
 
+websserver_log_level: warn
+
 webserver_net4_adm: '{{ ((iptables_net4_adm|default({})).values()|list + (iptables_net4_adm_custom|default({})).values()|list)|sort }}'
 webserver_net6_adm: '{{ ((iptables_net6_adm|default({})).values()|list + (iptables_net6_adm_custom|default({})).values()|list)|sort }}'
 webserver_net4_san: '{{ ((iptables_net4_san|default({})).values()|list + (iptables_net4_san_custom|default({})).values()|list)|sort }}'

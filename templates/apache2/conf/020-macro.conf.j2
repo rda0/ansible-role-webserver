@@ -86,7 +86,7 @@
 ### VHost macros
 
 <Macro ServerLog $name $protocol>
-  LogLevel warn
+  LogLevel {{ websserver_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/$name_$protocol_error.log
   CustomLog ${APACHE_LOG_DIR}/$name_$protocol_access.log combined env=!dontlog
 #  <IfModule !ssl_module>
@@ -102,7 +102,7 @@
 {% if webserver_webshare %}
 
 <Macro ShareLog $name $protocol>
-  LogLevel warn
+  LogLevel {{ websserver_log_level }}
   ErrorLog ${webshare_doc_root}/$name/logs/$protocol_error.log
   CustomLog ${webshare_doc_root}/$name/logs/$protocol_access.log combined env=!dontlog
 #  <IfModule !ssl_module>
