@@ -57,13 +57,31 @@ webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False
 webserver_site_enable_default: True
-webserver_site_config_default: |
+webserver_site_config_default_vhost_other_ip: |
+  # Matches any ip:port combos not covered by a vhost, effectively prevents any request going to the main server
+  # Any use of * in a virtual host declaration will have higher precedence than _default_
+  <VirtualHost _default_:*>
+    Use ServerEmpty other ip phd-apache.ethz.ch
+  </VirtualHost>
+webserver_site_config_default_vhost_local_http: |
+  # Matches some loopack ips (not all), mainly for monitoring (netdata)
+  <VirtualHost 127.0.0.1:80 [::1]:80>
+    Use ServerEmpty local http phd-apache.ethz.ch
+    <Location /server-status>
+      SetHandler server-status
+      Require local
+      # Hide requests from monitoring in debug.log
+      SetEnvIfExpr "%{REQUEST_URI} =~ m#^/server-status$# && %{QUERY_STRING} =~ m#^auto$#" dontdebug
+    </Location>
+  </VirtualHost>
+webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
+webserver_site_config_default_vhost_default: |
   <VirtualHost *:80>
     Use ServerEmptyRedirect default http {{ ansible_fqdn }}
   </VirtualHost>
   <VirtualHost *:443>
     Use ServerRedirect default https {{ ansible_fqdn }}
-    Use EnableSSL
+    {{ webserver_site_config_default_vhost_default_https_enablessl }}
     <Directory /var/www/default>
       Use PhysLDAP
       Use RequirePhysLDAPGroup isg
