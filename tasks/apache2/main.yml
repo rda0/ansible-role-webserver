@@ -77,13 +77,20 @@
   notify: restart apache2
   when: webserver_ldap_ethz
 
+- name: deploy main server config
+  template:
+    src: 'apache2/conf/{{ item }}.conf.j2'
+    dest: '/etc/apache2/{{ item }}.conf'
+  notify: restart apache2
+  loop:
+    - apache2
+
 - name: deploy conf-available
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'
     dest: '/etc/apache2/conf-available/{{ item }}.conf'
   notify: reload apache2
   loop:
-    - 000-apache2
     - 001-https
     - 002-security
     - 010-well-known
@@ -98,7 +105,6 @@
     state: link
   notify: reload apache2
   loop:
-    - 000-apache2
     - 001-https
     - 002-security
     - 010-well-known
