@@ -28,7 +28,7 @@
 
 - name: install webserver-specific packages
   package:
-    pkg: "{{ webserver_extra_packages }}"
+    pkg: "{{ webserver_packages_custom }}"
 
 - name: include lastuse fifo
   include_tasks: log_lastuse.yml
