@@ -2,6 +2,21 @@ include_webserver_apache2: True
 include_webserver_letsencrypt: True
 import_webserver_letsencrypt_cronjob: True
 
+webserver_net4_adm: '{{ ((iptables_net4_adm|default({})).values()|list + (iptables_net4_adm_custom|default({})).values()|list)|sort }}'
+webserver_net6_adm: '{{ ((iptables_net6_adm|default({})).values()|list + (iptables_net6_adm_custom|default({})).values()|list)|sort }}'
+webserver_net4_san: '{{ ((iptables_net4_san|default({})).values()|list + (iptables_net4_san_custom|default({})).values()|list)|sort }}'
+webserver_net6_san: '{{ ((iptables_net6_san|default({})).values()|list + (iptables_net6_san_custom|default({})).values()|list)|sort }}'
+webserver_net4_srv: '{{ ((iptables_net4_srv|default({})).values()|list + (iptables_net4_srv_custom|default({})).values()|list)|sort }}'
+webserver_net6_srv: '{{ ((iptables_net6_srv|default({})).values()|list + (iptables_net6_srv_custom|default({})).values()|list)|sort }}'
+webserver_net4_lan: '{{ ((iptables_net4_lan|default({})).values()|list + (iptables_net4_lan_custom|default({})).values()|list)|sort }}'
+webserver_net6_lan: '{{ ((iptables_net6_lan|default({})).values()|list + (iptables_net6_lan_custom|default({})).values()|list)|sort }}'
+webserver_net4_can: '{{ ((iptables_net4_can|default({})).values()|list + (iptables_net4_can_custom|default({})).values()|list)|sort }}'
+webserver_net6_can: '{{ ((iptables_net6_can|default({})).values()|list + (iptables_net6_can_custom|default({})).values()|list)|sort }}'
+webserver_net4_prvcan: '{{ ((iptables_net4_prvcan|default({})).values()|list + (iptables_net4_prvcan_custom|default({})).values()|list)|sort }}'
+webserver_net6_prvcan: '{{ ((iptables_net6_prvcan|default({})).values()|list + (iptables_net6_prvcan_custom|default({})).values()|list)|sort }}'
+webserver_net4_cun: '{{ (iptables_net4_cun_custom|default({})).values()|list|sort }}'
+webserver_net6_cun: '{{ (iptables_net6_cun_custom|default({})).values()|list|sort }}'
+
 webserver_tls_enable_insecure_compatibility: False
 webserver_tls_v1_2_cipher_spec: "{{ 'non_aead' if webserver_tls_enable_insecure_compatibility else 'aead' }}"
 webserver_tls_cipher_order:
