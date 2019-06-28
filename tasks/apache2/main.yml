@@ -130,6 +130,17 @@
   notify: reload apache2
   loop: "{{ webserver_config_disable_custom }}"
 
+- name: deploy mods-available
+  template:
+    src: 'apache2/mods/{{ item }}.conf.j2'
+    dest: '/etc/apache2/mods-available/{{ item }}.conf'
+  notify: restart apache2
+  loop:
+    - dir
+    - ldap
+    - status
+    - userdir
+
 - name: enable modules default
   command: 'a2enmod {{ item }}'
   args:
