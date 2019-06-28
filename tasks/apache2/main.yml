@@ -123,6 +123,8 @@
     - security
     - other-vhosts-access-log
     - serve-cgi-bin
+    - charset
+    - localized-error-pages
 
 - name: disable custom server config
   file:
