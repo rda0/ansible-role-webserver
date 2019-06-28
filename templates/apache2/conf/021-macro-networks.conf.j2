@@ -1,0 +1,71 @@
+<Macro RequireNetAdm>
+  <RequireAny>
+{% if webserver_net4_adm %}
+    Require ip {{ webserver_net4_adm|join(" ") }}
+{% endif %}
+{% if webserver_net6_adm %}
+    Require ip {{ webserver_net6_adm|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>
+
+<Macro RequireNetSan>
+  <RequireAny>
+{% if webserver_net4_san %}
+    Require ip {{ webserver_net4_san|join(" ") }}
+{% endif %}
+{% if webserver_net6_san %}
+    Require ip {{ webserver_net6_san|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>
+
+<Macro RequireNetSrv>
+  <RequireAny>
+{% if webserver_net4_srv %}
+    Require ip {{ webserver_net4_srv|join(" ") }}
+{% endif %}
+{% if webserver_net6_srv %}
+    Require ip {{ webserver_net6_srv|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>
+
+<Macro RequireNetLan>
+  <RequireAny>
+{% if webserver_net4_lan %}
+    Require ip {{ webserver_net4_lan|join(" ") }}
+{% endif %}
+{% if webserver_net6_lan %}
+    Require ip {{ webserver_net6_lan|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>
+
+<Macro RequireNetCan>
+  <RequireAny>
+{% if webserver_net4_can %}
+    Require ip {{ webserver_net4_can|join(" ") }}
+{% endif %}
+{% if webserver_net6_can %}
+    Require ip {{ webserver_net6_can|join(" ") }}
+{% endif %}
+{% if webserver_net4_prvcan %}
+    Require ip {{ webserver_net4_prvcan|join(" ") }}
+{% endif %}
+{% if webserver_net6_prvcan %}
+    Require ip {{ webserver_net6_prvcan|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>
+
+<Macro RequireNetCun>
+  <RequireAny>
+{% if webserver_net4_cun %}
+    Require ip {{ webserver_net4_cun|join(" ") }}
+{% endif %}
+{% if webserver_net6_cun %}
+    Require ip {{ webserver_net6_cun|join(" ") }}
+{% endif %}
+  </RequireAny>
+</Macro>

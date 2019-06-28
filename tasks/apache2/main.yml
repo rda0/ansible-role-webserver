@@ -79,6 +79,7 @@
     - 002-security
     - 010-well-known
     - 020-macro
+    - 021-macro-networks
     - 030-ldap
 
 - name: enable server config
@@ -93,6 +94,7 @@
     - 002-security
     - 010-well-known
     - 020-macro
+    - 021-macro-networks
     - 030-ldap
 
 - name: enable custom server config
