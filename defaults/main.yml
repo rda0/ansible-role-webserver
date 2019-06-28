@@ -100,7 +100,10 @@ webserver_site_config_default_vhost_default: |
     {{ webserver_site_config_default_vhost_default_https_enablessl }}
     <Directory /var/www/default>
       Use PhysLDAP
-      Use RequirePhysLDAPGroup isg
+      <RequireAll>
+        Use RequireNetAdm
+        Use RequirePhysLDAPGroup isg
+      </RequireAll>
     </Directory>
   </VirtualHost>
 webserver_site_deploy_default: True
