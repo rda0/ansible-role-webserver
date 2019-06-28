@@ -76,6 +76,7 @@ webserver_site_config_default_vhost_local_http: |
   </VirtualHost>
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
 webserver_site_config_default_vhost_default: |
+  # The default vhosts for the requests to the hostname
   <VirtualHost *:80>
     Use ServerEmptyRedirect default http {{ ansible_fqdn }}
   </VirtualHost>
