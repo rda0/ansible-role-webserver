@@ -105,6 +105,20 @@ webserver_site_config_default_vhost_default: |
         Use RequirePhysLDAPGroup isg
       </RequireAll>
     </Directory>
+    <Location /server-status>
+      SetHandler server-status
+      <RequireAll>
+        Use RequireNetAdm
+        Use RequirePhysLDAPGroup isg
+      </RequireAll>
+    </Location>
+    <Location /ldap-status>
+      SetHandler ldap-status
+      <RequireAll>
+        Use RequireNetAdm
+        Use RequirePhysLDAPGroup isg
+      </RequireAll>
+    </Location>
   </VirtualHost>
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ ansible_hostname }}'
