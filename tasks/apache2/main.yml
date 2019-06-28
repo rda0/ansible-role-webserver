@@ -122,6 +122,7 @@
   loop:
     - security
     - other-vhosts-access-log
+    - serve-cgi-bin
 
 - name: disable custom server config
   file:
