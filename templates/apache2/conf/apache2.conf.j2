@@ -44,8 +44,9 @@ AccessFileName .htaccess
 <FilesMatch "^\.ht">
   Require all denied
 </FilesMatch>
-# vhost_combined including TLS data
-LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_tls
+# vhost_combined for global log, including: request timing, TLS data
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_global_tls
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D" vhost_combined_global
 # reduced log entry for LastUse database with virtual host
 LogFormat "%u %v %>s %h" lastuse
 # Default apache2 log formats
@@ -58,10 +59,10 @@ LogFormat "%{User-agent}i" agent
 CustomLog ${APACHE_LOG_DIR}/access.log combined
 # Access log of main server and all vhosts
 <IfModule !ssl_module>
-  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined env=!dontlogglobal
+  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined_global env=!dontlogglobal
 </IfModule>
 <IfModule ssl_module>
-  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined_tls env=!dontlogglobal
+  GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined_global_tls env=!dontlogglobal
 </IfModule>
 IncludeOptional conf-enabled/*.conf
 IncludeOptional sites-enabled/*.conf
