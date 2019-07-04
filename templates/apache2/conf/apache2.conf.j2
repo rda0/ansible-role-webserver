@@ -16,17 +16,16 @@ IncludeOptional mods-enabled/*.conf
 Include ports.conf
 # Deny all access by default
 <Directory />
-  Options None
+  Options FollowSymLinks
   AllowOverride None
   Require all denied
 </Directory>
 <Directory /usr/share>
-  Options None
   AllowOverride None
   Require all denied
 </Directory>
 <Directory /var/www>
-  Options None
+  Options Indexes FollowSymLinks
   AllowOverride None
   Require all denied
 </Directory>
