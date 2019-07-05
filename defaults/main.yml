@@ -51,11 +51,10 @@ webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_
 webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 webserver_https_fail_if_certificate_missing: False
-webserver_envvars: |
-  export doc_root=/var/www
-  export empty_doc_root=${doc_root}/empty
+webserver_doc_root: /var/www
+webserver_empty_doc_root: /var/www/empty
 webserver_webshare: False
-webserver_webshare_doc_root: export webshare_doc_root=/export/data1
+webserver_webshare_doc_root: /export/data1
 webserver_log_lastuse: False
 webserver_server_admin: isg@phys.ethz.ch
 webserver_ldap: True

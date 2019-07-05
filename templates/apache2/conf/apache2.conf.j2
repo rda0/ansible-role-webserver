@@ -63,16 +63,13 @@ CustomLog ${APACHE_LOG_DIR}/access.log combined
 <IfModule ssl_module>
   GlobalLog ${APACHE_LOG_DIR}/global.log vhost_combined_global_tls env=!dontlogglobal
 </IfModule>
-IncludeOptional conf-enabled/*.conf
-IncludeOptional sites-enabled/*.conf
-<IfModule !env_module>
-  Error "mod_env is required. To enable it run:  a2enmod env"
-</IfModule>
-PassEnv doc_root
-PassEnv empty_doc_root
+Define doc_root {{ webserver_doc_root }}
+Define empty_doc_root {{ webserver_empty_doc_root }}
 {% if webserver_webshare %}
-PassEnv webshare_doc_root
+Define webshare_doc_root {{ webserver_webshare_doc_root }}
 {% endif %}
 ServerAdmin {{ webserver_server_admin }}
+IncludeOptional conf-enabled/*.conf
+IncludeOptional sites-enabled/*.conf
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
