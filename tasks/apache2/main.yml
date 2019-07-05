@@ -174,11 +174,6 @@
   notify: restart apache2
   loop: '{{ webserver_modules_custom }}'
 
-- name: create sites-common
-  file:
-    path: /etc/apache2/sites-common
-    state: directory
-
 - name: deploy default site content
   template:
     src: 'apache2/sites/default.index.html.j2'
