@@ -1,5 +1,6 @@
 include_webserver_apache2: True
 include_webserver_letsencrypt: True
+include_webserver_website_statistics: True
 import_webserver_letsencrypt_cronjob: True
 
 websserver_log_level: warn

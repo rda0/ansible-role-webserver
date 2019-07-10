@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+  echo "usage: ${0} logfile last_access_file"
+  exit 1
+fi
+
+# the logfile to parse
+LOG="${1}"
+# the file to store tha last parsed timestamp
+LASTREAD="${2}"
+
+if [ -s "${LOG}" ]; then
+  OFFSET=$(sed -n '$=' $LOG)
+  START=1
+  if [[ -s $LASTREAD ]]; then
+    START=$(<$LASTREAD)
+    START="$(($START + 1))"
+  fi
+
+  sed -n $START','$OFFSET'p' < $LOG
+  echo "$OFFSET" > "$LASTREAD"
+fi

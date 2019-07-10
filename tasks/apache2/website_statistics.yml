@@ -1,0 +1,32 @@
+- name: install goaccess packages
+  package:
+    pkg:
+      - goaccess
+      - geoip-database
+      - geoip-database-extra
+
+- name: deploy goaccess.conf
+  copy:
+    src: apache2/goaccess.conf
+    dest: /etc/goaccess/goaccess.conf
+
+- name: deploy goaccess-last wrapper
+  copy:
+    src: apache2/goaccess-last
+    dest: /usr/local/bin/goaccess-last
+    mode: '0755'
+
+- name: create goaccess b-tree database directory
+  file:
+    path: /var/lib/goaccess/default
+    state: directory
+
+- name: create website-statistics directory
+  file:
+    path: /var/www/default/website-statistics
+    state: directory
+
+- name: create goaccess cronjob
+  copy:
+    src: apache2/website-statistics-default
+    dest: /etc/cron.d/website-statistics-default

@@ -1,0 +1,1 @@
+* * * * * root /usr/local/bin/goaccess-last /var/log/apache2/global.log /var/lib/goaccess/default/.goaccess.last | goaccess -a --db-path=/var/lib/goaccess/default --load-from-disk --keep-db-files -o /var/www/default/website-statistics/index.html -
