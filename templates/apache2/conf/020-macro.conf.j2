@@ -87,14 +87,8 @@
 
 <Macro ServerLog $name $protocol>
   LogLevel {{ websserver_log_level }}
-  ErrorLog ${APACHE_LOG_DIR}/$name_$protocol_error.log
-  CustomLog ${APACHE_LOG_DIR}/$name_$protocol_access.log combined env=!dontlog
-#  <IfModule !ssl_module>
-#    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_global env=!dontdebug
-#  </IfModule>
-#  <IfModule ssl_module>
-#    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_global_tls env=!dontdebug
-#  </IfModule>
+  ErrorLog ${APACHE_LOG_DIR}/sites/$name_$protocol_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/$name_$protocol_access.log combined env=!dontlog
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse
 {% endif %}
@@ -105,12 +99,6 @@
   LogLevel {{ websserver_log_level }}
   ErrorLog ${webshare_doc_root}/$name/logs/$protocol_error.log
   CustomLog ${webshare_doc_root}/$name/logs/$protocol_access.log combined env=!dontlog
-#  <IfModule !ssl_module>
-#    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_global env=!dontdebug
-#  </IfModule>
-#  <IfModule ssl_module>
-#    CustomLog ${APACHE_LOG_DIR}/debug.log vhost_combined_global_tls env=!dontdebug
-#  </IfModule>
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse
 {% endif %}

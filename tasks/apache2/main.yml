@@ -57,6 +57,14 @@
     - empty
     - default
 
+- name: create directories in /var/log/apache2
+  file:
+    path: '/var/log/apache2/{{ item }}'
+    state: directory
+  loop:
+    - global
+    - sites
+
 #- name: deploy envvars
 #  blockinfile:
 #    path: /etc/apache2/envvars

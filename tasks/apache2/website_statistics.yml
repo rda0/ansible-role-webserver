@@ -18,15 +18,16 @@
 
 - name: create goaccess b-tree database directory
   file:
-    path: /var/lib/goaccess/default
+    path: /var/lib/goaccess/global
     state: directory
 
 - name: create website-statistics directory
   file:
-    path: /var/www/default/website-statistics
+    path: /var/www/default/website-statistics/global
     state: directory
 
 - name: create goaccess cronjob
   copy:
     src: apache2/website-statistics-default
-    dest: /etc/cron.d/website-statistics-default
+    dest: /etc/cron.daily/website-statistics-default
+    mode: '0755'
