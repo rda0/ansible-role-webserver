@@ -43,25 +43,21 @@ AccessFileName .htaccess
 <FilesMatch "^\.ht">
   Require all denied
 </FilesMatch>
-# vhost_combined for global log, including: request timing, TLS data
-LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_global_tls
-LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\" %D" vhost_combined_global
-# reduced log entry for LastUse database with virtual host
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O %I %D \"%{Referer}i\" \"%{User-Agent}i\" %{SSL_PROTOCOL}x %{SSL_CIPHER}x %{SSL_SESSION_RESUMED}x" vhost_combined_tls
+LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O %I %D \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
+LogFormat "%h %l %u %t \"%r\" %>s %O %I %D \"%{Referer}i\" \"%{User-Agent}i\"" combined
+LogFormat "%h %l %u %t \"%r\" %>s %O %I %D" common
 LogFormat "%u %v %>s %h" lastuse
-# Default apache2 log formats
-LogFormat "%v:%p %h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" vhost_combined
-LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combined
-LogFormat "%h %l %u %t \"%r\" %>s %O" common
 LogFormat "%{Referer}i -> %U" referer
 LogFormat "%{User-agent}i" agent
 # Access log of main server
 CustomLog ${APACHE_LOG_DIR}/access.log combined
 # Access log of main server and all vhosts
 <IfModule !ssl_module>
-  GlobalLog ${APACHE_LOG_DIR}/global/access.log vhost_combined_global env=!dontlogglobal
+  GlobalLog ${APACHE_LOG_DIR}/global/access.log vhost_combined env=!dontlogglobal
 </IfModule>
 <IfModule ssl_module>
-  GlobalLog ${APACHE_LOG_DIR}/global/access.log vhost_combined_global_tls env=!dontlogglobal
+  GlobalLog ${APACHE_LOG_DIR}/global/access.log vhost_combined_tls env=!dontlogglobal
 </IfModule>
 Define doc_root {{ webserver_doc_root }}
 Define empty_doc_root {{ webserver_empty_doc_root }}
