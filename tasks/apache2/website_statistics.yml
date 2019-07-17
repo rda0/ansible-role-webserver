@@ -28,6 +28,6 @@
 
 - name: create goaccess cronjob
   copy:
-    src: apache2/website-statistics-default
-    dest: /etc/cron.daily/website-statistics-default
+    src: apache2/website-statistics
+    dest: /etc/cron.daily/website-statistics
     mode: '0755'
