@@ -214,3 +214,8 @@
   copy:
     src: apache2/apache2.logrotate
     dest: /etc/logrotate.d/apache2
+
+- name: remove obsolete log files
+  file:
+    path: /var/log/apache2/other_vhosts_access.log
+    state: absent
