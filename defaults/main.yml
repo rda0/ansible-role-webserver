@@ -78,12 +78,12 @@ webserver_site_config_default_vhost_other_ip: |
   # Matches any ip:port combos not covered by a vhost, effectively prevents any request going to the main server
   # Any use of * in a virtual host declaration will have higher precedence than _default_
   <VirtualHost _default_:*>
-    Use ServerEmpty other ip phd-apache.ethz.ch
+    Use ServerEmpty other ip {{ ansible_fqdn }}
   </VirtualHost>
 webserver_site_config_default_vhost_local_http: |
   # Matches some loopack ips (not all), mainly for monitoring (netdata)
   <VirtualHost 127.0.0.1:80 [::1]:80>
-    Use ServerEmpty local http phd-apache.ethz.ch
+    Use ServerEmpty local http {{ ansible_fqdn }}
     <Location /server-status>
       SetHandler server-status
       Require local
