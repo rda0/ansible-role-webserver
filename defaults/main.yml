@@ -103,21 +103,21 @@ webserver_site_config_default_vhost_default: |
     <Directory /var/www/default>
       Use PhysLDAP
       <RequireAll>
-        Use RequireNetAdm
+        Use RequireNetCan
         Use RequirePhysLDAPGroup isg
       </RequireAll>
     </Directory>
     <Location /server-status>
       SetHandler server-status
       <RequireAll>
-        Use RequireNetAdm
+        Use RequireNetCan
         Use RequirePhysLDAPGroup isg
       </RequireAll>
     </Location>
     <Location /ldap-status>
       SetHandler ldap-status
       <RequireAll>
-        Use RequireNetAdm
+        Use RequireNetCan
         Use RequirePhysLDAPGroup isg
       </RequireAll>
     </Location>
