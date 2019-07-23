@@ -109,6 +109,7 @@ webserver_site_config_default_vhost_default: |
     </Directory>
     <Location /server-status>
       SetHandler server-status
+      Use PhysLDAP
       <RequireAll>
         Use RequireNetCan
         Use RequirePhysLDAPGroup isg
@@ -116,6 +117,7 @@ webserver_site_config_default_vhost_default: |
     </Location>
     <Location /ldap-status>
       SetHandler ldap-status
+      Use PhysLDAP
       <RequireAll>
         Use RequireNetCan
         Use RequirePhysLDAPGroup isg
