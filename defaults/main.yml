@@ -140,3 +140,4 @@ webserver_letsencrypt_branch: "{{ 'master' if webserver_letsencrypt_initialize_m
 webserver_letsencrypt_aliases:
   - domains:
       - '{{ ansible_fqdn }}'
+webserver_letsencrypt_deploy_account_key: True

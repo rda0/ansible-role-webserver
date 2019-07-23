@@ -31,12 +31,12 @@
     group: ssl-cert
     mode: '0110'
 
-- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
-  file:
-    path: '{{ webserver_letsencrypt_path }}/account.key'
-    owner: root
-    group: letsencrypt
-    mode: '0640'
+#- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
+#  file:
+#    path: '{{ webserver_letsencrypt_path }}/account.key'
+#    owner: root
+#    group: letsencrypt
+#    mode: '0640'
 
 - name: make check
   make:
@@ -49,4 +49,5 @@
   make:
     chdir: '{{ webserver_letsencrypt_path }}'
   when: webserver_letsencrypt_hosts_file.changed
+  tags: webserver_letsencrypt_make_certificate
   notify: reload apache2

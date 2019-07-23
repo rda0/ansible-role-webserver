@@ -44,6 +44,16 @@
   when: webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_restore_from_backup
 
+- name: deploy account.key
+  copy:
+    dest: '{{ webserver_letsencrypt_path }}/account.key'
+    content: '{{ vault_letsencrypt_account_key }}'
+    owner: root
+    group: letsencrypt
+    mode: '0640'
+  when: webserver_letsencrypt_deploy_account_key
+  tags: webserver_letsencrypt_deploy_account_key
+
 - block:
   - name: include initialize automatic
     include_tasks: initialize_automatic.yml
