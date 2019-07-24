@@ -1,0 +1,18 @@
+- name: delete default php-fpm pool
+  file:
+    path: /etc/php/7.3/fpm/pool.d/www.conf
+    state: absent
+
+- name: create php-fpm pools
+  template:
+    src: phpfpm/pool.conf.j2
+    dest: '/etc/php/7.3/fpm/pool.d/{{ item.name }}.conf'
+  notify: restart php-fpm
+  vars:
+    name: '{{ item.name }}'
+    max_children: "{{ item.max_children|default(5) }}"
+    start_servers: "{{ item.start_servers|default(2) }}"
+    min_spare_servers: "{{ item.min_spare_servers|default(1) }}"
+    max_spare_servers: "{{ item.max_spare_servers|default(3) }}"
+    php_options: "{{ item.php_options|default('') }}"
+  loop: '{{ webserver_phpfpm_pools }}'

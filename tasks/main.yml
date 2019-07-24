@@ -16,4 +16,12 @@
 
     tags: webserver_letsencrypt
 
+  - block:
+
+    - name: include php fpm
+      include_tasks: phpfpm/main.yml
+      when: include_webserver_phpfpm
+
+    tags: webserver_letsencrypt
+
   tags: webserver
