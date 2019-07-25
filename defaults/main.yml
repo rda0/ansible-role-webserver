@@ -1,6 +1,7 @@
 include_webserver_apache2: True
 include_webserver_letsencrypt: True
 include_webserver_phpfpm: False
+include_webserver_sites_common: False
 include_webserver_website_statistics: True
 import_webserver_letsencrypt_cronjob: True
 
@@ -146,3 +147,4 @@ webserver_letsencrypt_aliases:
 webserver_letsencrypt_deploy_account_key: True
 
 webserver_phpfpm_pools: []
+webserver_sites_common_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ ansible_hostname }}-sites-common.git'

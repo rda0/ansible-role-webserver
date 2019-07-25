@@ -1,0 +1,4 @@
+- name: 'clone sites-common repo from {{ webserver_sites_common_repo }}'
+  git:
+    repo: '{{ webserver_sites_common_repo }}'
+    dest: '/etc/apache2/sites-common'
