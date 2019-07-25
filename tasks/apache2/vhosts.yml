@@ -1,0 +1,24 @@
+- name: create vhosts
+  template:
+    src: apache2/sites/vhost.conf.j2
+    dest: '/etc/apache2/sites-available/{{ item.name }}.conf'
+  notify: reload apache2
+  vars:
+    name: '{{ item.name }}'
+    server_name: '{{ item.server_name }}'
+    http:
+      type: "{{ (item.http|default({})).type|default('ServerEmptyRedirect') }}"
+      include_common: "{{ (item.http|default({})).include_common|default(False) }}"
+    https:
+      type: "{{ (item.https|default({})).type|default('Server') }}"
+      cert: "{{ (item.https|default({})).cert|default('') }}"
+      include_common: "{{ (item.https|default({})).include_common|default(False) }}"
+  loop: '{{ webserver_vhosts }}'
+
+- name: enable vhosts
+  file:
+    src: '../sites-available/{{ item.name }}.conf'
+    dest: '/etc/apache2/sites-enabled/{{ item.name }}.conf'
+    state: link
+  notify: reload apache2
+  loop: '{{ webserver_vhosts }}'
