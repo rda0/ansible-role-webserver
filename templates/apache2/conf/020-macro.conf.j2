@@ -141,7 +141,7 @@
 {% if webserver_webshare %}
 
 <Macro GrantShareAll $name>
-  <Directory "${webshare_doc_root}/$name/htdocs">
+  <Directory "${webshare_doc_root}/$name/public">
     Require all granted
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
     AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
@@ -155,7 +155,7 @@
 </Macro>
 
 <Macro GrantSharePhysLDAP $name>
-  <Directory "${webshare_doc_root}/$name/htdocs">
+  <Directory "${webshare_doc_root}/$name/public">
     Use PhysLDAP
     Require valid-user
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
@@ -171,7 +171,7 @@
 </Macro>
 
 <Macro GrantSharePhysLDAPOrNetCan $name>
-  <Directory "${webshare_doc_root}/$name/htdocs">
+  <Directory "${webshare_doc_root}/$name/public">
     Use PhysLDAP
     <RequireAny>
       Require valid-user
@@ -243,7 +243,7 @@
 
 <Macro Share $name $protocol $domain>
   ServerName $domain
-  DocumentRoot "${webshare_doc_root}/$name/htdocs"
+  DocumentRoot "${webshare_doc_root}/$name/public"
   ScriptAlias /cgi-bin/ "${webshare_doc_root}/$name/cgi-bin/"
   Use ShareLog $name $protocol
 </Macro>
