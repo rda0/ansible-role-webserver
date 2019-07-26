@@ -13,6 +13,7 @@
       type: "{{ (item.https|default({})).type|default('Server') }}"
       cert: "{{ (item.https|default({})).cert|default('') }}"
       include_common: "{{ (item.https|default({})).include_common|default(False) }}"
+    phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
   loop: '{{ webserver_vhosts }}'
 
 - name: enable vhosts

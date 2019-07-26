@@ -170,12 +170,12 @@
   #</Directory>
 </Macro>
 
-<Macro GrantSharePhysLDAPOrNetCan $name>
+<Macro GrantSharePhysLDAPOrNetCAN $name>
   <Directory "${webshare_doc_root}/$name/public">
     Use PhysLDAP
     <RequireAny>
       Require valid-user
-      Use RequireNetCan
+      Use RequireNetCAN
     </RequireAny>
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
     AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
@@ -185,7 +185,7 @@
   #  Use PhysLDAP
   #  <RequireAny>
   #    Require valid-user
-  #    Use RequireNetCan
+  #    Use RequireNetCAN
   #  </RequireAny>
   #  AllowOverride None
   #  Options ExecCGI

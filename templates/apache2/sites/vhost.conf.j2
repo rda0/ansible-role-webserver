@@ -15,6 +15,16 @@
 {% if https.include_common %}
   Include /etc/apache2/sites-common/{{ name }}.conf
 {% endif %}
+{% if name in phpfpm_pools %}
+  # Enable http authorization headers
+  <IfModule setenvif_module>
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+  # Use php-fpm socket
+  <FilesMatch "\.(?i:php[3457]?)$">
+    SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ name }}.sock|fcgi://localhost"
+  </FilesMatch>
+{% endif %}
 </VirtualHost>
 
 # vim: syntax=apache

@@ -1,4 +1,4 @@
-<Macro RequireNetAdm>
+<Macro RequireNetADM>
   <RequireAny>
 {% if webserver_net4_adm %}
     Require ip {{ webserver_net4_adm|join(" ") }}
@@ -9,7 +9,7 @@
   </RequireAny>
 </Macro>
 
-<Macro RequireNetSan>
+<Macro RequireNetSAN>
   <RequireAny>
 {% if webserver_net4_san %}
     Require ip {{ webserver_net4_san|join(" ") }}
@@ -20,7 +20,7 @@
   </RequireAny>
 </Macro>
 
-<Macro RequireNetSrv>
+<Macro RequireNetSRV>
   <RequireAny>
 {% if webserver_net4_srv %}
     Require ip {{ webserver_net4_srv|join(" ") }}
@@ -31,7 +31,7 @@
   </RequireAny>
 </Macro>
 
-<Macro RequireNetLan>
+<Macro RequireNetLAN>
   <RequireAny>
 {% if webserver_net4_lan %}
     Require ip {{ webserver_net4_lan|join(" ") }}
@@ -42,7 +42,7 @@
   </RequireAny>
 </Macro>
 
-<Macro RequireNetCan>
+<Macro RequireNetCAN>
   <RequireAny>
 {% if webserver_net4_can %}
     Require ip {{ webserver_net4_can|join(" ") }}
@@ -59,7 +59,7 @@
   </RequireAny>
 </Macro>
 
-<Macro RequireNetCun>
+<Macro RequireNetCUN>
   <RequireAny>
 {% if webserver_net4_cun %}
     Require ip {{ webserver_net4_cun|join(" ") }}
