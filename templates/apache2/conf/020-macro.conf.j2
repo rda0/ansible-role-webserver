@@ -143,50 +143,53 @@
 <Macro GrantShareAll $name>
   <Directory "${webshare_doc_root}/$name/htdocs">
     Require all granted
-    AllowOverride All
-    Options All MultiViews
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
   </Directory>
-  <Directory "${webshare_doc_root}/$name/cgi-bin">
-    Require all granted
-    AllowOverride None
-    Options ExecCGI
-  </Directory>
+  #<Directory "${webshare_doc_root}/$name/cgi-bin">
+  #  Require all granted
+  #  AllowOverride None
+  #  Options ExecCGI
+  #</Directory>
 </Macro>
 
-<Macro GrantSharePhys $name>
+<Macro GrantSharePhysLDAP $name>
   <Directory "${webshare_doc_root}/$name/htdocs">
     Use PhysLDAP
     Require valid-user
-    AllowOverride All
-    Options All MultiViews
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
   </Directory>
-  <Directory "${webshare_doc_root}/$name/cgi-bin">
-    Use PhysLDAP
-    Require valid-user
-    AllowOverride None
-    Options ExecCGI
-  </Directory>
+  #<Directory "${webshare_doc_root}/$name/cgi-bin">
+  #  Use PhysLDAP
+  #  Require valid-user
+  #  AllowOverride None
+  #  Options ExecCGI
+  #</Directory>
 </Macro>
 
-<Macro GrantSharePhysOrFromNetwork $name>
+<Macro GrantSharePhysLDAPOrNetCan $name>
   <Directory "${webshare_doc_root}/$name/htdocs">
     Use PhysLDAP
     <RequireAny>
       Require valid-user
-      Require host ethz.ch
+      Use RequireNetCan
     </RequireAny>
-    AllowOverride All
-    Options All MultiViews
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
   </Directory>
-  <Directory "${webshare_doc_root}/$name/cgi-bin">
-    Use PhysLDAP
-    <RequireAny>
-      Require valid-user
-      Require host ethz.ch
-    </RequireAny>
-    AllowOverride None
-    Options ExecCGI
-  </Directory>
+  #<Directory "${webshare_doc_root}/$name/cgi-bin">
+  #  Use PhysLDAP
+  #  <RequireAny>
+  #    Require valid-user
+  #    Use RequireNetCan
+  #  </RequireAny>
+  #  AllowOverride None
+  #  Options ExecCGI
+  #</Directory>
 </Macro>
 {% endif %}
 
