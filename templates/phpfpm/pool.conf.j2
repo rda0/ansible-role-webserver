@@ -10,4 +10,6 @@ pm.start_servers = {{ start_servers }}
 pm.min_spare_servers = {{ min_spare_servers }}
 pm.max_spare_servers = {{ max_spare_servers }}
 pm.status_path = /status
+{% if php_options != '' %}
 {{ php_options }}
+{% endif %}
