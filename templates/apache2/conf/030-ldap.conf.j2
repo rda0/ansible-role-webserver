@@ -52,13 +52,4 @@
         AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
     </Macro>
 {% endif %}
-
-    <Location "/ldap-status">
-        SetHandler ldap-status
-        Use PhysLDAP
-        <RequireAll>
-            Require host ethz.ch
-            Use RequirePhysLDAPGroup isg
-        </RequireAll>
-    </Location>
 </IfModule>
