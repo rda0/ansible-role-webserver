@@ -241,10 +241,14 @@
 
 ### Share (for webshares "wwwshare")
 
-<Macro Share $name $protocol $domain>
+<Macro ShareCustom $name $protocol $domain $dir>
   ServerName $domain
-  DocumentRoot "${webshare_doc_root}/$name/public"
+  DocumentRoot "$dir"
   Use ShareLog $name $protocol
+</Macro>
+
+<Macro Share $name $protocol $domain>
+  Use ShareCustom $name $protocol $domain ${webshare_doc_root}/$name/public
 </Macro>
 
 <Macro ShareRedirect $name $protocol $domain>
