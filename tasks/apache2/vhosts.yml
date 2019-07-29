@@ -6,6 +6,7 @@
   vars:
     name: '{{ item.name }}'
     server_name: '{{ item.server_name }}'
+    server_alias: "{{ (item.server_alias|default('')) }}"
     http:
       type: "{{ (item.http|default({})).type|default('ServerEmptyRedirect') }}"
       include_common: "{{ (item.http|default({})).include_common|default(False) }}"
