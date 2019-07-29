@@ -244,7 +244,6 @@
 <Macro Share $name $protocol $domain>
   ServerName $domain
   DocumentRoot "${webshare_doc_root}/$name/public"
-  ScriptAlias /cgi-bin/ "${webshare_doc_root}/$name/cgi-bin/"
   Use ShareLog $name $protocol
 </Macro>
 
