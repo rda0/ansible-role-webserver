@@ -2,3 +2,4 @@
   git:
     repo: '{{ webserver_sites_common_repo }}'
     dest: '/etc/apache2/sites-common'
+    update: no
