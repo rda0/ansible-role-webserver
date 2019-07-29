@@ -22,34 +22,14 @@
     </Macro>
 {% if webserver_ldap_ethz %}
 
-    <Macro NethzLDAPCommon>
+    <Macro ETHLDAP>
         AuthType Basic
-        AuthName "ETH Nethz Account"
+        AuthName "ETH Account"
         AuthBasicProvider ldap
+        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
         AuthLDAPBindDN "cn=dphys_web_proxy,ou=admins,ou=nethz,ou=id,ou=auth,o=ethz,c=ch"
         AuthLDAPBindPassword "c4d2n.fg9.ag33s.g84cc"
-        SetEnv DoNotLogToFifo
-    </Macro>
-
-    <Macro NethzLDAP1>
-        Use NethzLDAPCommon
-        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
-    </Macro>
-
-    <Macro NethzLDAP2>
-        Use NethzLDAPCommon
-        AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-hit-1.ethz.ch ldaps-rz-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
-    </Macro>
-
-    # RT#157425
-    <Macro NethzLDAPTestAlt>
-        Use NethzLDAPCommon
-        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
-    </Macro>
-
-    <Macro NethzLDAPTestNeu>
-        Use NethzLDAPCommon
-        AuthLDAPUrl "ldaps://ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
+        SetEnv dontloglastuse
     </Macro>
 {% endif %}
 </IfModule>
