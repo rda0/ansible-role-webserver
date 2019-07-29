@@ -149,5 +149,7 @@ webserver_letsencrypt_deploy_account_key: True
 
 webserver_phpfpm_pools: []
 webserver_sites_common_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ ansible_hostname }}-sites-common.git'
-webserver_vhost_common_include_path: '/etc/apache2/sites-common/.conf'
+webserver_vhost_data_path:
+  server: /var/www
+  share: /export/data1
 webserver_vhosts: []

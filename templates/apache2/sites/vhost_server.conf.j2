@@ -1,0 +1,63 @@
+<VirtualHost *:80>
+  ServerName {{ server_name }}
+{% if not http.empty %}
+  DocumentRoot {{ document_root }}
+{% else %}
+  DocumentRoot {{ webserver_empty_doc_root }}
+  <Location />
+    Require all granted
+  </Location>
+{% endif %}
+{% if server_alias != '' %}
+  ServerAlias {{ server_alias }}
+{% endif %}
+{% if http.redirect != '' %}
+  Use RedirectTo {{ http.redirect }}
+{% endif %}
+{% if http.include_common %}
+  Include /etc/apache2/sites-common/{{ name }}.conf
+{% endif %}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ name }}_http_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ name }}_http_access.log combined env=!dontlog
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName {{ server_name }}
+  DocumentRoot {{ document_root }}
+{% if server_alias != '' %}
+  ServerAlias {{ server_alias }}
+{% endif %}
+{% if https.cert == '' %}
+  Use EnableSSL
+{% else %}
+  Use EnableSSLCustom {{ https.cert }}
+{% endif %}
+{% if https.redirect != '' %}
+  Use RedirectTo {{ https.redirect }}
+{% endif %}
+{% if https.include_common %}
+  Include /etc/apache2/sites-common/{{ name }}.conf
+{% endif %}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ name }}_https_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ name }}_https_access.log combined env=!dontlog
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+{% if name in phpfpm_pools %}
+  # Enable http authorization headers
+  <IfModule setenvif_module>
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+  # Use php-fpm socket
+  <FilesMatch "\.(?i:php[3457]?)$">
+    SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ name }}.sock|fcgi://localhost"
+  </FilesMatch>
+{% endif %}
+</VirtualHost>
+
+# vim: syntax=apache

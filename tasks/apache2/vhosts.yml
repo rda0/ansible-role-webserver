@@ -1,18 +1,41 @@
+#- name: create vhosts
+#  template:
+#    src: apache2/sites/vhost.conf.j2
+#    dest: '/etc/apache2/sites-available/{{ item.name }}.conf'
+#  notify: reload apache2
+#  vars:
+#    name: '{{ item.name }}'
+#    server_name: '{{ item.server_name }}'
+#    server_alias: "{{ (item.server_alias|default('')) }}"
+#    http:
+#      type: "{{ (item.http|default({})).type|default('ServerEmptyRedirect') }}"
+#      include_common: "{{ (item.http|default({})).include_common|default(False) }}"
+#    https:
+#      type: "{{ (item.https|default({})).type|default('Server') }}"
+#      cert: "{{ (item.https|default({})).cert|default('') }}"
+#      include_common: "{{ (item.https|default({})).include_common|default(False) }}"
+#    phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
+#  loop: '{{ webserver_vhosts }}'
+
 - name: create vhosts
   template:
-    src: apache2/sites/vhost.conf.j2
+    src: "apache2/sites/vhost_{{ item.type|default('server') }}.conf.j2"
     dest: '/etc/apache2/sites-available/{{ item.name }}.conf'
   notify: reload apache2
   vars:
     name: '{{ item.name }}'
+    type: "{{ item.type|default('server') }}"
     server_name: '{{ item.server_name }}'
-    server_alias: "{{ (item.server_alias|default('')) }}"
+    server_alias: "{{ item.server_alias|default('') }}"
+    data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
+    document_root: "{{ item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
     http:
-      type: "{{ (item.http|default({})).type|default('ServerEmptyRedirect') }}"
+      empty: "{{ (item.http|default({})).empty|default(True) }}"
+      redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
       include_common: "{{ (item.http|default({})).include_common|default(False) }}"
     https:
-      type: "{{ (item.https|default({})).type|default('Server') }}"
       cert: "{{ (item.https|default({})).cert|default('') }}"
+      redirect: "{{ '' if item.server_alias|default('') == '' else (item.https|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
       include_common: "{{ (item.https|default({})).include_common|default(False) }}"
     phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
   loop: '{{ webserver_vhosts }}'
