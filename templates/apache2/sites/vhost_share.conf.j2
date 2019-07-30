@@ -14,9 +14,9 @@
 {% if http.redirect != '' %}
   Use RedirectTo {{ http.redirect }}
 {% endif %}
-{% if http.includes %}
-  Include /etc/apache2/sites-include/{{ name }}.conf
-{% endif %}
+{% for include in http.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
   LogLevel {{ websserver_log_level }}
   ErrorLog {{ data_path }}/{{ name }}/logs/http_error.log
   CustomLog {{ data_path }}/{{ name }}/logs/http_access.log combined env=!dontlog
@@ -39,9 +39,9 @@
 {% if https.redirect != '' %}
   Use RedirectTo {{ https.redirect }}
 {% endif %}
-{% if https.includes %}
-  Include /etc/apache2/sites-include/{{ name }}.conf
-{% endif %}
+{% for include in https.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
   LogLevel {{ websserver_log_level }}
   ErrorLog {{ data_path }}/{{ name }}/logs/https_error.log
   CustomLog {{ data_path }}/{{ name }}/logs/https_access.log combined env=!dontlog
