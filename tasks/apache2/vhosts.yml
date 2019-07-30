@@ -1,22 +1,3 @@
-#- name: create vhosts
-#  template:
-#    src: apache2/sites/vhost.conf.j2
-#    dest: '/etc/apache2/sites-available/{{ item.name }}.conf'
-#  notify: reload apache2
-#  vars:
-#    name: '{{ item.name }}'
-#    server_name: '{{ item.server_name }}'
-#    server_alias: "{{ (item.server_alias|default('')) }}"
-#    http:
-#      type: "{{ (item.http|default({})).type|default('ServerEmptyRedirect') }}"
-#      include_common: "{{ (item.http|default({})).include_common|default(False) }}"
-#    https:
-#      type: "{{ (item.https|default({})).type|default('Server') }}"
-#      cert: "{{ (item.https|default({})).cert|default('') }}"
-#      include_common: "{{ (item.https|default({})).include_common|default(False) }}"
-#    phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
-#  loop: '{{ webserver_vhosts }}'
-
 - name: create vhosts
   template:
     src: "apache2/sites/vhost_{{ item.type|default('server') }}.conf.j2"
