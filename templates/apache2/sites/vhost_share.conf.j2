@@ -14,8 +14,8 @@
 {% if http.redirect != '' %}
   Use RedirectTo {{ http.redirect }}
 {% endif %}
-{% if http.include_common %}
-  Include /etc/apache2/sites-common/{{ name }}.conf
+{% if http.includes %}
+  Include /etc/apache2/sites-include/{{ name }}.conf
 {% endif %}
   LogLevel {{ websserver_log_level }}
   ErrorLog {{ data_path }}/{{ name }}/logs/http_error.log
@@ -39,8 +39,8 @@
 {% if https.redirect != '' %}
   Use RedirectTo {{ https.redirect }}
 {% endif %}
-{% if https.include_common %}
-  Include /etc/apache2/sites-common/{{ name }}.conf
+{% if https.includes %}
+  Include /etc/apache2/sites-include/{{ name }}.conf
 {% endif %}
   LogLevel {{ websserver_log_level }}
   ErrorLog {{ data_path }}/{{ name }}/logs/https_error.log

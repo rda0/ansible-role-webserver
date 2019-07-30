@@ -221,10 +221,10 @@
     state: absent
 
 - block:
-  - name: include sites-common repo
-    include_tasks: sites_common.yml
-    when: include_webserver_sites_common
-  tags: webserver_sites_common
+  - name: include sites-include repo
+    include_tasks: sites_include.yml
+    when: include_webserver_sites_include
+  tags: webserver_sites_include
 
 - block:
   - name: include vhosts

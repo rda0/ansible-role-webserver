@@ -32,11 +32,11 @@
     http:
       empty: "{{ (item.http|default({})).empty|default(True) }}"
       redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
-      include_common: "{{ (item.http|default({})).include_common|default(False) }}"
+      includes: "{{ (item.http|default({})).includes|default(False) }}"
     https:
       cert: "{{ (item.https|default({})).cert|default('') }}"
       redirect: "{{ '' if item.server_alias|default('') == '' else (item.https|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
-      include_common: "{{ (item.https|default({})).include_common|default(False) }}"
+      includes: "{{ (item.https|default({})).includes|default(False) }}"
     phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
   loop: '{{ webserver_vhosts }}'
 

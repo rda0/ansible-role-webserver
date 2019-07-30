@@ -1,0 +1,5 @@
+- name: 'clone sites-include repo from {{ webserver_sites_include_repo }}'
+  git:
+    repo: '{{ webserver_sites_include_repo }}'
+    dest: '/etc/apache2/sites-include'
+    update: no
