@@ -1,4 +1,80 @@
-{{ webserver_site_config_default_vhost_other_ip }}
-{{ webserver_site_config_default_vhost_local_http }}
-{{ webserver_site_config_default_vhost_default }}
+# Matches any ip:port combos not covered by a vhost, effectively prevents any request going to the main server
+# Any use of * in a virtual host declaration will have higher precedence than _default_
+<VirtualHost _default_:*>
+  ServerName {{ ansible_fqdn }}
+  DocumentRoot {{ webserver_empty_doc_root }}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/other_ip_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/other_ip_access.log combined env=!dontlog
+  <Location />
+    Require all denied
+  </Location>
+</VirtualHost>
+
+# Matches some loopack ips (not all), mainly for monitoring (netdata)
+<VirtualHost 127.0.0.1:80 [::1]:80>
+  ServerName {{ ansible_fqdn }}
+  DocumentRoot {{ webserver_empty_doc_root }}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/local_http_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/local_http_access.log combined env=!dontlog
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+  <Location /server-status>
+    SetHandler server-status
+    Require local
+    # Hide requests from monitoring in debug.log
+    SetEnvIfExpr "%{REQUEST_URI} =~ m#^/server-status$# && %{QUERY_STRING} =~ m#^auto$#" dontlogglobal
+  </Location>
+</VirtualHost>
+
+# The default vhosts for the requests to the hostname
+<VirtualHost *:80>
+  ServerName {{ ansible_fqdn }}
+  DocumentRoot {{ webserver_empty_doc_root }}
+  Use RedirectTo https {{ ansible_fqdn }}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/default_http_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/default_http_access.log combined env=!dontlog
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+</VirtualHost>
+<VirtualHost *:443>
+  ServerName {{ ansible_fqdn }}
+  DocumentRoot /var/www/default
+  {{ webserver_site_config_default_vhost_default_https_enablessl }}
+  Use RedirectTo https {{ ansible_fqdn }}
+  LogLevel {{ websserver_log_level }}
+  ErrorLog ${APACHE_LOG_DIR}/sites/default_https_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/default_https_access.log combined env=!dontlog
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+  <Directory /var/www/default>
+    Use PhysLDAP
+    <RequireAll>
+      Use RequireNetCan
+      Use RequirePhysLDAPGroup isg
+    </RequireAll>
+  </Directory>
+  <Location /server-status>
+    SetHandler server-status
+    Use PhysLDAP
+    <RequireAll>
+      Use RequireNetCan
+      Use RequirePhysLDAPGroup isg
+    </RequireAll>
+  </Location>
+  <Location /ldap-status>
+    SetHandler ldap-status
+    Use PhysLDAP
+    <RequireAll>
+      Use RequireNetCan
+      Use RequirePhysLDAPGroup isg
+    </RequireAll>
+  </Location>
+</VirtualHost>
+
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

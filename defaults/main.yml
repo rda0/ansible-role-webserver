@@ -77,56 +77,7 @@ webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False
 webserver_site_enable_default: True
-webserver_site_config_default_vhost_other_ip: |
-  # Matches any ip:port combos not covered by a vhost, effectively prevents any request going to the main server
-  # Any use of * in a virtual host declaration will have higher precedence than _default_
-  <VirtualHost _default_:*>
-    Use ServerEmpty other ip {{ ansible_fqdn }}
-  </VirtualHost>
-webserver_site_config_default_vhost_local_http: |
-  # Matches some loopack ips (not all), mainly for monitoring (netdata)
-  <VirtualHost 127.0.0.1:80 [::1]:80>
-    Use ServerEmpty local http {{ ansible_fqdn }}
-    <Location /server-status>
-      SetHandler server-status
-      Require local
-      # Hide requests from monitoring in debug.log
-      SetEnvIfExpr "%{REQUEST_URI} =~ m#^/server-status$# && %{QUERY_STRING} =~ m#^auto$#" dontlogglobal
-    </Location>
-  </VirtualHost>
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
-webserver_site_config_default_vhost_default: |
-  # The default vhosts for the requests to the hostname
-  <VirtualHost *:80>
-    Use ServerEmptyRedirect default http {{ ansible_fqdn }}
-  </VirtualHost>
-  <VirtualHost *:443>
-    Use ServerRedirect default https {{ ansible_fqdn }}
-    {{ webserver_site_config_default_vhost_default_https_enablessl }}
-    <Directory /var/www/default>
-      Use PhysLDAP
-      <RequireAll>
-        Use RequireNetCan
-        Use RequirePhysLDAPGroup isg
-      </RequireAll>
-    </Directory>
-    <Location /server-status>
-      SetHandler server-status
-      Use PhysLDAP
-      <RequireAll>
-        Use RequireNetCan
-        Use RequirePhysLDAPGroup isg
-      </RequireAll>
-    </Location>
-    <Location /ldap-status>
-      SetHandler ldap-status
-      Use PhysLDAP
-      <RequireAll>
-        Use RequireNetCan
-        Use RequirePhysLDAPGroup isg
-      </RequireAll>
-    </Location>
-  </VirtualHost>
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ ansible_hostname }}'
 webserver_site_content_default_description: This server is managed by the <a href="https://www.phys.ethz.ch/services/physics-isg.html">IT Services Group (ISG) in the Physics Department</a>.
