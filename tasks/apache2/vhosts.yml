@@ -20,6 +20,7 @@
       redirect: "{{ '' if item.server_alias|default('') == '' else (item.https|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
       includes: "{{ (item.https|default({})).includes|default([]) }}"
       require: "{{ (item.https|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.https|default({})).require|default('require_all_granted') }}"
+      fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
     phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
   loop: '{{ webserver_vhosts }}'
 
