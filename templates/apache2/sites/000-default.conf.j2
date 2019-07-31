@@ -56,27 +56,15 @@
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
   <Directory /var/www/default>
-    Use PhysLDAP
-    <RequireAll>
-      Use RequireNetCan
-      Use RequirePhysLDAPGroup isg
-    </RequireAll>
+    {{ (webserver_site_config_default_vhost_default_require|indent(width=4)).rstrip() }}
   </Directory>
   <Location /server-status>
     SetHandler server-status
-    Use PhysLDAP
-    <RequireAll>
-      Use RequireNetCan
-      Use RequirePhysLDAPGroup isg
-    </RequireAll>
+    {{ (webserver_site_config_default_vhost_default_require|indent(width=4)).rstrip() }}
   </Location>
   <Location /ldap-status>
     SetHandler ldap-status
-    Use PhysLDAP
-    <RequireAll>
-      Use RequireNetCan
-      Use RequirePhysLDAPGroup isg
-    </RequireAll>
+    {{ (webserver_site_config_default_vhost_default_require|indent(width=4)).rstrip() }}
   </Location>
 </VirtualHost>
 

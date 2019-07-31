@@ -78,6 +78,14 @@ webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False
 webserver_site_enable_default: True
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
+webserver_site_config_common_requires:
+  require_net_can_and_phys_ldap_group_isg: |
+    Use PhysLDAP
+    <RequireAll>
+      Use RequireNetCan
+      Use RequirePhysLDAPGroup isg
+    </RequireAll>
+webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_net_can_and_phys_ldap_group_isg }}"
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ ansible_hostname }}'
 webserver_site_content_default_description: This server is managed by the <a href="https://www.phys.ethz.ch/services/physics-isg.html">IT Services Group (ISG) in the Physics Department</a>.
