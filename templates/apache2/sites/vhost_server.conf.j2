@@ -4,9 +4,6 @@
   DocumentRoot {{ document_root }}
 {% else %}
   DocumentRoot {{ webserver_empty_doc_root }}
-  <Location />
-    Require all granted
-  </Location>
 {% endif %}
 {% if server_alias != '' %}
   ServerAlias {{ server_alias }}
@@ -23,6 +20,9 @@
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
+  <Location />
+    Require all granted
+  </Location>
 </VirtualHost>
 
 <VirtualHost *:443>
