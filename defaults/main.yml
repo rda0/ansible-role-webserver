@@ -87,6 +87,35 @@ webserver_site_config_common_requires:
       Use RequireNetCan
       Use RequirePhysLDAPGroup isg
     </RequireAll>
+  grant_share_all: |
+    Require all granted
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
+  grant_share_all_allow_override_none: |
+    Require all granted
+    AllowOverride None
+    AllowOverrideList None
+    Options Multiviews SymLinksIfOwnerMatch
+  grant_share_all_allow_override_all: |
+    Require all granted
+    AllowOverride All
+    Options All Multiviews SymLinksIfOwnerMatch
+  grant_share_phys_ldap: |
+    Use PhysLDAP
+    Require valid-user
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
+  grant_share_phys_ldap_or_net_can: |
+    Use PhysLDAP
+    <RequireAny>
+      Require valid-user
+      Use RequireNetCAN
+    </RequireAny>
+    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
+    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
+    Options Multiviews Indexes SymLinksIfOwnerMatch
 webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_net_can_and_phys_ldap_group_isg }}"
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ ansible_hostname }}'
