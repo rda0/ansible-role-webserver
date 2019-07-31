@@ -40,6 +40,9 @@
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
+  <Location />
+    Require all granted
+  </Location>
 </VirtualHost>
 <VirtualHost *:443>
   ServerName {{ ansible_fqdn }}
