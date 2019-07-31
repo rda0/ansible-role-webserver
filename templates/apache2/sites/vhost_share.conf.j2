@@ -23,7 +23,7 @@
 {% if not http.empty %}
 {% if http.require != '' %}
   <Directory {{ document_root }}>
-    {{ (webserver_site_config_common_requires[https.require]|indent(width=4)).rstrip() }}
+    {{ (webserver_site_config_common_requires[http.require]|indent(width=4)).rstrip() }}
   </Directory>
 {% endif %}
 {% else %}
