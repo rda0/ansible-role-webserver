@@ -74,7 +74,7 @@
 {% endif %}
 {% if https.fcgid %}
   DirectoryIndex{% for item in https.fcgid %} index.{{ item }}{% endfor %} index.html
-  #SuexecUserGroup {{ name }} {{ name }}
+  SuexecUserGroup {{ name }} {{ name }}
   # Enable http authorization headers
   <IfModule setenvif_module>
     SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
@@ -83,7 +83,7 @@
     Options +ExecCGI
 {% for item in https.fcgid %}
     AddHandler fcgid-script .{{ item }}
-    FcgidWrapper /export/data1/{{ name }}/fcgid/fcgid-wrapper-{{ item }} .{{ item }}
+    FcgidWrapper /export/data1/{{ name }}/public/fcgid-wrapper-{{ item }} .{{ item }}
 {% endfor %}
   </Directory>
 {% endif %}
