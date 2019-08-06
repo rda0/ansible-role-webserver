@@ -24,6 +24,21 @@
     phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
   loop: '{{ webserver_vhosts }}'
 
+- name: set fact _vhosts_fcgid
+  set_fact:
+    _vhosts_fcgid: "{{ _vhosts_fcgid + [{'name': item.name, 'document_root': item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/') ~ '/public' if item.type|default('server') == 'share' else ''), 'fcgid': (item.https|default({})).fcgid|default([]) }] }}"
+  loop: "{{ webserver_vhosts|selectattr('https', 'defined')|list|selectattr('https.fcgid', 'defined')|list|selectattr('https.fcgid')|list }}"
+
+#- name: debug
+#  debug:
+#    msg: "{{ _vhosts_fcgid }}"
+
+- name: include fcgid
+  include_tasks: vhosts_fcgid.yml
+  loop: "{{ _vhosts_fcgid }}"
+  loop_control:
+    loop_var: vhost_fcgid
+
 - name: enable vhosts
   file:
     src: '../sites-available/{{ item.name }}.conf'

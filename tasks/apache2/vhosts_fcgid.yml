@@ -1,0 +1,11 @@
+- name: deploy fcgid wrappers
+  copy:
+    src: "apache2/fcgid-wrapper-{{ fcgid_type }}"
+    dest: "{{ vhost_fcgid.document_root }}/fcgid-wrapper-{{ fcgid_type }}"
+    owner: "{{ vhost_fcgid.name }}"
+    group: "{{ vhost_fcgid.name }}"
+    mode: '0755'
+  loop: "{{ vhost_fcgid.fcgid }}"
+  loop_control:
+    loop_var: fcgid_type
+    label: "deploy {{ vhost_fcgid.document_root }}/fcgid-wrapper-{{ fcgid_type }}"

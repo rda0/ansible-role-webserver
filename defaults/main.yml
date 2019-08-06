@@ -143,3 +143,6 @@ webserver_vhost_data_path:
   server: /var/www
   share: /export/data1
 webserver_vhosts: []
+
+# private set_fact variable defaults (do not use in inventory)
+_vhosts_fcgid: []
