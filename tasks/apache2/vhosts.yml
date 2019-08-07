@@ -26,6 +26,12 @@
   debug:
     msg: "{{ _vhosts }}"
 
+- name: include vhosts share data
+  include_tasks: vhosts_share_data.yml
+  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+  loop_control:
+    loop_var: vhost
+
 - name: set fact _phpfpm_pool_names
   set_fact:
     _phpfpm_pool_names: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
@@ -52,7 +58,7 @@
   vars:
     _vhost_fcgid:
       name: '{{ item.name }}'
-      document_root: '{{ item.document_root }}'
+      data_path: '{{ item.data_path }}'
       fcgid: '{{ item.https.fcgid }}'
   loop: "{{ _vhosts|selectattr('https.fcgid')|list }}"
 

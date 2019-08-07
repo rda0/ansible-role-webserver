@@ -83,7 +83,7 @@
     Options +ExecCGI
 {% for ext in vhost.https.fcgid %}
     AddHandler fcgid-script .{{ ext }}
-    FcgidWrapper /export/data1/{{ vhost.name }}/public/fcgid-wrapper-{{ ext }} .{{ ext }}
+    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext }} .{{ ext }}
 {% endfor %}
   </Directory>
 {% endif %}
