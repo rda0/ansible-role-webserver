@@ -72,6 +72,23 @@
     SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
+{% if vhost.https.fcgid %}
+  DirectoryIndex{% for ext in vhost.https.fcgid %} index.{{ ext }}{% endfor %} index.html
+  <IfModule suexec_module>
+    SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
+  </IfModule>
+  # Enable http authorization headers
+  <IfModule setenvif_module>
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+  <Directory {{ vhost.document_root }}>
+    Options +ExecCGI
+{% for ext in vhost.https.fcgid %}
+    AddHandler fcgid-script .{{ ext }}
+    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext }} .{{ ext }}
+{% endfor %}
+  </Directory>
+{% endif %}
 </VirtualHost>
 
 # vim: syntax=apache
