@@ -145,4 +145,5 @@ webserver_vhost_data_path:
 webserver_vhosts: []
 
 # private set_fact variable defaults (do not use in inventory)
+_vhosts: []
 _vhosts_fcgid: []

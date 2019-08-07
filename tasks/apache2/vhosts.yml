@@ -1,37 +1,64 @@
+- name: set fact _vhosts
+  set_fact:
+    _vhosts: "{{ _vhosts + [_vhost] }}"
+  vars:
+    _vhost:
+      name: '{{ item.name }}'
+      type: "{{ item.type|default('server') }}"
+      server_name: '{{ item.server_name }}'
+      server_alias: "{{ item.server_alias|default('') }}"
+      data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
+      document_root: "{{ item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
+      http:
+        empty: "{{ (item.http|default({})).empty|default(True) }}"
+        redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
+        includes: "{{ (item.http|default({})).includes|default([]) }}"
+        require: "{{ (item.http|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.http|default({})).require|default('require_all_granted') }}"
+      https:
+        cert: "{{ (item.https|default({})).cert|default('') }}"
+        redirect: "{{ '' if item.server_alias|default('') == '' else (item.https|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
+        includes: "{{ (item.https|default({})).includes|default([]) }}"
+        require: "{{ (item.https|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.https|default({})).require|default('require_all_granted') }}"
+        fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
+  loop: '{{ webserver_vhosts }}'
+
+- name: debug _vhosts
+  debug:
+    msg: "{{ _vhosts }}"
+
+- name: set fact _phpfpm_pool_names
+  set_fact:
+    _phpfpm_pool_names: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
+
+- name: debug _phpfpm_pool_names
+  debug:
+    msg: "{{ _phpfpm_pool_names }}"
+
 - name: create vhosts
   template:
-    src: "apache2/sites/vhost_{{ item.type|default('server') }}.conf.j2"
-    dest: '/etc/apache2/sites-available/{{ item.name }}.conf'
+    src: "apache2/sites/vhost_{{ vhost.type }}.conf.j2"
+    dest: '/etc/apache2/sites-available/{{ vhost.name }}.conf'
   notify: reload apache2
+#  vars: '{{ item }}'
   vars:
-    name: '{{ item.name }}'
-    type: "{{ item.type|default('server') }}"
-    server_name: '{{ item.server_name }}'
-    server_alias: "{{ item.server_alias|default('') }}"
-    data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
-    document_root: "{{ item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
-    http:
-      empty: "{{ (item.http|default({})).empty|default(True) }}"
-      redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
-      includes: "{{ (item.http|default({})).includes|default([]) }}"
-      require: "{{ (item.http|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.http|default({})).require|default('require_all_granted') }}"
-    https:
-      cert: "{{ (item.https|default({})).cert|default('') }}"
-      redirect: "{{ '' if item.server_alias|default('') == '' else (item.https|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
-      includes: "{{ (item.https|default({})).includes|default([]) }}"
-      require: "{{ (item.https|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.https|default({})).require|default('require_all_granted') }}"
-      fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
-    phpfpm_pools: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
-  loop: '{{ webserver_vhosts }}'
+    phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
+  loop: '{{ _vhosts }}'
+  loop_control:
+    loop_var: vhost
 
 - name: set fact _vhosts_fcgid
   set_fact:
-    _vhosts_fcgid: "{{ _vhosts_fcgid + [{'name': item.name, 'document_root': item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/') ~ '/public' if item.type|default('server') == 'share' else ''), 'fcgid': (item.https|default({})).fcgid|default([]) }] }}"
-  loop: "{{ webserver_vhosts|selectattr('https', 'defined')|list|selectattr('https.fcgid', 'defined')|list|selectattr('https.fcgid')|list }}"
+    _vhosts_fcgid: "{{ _vhosts_fcgid + [_vhost_fcgid] }}"
+  vars:
+    _vhost_fcgid:
+      name: '{{ item.name }}'
+      document_root: '{{ item.document_root }}'
+      fcgid: '{{ item.https.fcgid }}'
+  loop: "{{ _vhosts|selectattr('https.fcgid')|list }}"
 
-#- name: debug
-#  debug:
-#    msg: "{{ _vhosts_fcgid }}"
+- name: debug _vhosts_fcgid
+  debug:
+    msg: "{{ _vhosts_fcgid }}"
 
 - name: include fcgid
   include_tasks: vhosts_fcgid.yml
@@ -41,8 +68,10 @@
 
 - name: enable vhosts
   file:
-    src: '../sites-available/{{ item.name }}.conf'
-    dest: '/etc/apache2/sites-enabled/{{ item.name }}.conf'
+    src: '../sites-available/{{ vhost.name }}.conf'
+    dest: '/etc/apache2/sites-enabled/{{ vhost.name }}.conf'
     state: link
   notify: reload apache2
-  loop: '{{ webserver_vhosts }}'
+  loop: '{{ _vhosts }}'
+  loop_control:
+    loop_var: vhost
