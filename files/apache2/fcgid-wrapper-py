@@ -1,6 +1,0 @@
-#!/usr/bin/python
-
-from flup.server.fcgi import WSGIServer
-from myApp import app as application
-
-WSGIServer(application).run()
