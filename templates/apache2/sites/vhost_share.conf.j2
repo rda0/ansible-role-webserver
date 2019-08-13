@@ -35,7 +35,11 @@
 
 <VirtualHost *:443>
   ServerName {{ vhost.server_name }}
+{% if not vhost.https.empty %}
   DocumentRoot {{ vhost.document_root }}
+{% else %}
+  DocumentRoot {{ webserver_empty_doc_root }}
+{% endif %}
 {% if vhost.server_alias != '' %}
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
@@ -56,10 +60,16 @@
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
+{% if not vhost.https.empty %}
 {% if vhost.https.require != '' %}
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
   </Directory>
+{% endif %}
+{% else %}
+  <Location />
+    Require all granted
+  </Location>
 {% endif %}
 {% if vhost.name in phpfpm_pool_names %}
   DirectoryIndex index.php index.html
