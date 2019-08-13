@@ -141,6 +141,7 @@ webserver_phpfpm_pools: []
 webserver_sites_include_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ ansible_hostname }}-sites-include.git'
 webserver_vhost_data_path:
   server: /var/www
+  redirect: /var/www
   share: /export/data1
 webserver_vhosts: []
 

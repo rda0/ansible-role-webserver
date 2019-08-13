@@ -1,0 +1,120 @@
+<VirtualHost *:80>
+  ServerName {{ vhost.server_name }}
+{% if not vhost.http.empty %}
+  DocumentRoot {{ vhost.document_root }}
+{% else %}
+  DocumentRoot {{ webserver_empty_doc_root }}
+{% endif %}
+{% if vhost.server_alias != '' %}
+  ServerAlias {{ vhost.server_alias }}
+{% endif %}
+{% if vhost.http.redirect != '' %}
+  Use RedirectTo {{ vhost.http.redirect }}
+{% endif %}
+{% for include in vhost.http.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
+  LogLevel {{ websserver_log_level }}
+{% if vhost.type == 'share' %}
+  ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/http_error.log
+  CustomLog {{ vhost.data_path }}/{{ vhost.name }}/logs/http_access.log combined env=!dontlog
+{% elif vhost.type == 'redirect' %}
+  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_http_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/redirect_http_access.log vhost_combined env=!dontlog
+{% else %}
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_http_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_http_access.log combined env=!dontlog
+{% endif %}
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+{% if not vhost.http.empty %}
+{% if vhost.http.require != '' %}
+  <Directory {{ vhost.document_root }}>
+    {{ (webserver_site_config_common_requires[vhost.http.require]|indent(width=4)).rstrip() }}
+  </Directory>
+{% endif %}
+{% else %}
+  <Location />
+    Require all granted
+  </Location>
+{% endif %}
+</VirtualHost>
+
+<VirtualHost *:443>
+  ServerName {{ vhost.server_name }}
+{% if not vhost.https.empty %}
+  DocumentRoot {{ vhost.document_root }}
+{% else %}
+  DocumentRoot {{ webserver_empty_doc_root }}
+{% endif %}
+{% if vhost.server_alias != '' %}
+  ServerAlias {{ vhost.server_alias }}
+{% endif %}
+{% if vhost.https.cert == '' %}
+  Use EnableSSL
+{% else %}
+  Use EnableSSLCert {{ vhost.https.cert }}
+{% endif %}
+{% if vhost.https.redirect != '' %}
+  Use RedirectTo {{ vhost.https.redirect }}
+{% endif %}
+{% for include in vhost.https.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
+  LogLevel {{ websserver_log_level }}
+{% if vhost.type == 'share' %}
+  ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/https_error.log
+  CustomLog {{ vhost.data_path }}/{{ vhost.name }}/logs/https_access.log combined env=!dontlog
+{% elif vhost.type == 'redirect' %}
+  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_https_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/redirect_https_access.log vhost_combined env=!dontlog
+{% else %}
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_https_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_https_access.log combined env=!dontlog
+{% endif %}
+{% if webserver_log_lastuse %}
+  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
+{% endif %}
+{% if not vhost.https.empty %}
+{% if vhost.https.require != '' %}
+  <Directory {{ vhost.document_root }}>
+    {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
+  </Directory>
+{% endif %}
+{% else %}
+  <Location />
+    Require all granted
+  </Location>
+{% endif %}
+{% if vhost.name in phpfpm_pool_names %}
+  DirectoryIndex index.php index.html
+  # Enable http authorization headers
+  <IfModule setenvif_module>
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+  # Use php-fpm socket
+  <FilesMatch "\.(?i:php[3457]?)$">
+    SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ vhost.name }}.sock|fcgi://localhost"
+  </FilesMatch>
+{% endif %}
+{% if vhost.https.fcgid %}
+  DirectoryIndex{% for ext in vhost.https.fcgid %} index.{{ ext }}{% endfor %} index.html
+  <IfModule suexec_module>
+    SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
+  </IfModule>
+  # Enable http authorization headers
+  <IfModule setenvif_module>
+    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
+  </IfModule>
+  <Directory {{ vhost.document_root }}>
+    Options +ExecCGI
+{% for ext in vhost.https.fcgid %}
+    AddHandler fcgid-script .{{ ext }}
+    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext }} .{{ ext }}
+{% endfor %}
+  </Directory>
+{% endif %}
+</VirtualHost>
+
+# vim: syntax=apache
