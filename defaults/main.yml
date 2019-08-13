@@ -144,6 +144,11 @@ webserver_vhost_data_path:
   redirect: /var/www
   share: /export/data1
 webserver_vhosts: []
+webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap
+webserver_fcgid_custom_wrappers:
+  - php
+webserver_fcgid_fcgi_extensions:
+  - fcgi
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []

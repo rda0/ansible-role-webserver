@@ -8,12 +8,14 @@
 
 - name: deploy fcgid wrappers
   copy:
-    src: "apache2/fcgid-wrapper-{{ fcgid_type }}"
-    dest: "{{ vhost_fcgid.data_path }}/{{ vhost_fcgid.name }}/fcgid/fcgid-wrapper-{{ fcgid_type }}"
+    remote_src: "{{ False if fcgid_type in webserver_fcgid_custom_wrappers else True }}"
+    src: "{{ ['apache2/fcgid-wrapper-', fcgid_type]|join() if fcgid_type in webserver_fcgid_custom_wrappers else webserver_fcgid_generic_wrapper }}"
+    dest: "{{ vhost_fcgid.data_path }}/{{ vhost_fcgid.name }}/fcgid/fcgid-wrapper-{{ fcgid_type if fcgid_type in webserver_fcgid_custom_wrappers else 'generic' }}"
     owner: "{{ vhost_fcgid.name }}"
     group: "{{ vhost_fcgid.name }}"
     mode: '0550'
   loop: "{{ vhost_fcgid.fcgid }}"
+  when: fcgid_type not in webserver_fcgid_fcgi_extensions
   loop_control:
     loop_var: fcgid_type
     label: "deploy {{ vhost_fcgid.data_path }}/{{ vhost_fcgid.name }}/fcgid/fcgid-wrapper-{{ fcgid_type }}"

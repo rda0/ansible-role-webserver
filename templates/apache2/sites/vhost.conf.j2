@@ -111,7 +111,9 @@
     Options +ExecCGI
 {% for ext in vhost.https.fcgid %}
     AddHandler fcgid-script .{{ ext }}
-    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext }} .{{ ext }}
+{% endfor %}
+{% for ext in vhost.https.fcgid if ext not in webserver_fcgid_fcgi_extensions %}
+    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
 {% endif %}
