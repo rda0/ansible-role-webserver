@@ -46,7 +46,6 @@
     src: "apache2/sites/vhost.conf.j2"
     dest: '/etc/apache2/sites-available/{{ vhost.name }}.conf'
   notify: reload apache2
-#  vars: '{{ item }}'
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
   loop: '{{ _vhosts }}'
