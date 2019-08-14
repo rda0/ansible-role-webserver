@@ -23,9 +23,9 @@
         fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
   loop: '{{ webserver_vhosts }}'
 
-- name: debug _vhosts
-  debug:
-    msg: "{{ _vhosts }}"
+#- name: debug _vhosts
+#  debug:
+#    msg: "{{ _vhosts }}"
 
 - name: include vhosts share data
   include_tasks: vhosts_share_data.yml
@@ -37,9 +37,9 @@
   set_fact:
     _phpfpm_pool_names: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
 
-- name: debug _phpfpm_pool_names
-  debug:
-    msg: "{{ _phpfpm_pool_names }}"
+#- name: debug _phpfpm_pool_names
+#  debug:
+#    msg: "{{ _phpfpm_pool_names }}"
 
 - name: create vhosts
   template:
@@ -62,9 +62,9 @@
       fcgid: '{{ item.https.fcgid }}'
   loop: "{{ _vhosts|selectattr('https.fcgid')|list }}"
 
-- name: debug _vhosts_fcgid
-  debug:
-    msg: "{{ _vhosts_fcgid }}"
+#- name: debug _vhosts_fcgid
+#  debug:
+#    msg: "{{ _vhosts_fcgid }}"
 
 - name: include fcgid
   include_tasks: vhosts_fcgid.yml
