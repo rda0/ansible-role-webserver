@@ -126,7 +126,6 @@
   <IfModule !proxy_http_module>
     Error "mod_proxy_http is required. To enable it run:  a2enmod proxy_http"
   </IfModule>
-  HostnameLookups On
   ProxyPass / http://localhost:$port/ retry=0
   ProxyPassReverse / http://localhost:$port/
 </Macro>
