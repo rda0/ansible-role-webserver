@@ -77,6 +77,15 @@
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
 {% if not vhost.https.empty %}
+{% if vhost.type == 'share' %}
+  Alias /website-statistics {{ vhost.data_path }}/{{ vhost.name }}/stats
+  <Directory {{ vhost.data_path }}/{{ vhost.name }}/stats>
+    Use PhysLDAP
+    Use RequirePhysLDAPGroup isg
+    Use RequirePhysLDAPGroup {{ vhost.name }}
+    Options Multiviews Indexes
+  </Directory>
+{% endif %}
 {% if vhost.https.require != '' %}
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}

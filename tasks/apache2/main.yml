@@ -206,10 +206,6 @@
 - name: flush handlers
   meta: flush_handlers
 
-- name: include website statistics
-  include_tasks: website_statistics.yml
-  when: include_webserver_website_statistics
-
 - block:
   - name: include sites-include repo
     include_tasks: sites_include.yml
@@ -232,3 +228,6 @@
     path: /var/log/apache2/other_vhosts_access.log
     state: absent
 
+- name: include website statistics
+  include_tasks: website_statistics.yml
+  when: include_webserver_website_statistics

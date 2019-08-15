@@ -12,8 +12,23 @@
     - path: '{{ vhost.name }}/logs'
       owner: root
       mode: '0750'
+    - path: '{{ vhost.name }}/logs/goaccess'
+      owner: root
+      mode: '0750'
+    - path: '{{ vhost.name }}/logs/goaccess/current'
+      owner: root
+      mode: '0750'
     - path: '{{ vhost.name }}/private'
     - path: '{{ vhost.name }}/public'
       owner: www-data
       mode: '2570'
+    - path: '{{ vhost.name }}/stats'
+      owner: www-data
+      mode: '0550'
+    - path: '{{ vhost.name }}/stats/current'
+      owner: www-data
+      mode: '0550'
+    - path: '{{ vhost.name }}/stats/archive'
+      owner: www-data
+      mode: '0550'
     - path: '{{ vhost.name }}/tmp'

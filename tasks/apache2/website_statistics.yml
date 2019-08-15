@@ -27,7 +27,7 @@
     state: directory
 
 - name: create goaccess cronjob
-  copy:
-    src: apache2/website-statistics
+  template:
+    src: apache2/log/website-statistics.j2
     dest: /etc/cron.daily/website-statistics
     mode: '0755'
