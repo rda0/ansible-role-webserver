@@ -5,5 +5,5 @@ find /var/log/apache2/global -mtime -3 -name "access.log*" -exec grep "[[]$(date
 {% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
 
 # {{ vhost.name }} https_access.log
-find {{ vhost.data_path }}/{{ vhost.name }}/logs -mtime -10 -name "https_access.log*" -exec grep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --db-path={{ vhost.data_path }}/{{ vhost.name }}/logs/goaccess/current --load-from-disk --keep-db-files -o {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html --log-format='%h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %^ %^' -
+find {{ vhost.data_path }}/{{ vhost.name }}/logs -mtime -3 -name "https_access.log*" -exec grep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --db-path={{ vhost.data_path }}/{{ vhost.name }}/logs/goaccess/current --load-from-disk --keep-db-files -o {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html --log-format='%h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %^ %^' -
 {% endfor %}
