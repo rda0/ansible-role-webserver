@@ -9,7 +9,7 @@
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
 {% if vhost.http.redirect != '' %}
-  Use RedirectTo {{ vhost.http.redirect }}
+  Use RedirectTo{% if '/' in vhost.http.redirect %}Subdir{% endif %} {{ vhost.http.redirect }}
 {% endif %}
 {% for include in vhost.http.includes %}
   Include /etc/apache2/sites-include/{{ include }}.conf
@@ -57,7 +57,7 @@
   Use EnableSSLCert {{ vhost.https.cert }}
 {% endif %}
 {% if vhost.https.redirect != '' %}
-  Use RedirectTo {{ vhost.https.redirect }}
+  Use RedirectTo{% if '/' in vhost.https.redirect %}Subdir{% endif %} {{ vhost.https.redirect }}
 {% endif %}
 {% for include in vhost.https.includes %}
   Include /etc/apache2/sites-include/{{ include }}.conf
