@@ -14,6 +14,7 @@
         redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
         includes: "{{ (item.http|default({})).includes|default([]) }}"
         require: "{{ (item.http|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.http|default({})).require|default('require_all_granted') }}"
+        fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
