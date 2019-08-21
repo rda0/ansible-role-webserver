@@ -11,9 +11,6 @@
 {% if vhost.http.redirect != '' %}
   Use RedirectTo{% if '/' in vhost.http.redirect %}Subdir{% endif %} {{ vhost.http.redirect }}
 {% endif %}
-{% for include in vhost.http.includes %}
-  Include /etc/apache2/sites-include/{{ include }}.conf
-{% endfor %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
   ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/http_error.log
@@ -71,6 +68,9 @@
   </Directory>
 {% endif %}
 {% endif %}
+{% for include in vhost.http.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
 </VirtualHost>
 
 <VirtualHost *:443>
@@ -91,9 +91,6 @@
 {% if vhost.https.redirect != '' %}
   Use RedirectTo{% if '/' in vhost.https.redirect %}Subdir{% endif %} {{ vhost.https.redirect }}
 {% endif %}
-{% for include in vhost.https.includes %}
-  Include /etc/apache2/sites-include/{{ include }}.conf
-{% endfor %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
   ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/https_error.log
@@ -158,6 +155,9 @@
 {% endfor %}
   </Directory>
 {% endif %}
+{% for include in vhost.https.includes %}
+  Include /etc/apache2/sites-include/{{ include }}.conf
+{% endfor %}
 </VirtualHost>
 
 # vim: syntax=apache
