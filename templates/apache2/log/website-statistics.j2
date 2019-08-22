@@ -1,11 +1,9 @@
 #!/bin/bash
 
 # global access.log
-echo "generating global stats"
 find /var/log/apache2/global -mtime -3 -name "access.log*" -exec grep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path=/var/lib/goaccess/global --load-from-disk --keep-db-files -o /var/www/default/website-statistics/global/index.html -
 {% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
 
 # {{ vhost.name }} https_access.log
-echo "generating {{ vhost.name }} stats"
 find {{ vhost.data_path }}/{{ vhost.name }}/logs -mtime -3 -name "https_access.log*" -exec grep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path={{ vhost.data_path }}/{{ vhost.name }}/logs/goaccess/current --load-from-disk --keep-db-files -o {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html --log-format='%h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %^ %^' -
 {% endfor %}
