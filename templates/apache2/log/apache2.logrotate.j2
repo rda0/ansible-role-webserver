@@ -8,19 +8,9 @@
 	rotate 52
 	compress
 	delaycompress
-	notifempty
+	ifempty
 	create 640 root adm
 	sharedscripts
-	postrotate
-        if service apache2 status > /dev/null 2>&1; then \
-            service apache2 reload > /dev/null 2>&1; \
-        fi; \
-	endscript
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi; \
-	endscript
 }
 
 /var/log/apache2/global/*.log {
@@ -29,19 +19,9 @@
 	rotate 365
 	compress
 	delaycompress
-	notifempty
+	ifempty
 	create 640 root adm
 	sharedscripts
-	postrotate
-        if service apache2 status > /dev/null 2>&1; then \
-            service apache2 reload > /dev/null 2>&1; \
-        fi; \
-	endscript
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi; \
-	endscript
 }
 
 /var/log/apache2/*.log {
@@ -50,17 +30,12 @@
 	rotate 14
 	compress
 	delaycompress
-	notifempty
+	ifempty
 	create 640 root adm
 	sharedscripts
 	postrotate
         if service apache2 status > /dev/null 2>&1; then \
             service apache2 reload > /dev/null 2>&1; \
         fi; \
-	endscript
-	prerotate
-		if [ -d /etc/logrotate.d/httpd-prerotate ]; then \
-			run-parts /etc/logrotate.d/httpd-prerotate; \
-		fi; \
 	endscript
 }
