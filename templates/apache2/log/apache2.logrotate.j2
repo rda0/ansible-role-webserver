@@ -9,7 +9,7 @@
 	compress
 	delaycompress
 	ifempty
-	create 640 root adm
+	create 644 root root
 	sharedscripts
 }
 
@@ -20,7 +20,7 @@
 	compress
 	delaycompress
 	ifempty
-	create 640 root adm
+	create 640 root root
 	sharedscripts
 }
 
@@ -31,7 +31,7 @@
 	compress
 	delaycompress
 	ifempty
-	create 640 root adm
+	create 640 root root
 	sharedscripts
 	postrotate
         if service apache2 status > /dev/null 2>&1; then \
