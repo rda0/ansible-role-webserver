@@ -1,7 +1,11 @@
-/var/log/apache2/*.log {
-	daily
+/var/log/apache2/sites/*.log
+{% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
+{{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
+{% endfor %}
+{
+	weekly
 	missingok
-	rotate 14
+	rotate 52
 	compress
 	delaycompress
 	notifempty
@@ -40,14 +44,10 @@
 	endscript
 }
 
-/var/log/apache2/sites/*.log
-{% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
-{{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
-{% endfor %}
-{
-	weekly
+/var/log/apache2/*.log {
+	daily
 	missingok
-	rotate 52
+	rotate 14
 	compress
 	delaycompress
 	notifempty
