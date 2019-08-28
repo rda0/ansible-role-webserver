@@ -1,4 +1,3 @@
-/var/log/apache2/sites/*.log
 {% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
 {{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
 {% endfor %}
@@ -10,6 +9,18 @@
 	delaycompress
 	ifempty
 	create 644 root root
+	sharedscripts
+}
+
+/var/log/apache2/sites/*.log
+{
+	weekly
+	missingok
+	rotate 52
+	compress
+	delaycompress
+	ifempty
+	create 640 root root
 	sharedscripts
 }
 
