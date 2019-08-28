@@ -1,0 +1,21 @@
+- name: download wp-cli binary
+  get_url:
+    url: "https://github.com/wp-cli/wp-cli/releases/download/v{{ webserver_website_wordpress_cli_version }}/wp-cli-{{ webserver_website_wordpress_cli_version }}.phar"
+    dest: /usr/local/bin/wp
+    mode: 0755
+
+- name: deploy wordpress-updater cronjob
+  template:
+    src: website/wordpress/wordpress-updater.j2
+    dest: /etc/cron.daily/wordpress-updater
+    owner: root
+    group: root
+    mode: 0700
+  vars:
+    wordpress_instances: "{{ _vhosts|selectattr('website', 'equalto', 'wordpress')|list }}"
+
+- name: include vhosts with wordpress
+  include_tasks: wordpress.yml
+  loop: "{{ _vhosts|selectattr('website', 'equalto', 'wordpress')|list }}"
+  loop_control:
+    loop_var: instance

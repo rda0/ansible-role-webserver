@@ -1,6 +1,7 @@
 include_webserver_apache2: True
 include_webserver_letsencrypt: True
 include_webserver_phpfpm: False
+include_webserver_website: False
 include_webserver_sites_include: False
 include_webserver_vhosts: False
 include_webserver_website_statistics: True
@@ -149,6 +150,9 @@ webserver_fcgid_custom_wrappers:
   - php
 webserver_fcgid_fcgi_extensions:
   - fcgi
+webserver_website_wordpress_cli_version: '2.3.0'
+webserver_website_wordpress_cronjob_notify_only: False
+webserver_website_wordpress_cronjob_update_plugins: True
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []

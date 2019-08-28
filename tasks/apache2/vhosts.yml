@@ -9,6 +9,13 @@
       server_alias: "{{ item.server_alias|default('') }}"
       data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
       document_root: "{{ item.document_root|default([item.data_path|default(webserver_vhost_data_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
+      website: "{{ item.website|default('') }}"
+      db:
+        delegate: "{{ (item.db|default({})).delegate|default('phd-sqlweb') }}"
+        host: "{{ (item.db|default({})).host|default('sqlweb.phys.ethz.ch') }}"
+        name: "{{ (item.db|default({})).name|default(item.name) }}"
+        user: "{{ (item.db|default({})).user|default(item.name) }}"
+        password: "{{ (item.db|default({})).password|default('') }}"
       http:
         empty: "{{ (item.http|default({})).empty|default(True) }}"
         redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"

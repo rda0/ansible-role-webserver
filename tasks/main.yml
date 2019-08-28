@@ -24,4 +24,12 @@
 
     tags: webserver_phpfpm
 
+  - block:
+
+    - name: include website
+      include_tasks: website/main.yml
+      when: include_webserver_website
+
+    tags: webserver_website
+
   tags: webserver

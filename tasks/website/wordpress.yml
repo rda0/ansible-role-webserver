@@ -1,0 +1,68 @@
+- name: create wordpress database
+  mysql_db:
+    name: "{{ instance.db.name }}"
+    state: present
+  delegate_to: "{{ instance.db.delegate }}"
+
+- name: create wordpress database user
+  mysql_user:
+    name: "{{ instance.db.user }}"
+    password: "{{ instance.db.password }}"
+    priv: "{{ instance.db.name }}.*:ALL"
+    host: "{{ ansible_fqdn }}"
+    state: present
+  delegate_to: "{{ instance.db.delegate }}"
+
+#- name: create wordpress document root
+#  file:
+#    path: "{{ instance.path }}"
+#    owner: "{{ instance.user }}"
+#    group: "{{ instance.user }}"
+#    mode: 0770
+#    state: directory
+
+- name: install wordpress files
+  command: >
+    wp --path={{ instance.document_root }}
+      core download
+  become: yes
+  become_user: "{{ instance.name }}"
+  args:
+    creates: "{{ instance.document_root }}/wp-content"
+
+- name: create wordpress config file
+  command: >
+    wp --path={{ instance.document_root }}
+      config create
+        --dbhost={{ instance.db.host }}
+        --dbname={{ instance.db.name }}
+        --dbuser={{ instance.db.user }}
+        --dbpass={{ instance.db.password }}
+  become: yes
+  become_user: "{{ instance.name }}"
+  args:
+    creates: "{{ instance.document_root }}/wp-config.php"
+
+- name: get wordpress installation status
+  command: >
+    wp --path={{ instance.document_root }}
+      core is-installed
+  become: yes
+  become_user: "{{ instance.name }}"
+  register: instance_is_installed
+  changed_when: False
+  failed_when: False
+
+- name: finalize wordpress installation
+  command: >
+    wp --path={{ instance.document_root }}
+      core install
+        --skip-email
+        --url={{ instance.server_name }}
+        --title="{{ instance.name }}"
+        --admin_user={{ instance.db.user }}
+        --admin_password={{ instance.db.password }}
+        --admin_email={{ webserver_server_admin }}
+  become: yes
+  become_user: "{{ instance.name }}"
+  when: not ansible_check_mode and instance_is_installed.rc != 0

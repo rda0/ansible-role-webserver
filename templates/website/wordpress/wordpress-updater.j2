@@ -1,0 +1,30 @@
+#!/bin/bash
+#
+# Cronjonb to check for available updates in all WordPress instances.
+# It can then notify the webmaster or automatically install
+# all pending updates and perform database migrations.
+# Optionally all plugins are updated as well.
+
+NOTIFY_ONLY={{ webserver_website_wordpress_cronjob_notify_only|ternary(1,0) }}
+UPDATE_PLUGINS={{ webserver_website_wordpress_cronjob_update_plugins|ternary(1,0) }}
+
+{% for instance in wordpress_instances %}
+{% set WP_CMD = "sudo -u " + instance.name + " wp --path=" + instance.document_root %}
+#======== {{ instance.name }} ========
+AVAILABLE_UPDATES=$({{ WP_CMD }} core check-update --format=count)
+
+if [[ $AVAILABLE_UPDATES -gt 0 ]] ; then
+    if [[ $NOTIFY_ONLY -eq 1 ]] ; then
+        echo "=== Available updates for WordPress instance '{{ instance.name }}' ==="
+    else
+        echo "=== Updating WordPress files of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} core update
+        echo "=== Updating WordPress database of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} core update-db
+    fi
+fi
+if [[ $UPDATE_PLUGINS -eq 1 ]] ; then
+    {{ WP_CMD }} plugin update --all
+fi
+
+{% endfor %}
