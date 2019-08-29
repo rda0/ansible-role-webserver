@@ -1,26 +1,3 @@
-#- name: create wordpress database
-#  mysql_db:
-#    name: "{{ instance.db.name }}"
-#    state: present
-#  delegate_to: "{{ instance.db.delegate }}"
-#
-#- name: create wordpress database user
-#  mysql_user:
-#    name: "{{ instance.db.user }}"
-#    password: "{{ instance.db.password }}"
-#    priv: "{{ instance.db.name }}.*:ALL"
-#    host: "{{ ansible_fqdn }}"
-#    state: present
-#  delegate_to: "{{ instance.db.delegate }}"
-
-#- name: create wordpress document root
-#  file:
-#    path: "{{ instance.path }}"
-#    owner: "{{ instance.user }}"
-#    group: "{{ instance.user }}"
-#    mode: 0770
-#    state: directory
-
 - name: 'wordpress {{ instance.name }} install files'
   command: >
     wp --path={{ instance.document_root }}
