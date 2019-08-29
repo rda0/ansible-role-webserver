@@ -62,19 +62,19 @@
         --title="{{ instance.website.name }}"
         --admin_user={{ instance.hoster.user }}
         --admin_password={{ instance.hoster.password }}
-        --admin_email={{ instance.hoster.email }}
+        --admin_email={{ instance.hoster.email|replace(webserver_website_wordpress_admin_email_search, webserver_website_wordpress_admin_email_replace) }}
   become: yes
   become_user: "{{ instance.name }}"
-  when: not ansible_check_mode and instance_is_installed.rc != 0
+  when: not ansible_check_mode and instance_is_installed.rc != 0 and not instance.website.migrate
 
 - name: 'wordpress {{ instance.name }} create customer admin user'
   command: >
     wp --path={{ instance.document_root }}
       user create
         {{ instance.website.user }}
-        {{ instance.website.email|replace(webserver_website_wordpress_customer_admin_email_search, webserver_website_wordpress_customer_admin_email_replace) }}
+        {{ instance.website.email }}
         --role=administrator
         --user_pass={{ instance.website.password }}
   become: yes
   become_user: "{{ instance.name }}"
-  when: not ansible_check_mode and instance_is_installed.rc != 0
+  when: not ansible_check_mode and instance_is_installed.rc != 0 and not instance.website.migrate

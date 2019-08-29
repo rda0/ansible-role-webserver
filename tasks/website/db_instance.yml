@@ -1,14 +1,22 @@
-- name: 'database {{ instance.db.name }} create instance'
+- name: 'database create instances'
   mysql_db:
-    name: "{{ instance.db.name }}"
+    name: "{{ instance.name }}"
     state: present
-  delegate_to: "{{ instance.db.delegate }}"
+  delegate_to: "{{ instance.delegate }}"
+  loop: "{{ _databases }}"
+  loop_control:
+    loop_var: instance
+    label: "{{ instance|combine({'password': 'redacted'}) }}"
 
-- name: 'database {{ instance.db.name }} create user {{ instance.db.user }}'
+- name: 'database create users'
   mysql_user:
-    name: "{{ instance.db.user }}"
-    password: "{{ instance.db.password }}"
-    priv: "{{ instance.db.name }}.*:ALL"
+    name: "{{ instance.user }}"
+    password: "{{ instance.password }}"
+    priv: "{{ instance.name }}.*:ALL"
     host: "{{ ansible_fqdn }}"
     state: present
-  delegate_to: "{{ instance.db.delegate }}"
+  delegate_to: "{{ instance.delegate }}"
+  loop: "{{ _databases }}"
+  loop_control:
+    loop_var: instance
+    label: "{{ instance|combine({'password': 'redacted'}) }}"

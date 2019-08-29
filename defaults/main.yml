@@ -155,12 +155,15 @@ webserver_fcgid_fcgi_extensions:
   - fcgi
 webserver_website_admin_name: admin
 webserver_website_admin_email: '{{ webserver_server_admin }}'
-webserver_website_wordpress_customer_admin_email_search: '@'
-webserver_website_wordpress_customer_admin_email_replace: '+wordpress@'
+webserver_website_wordpress_admin_email_search: '@'
+webserver_website_wordpress_admin_email_replace: '+wordpress@'
 webserver_website_wordpress_cli_version: '2.3.0'
 webserver_website_wordpress_cronjob_notify_only: False
 webserver_website_wordpress_cronjob_update_plugins: True
+webserver_db_delegate: phd-sqlweb
+webserver_db_host: sqlweb.phys.ethz.ch
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
 _vhosts_fcgid: []
+_vhosts_db: []
