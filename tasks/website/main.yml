@@ -12,10 +12,10 @@
     group: root
     mode: 0700
   vars:
-    wordpress_instances: "{{ _vhosts|selectattr('website', 'equalto', 'wordpress')|list }}"
+    wordpress_instances: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
 
 - name: include vhosts with wordpress
   include_tasks: wordpress.yml
-  loop: "{{ _vhosts|selectattr('website', 'equalto', 'wordpress')|list }}"
+  loop: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
   loop_control:
     loop_var: instance

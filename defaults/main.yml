@@ -62,6 +62,7 @@ webserver_webshare: False
 webserver_webshare_doc_root: /export/data1
 webserver_log_lastuse: False
 webserver_server_admin: isg@phys.ethz.ch
+webserver_hoster_name: isg
 webserver_ldap: True
 webserver_ldap_ethz: False
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/quovadis_global_ica_g2.crt
@@ -150,6 +151,10 @@ webserver_fcgid_custom_wrappers:
   - php
 webserver_fcgid_fcgi_extensions:
   - fcgi
+webserver_website_admin_name: admin
+webserver_website_admin_email: '{{ webserver_server_admin }}'
+webserver_website_wordpress_customer_admin_email_search: '@'
+webserver_website_wordpress_customer_admin_email_replace: '+wordpress@'
 webserver_website_wordpress_cli_version: '2.3.0'
 webserver_website_wordpress_cronjob_notify_only: False
 webserver_website_wordpress_cronjob_update_plugins: True
