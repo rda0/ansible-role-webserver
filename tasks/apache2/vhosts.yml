@@ -16,6 +16,7 @@
         email: "{{ (item.hoster|default({})).email|default(webserver_website_admin_email) }}"
         password: "{{ (item.hoster|default({})).password|default(item.secret|default('')) }}"
       website:
+        db: "{{ (item.website|default({})).db|default(True if (item.website|default({})).type|default('') in ['wordpress'] else False) }}"
         type: "{{ (item.website|default({})).type|default('') }}"
         name: "{{ (item.website|default({})).name|default(item.name) }}"
         user: "{{ (item.website|default({})).user|default(webserver_website_admin_name) }}"

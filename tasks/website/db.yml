@@ -1,0 +1,5 @@
+- name: include vhosts with db instance
+  include_tasks: db_instance.yml
+  loop: "{{ _vhosts|selectattr('website.db', 'equalto', True)|list }}"
+  loop_control:
+    loop_var: instance

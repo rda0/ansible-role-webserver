@@ -1,80 +1,21 @@
-- name: create wordpress database
-  mysql_db:
-    name: "{{ instance.db.name }}"
-    state: present
-  delegate_to: "{{ instance.db.delegate }}"
+- name: wordpress download wp-cli binary
+  get_url:
+    url: "https://github.com/wp-cli/wp-cli/releases/download/v{{ webserver_website_wordpress_cli_version }}/wp-cli-{{ webserver_website_wordpress_cli_version }}.phar"
+    dest: /usr/local/bin/wp
+    mode: 0755
 
-- name: create wordpress database user
-  mysql_user:
-    name: "{{ instance.db.user }}"
-    password: "{{ instance.db.password }}"
-    priv: "{{ instance.db.name }}.*:ALL"
-    host: "{{ ansible_fqdn }}"
-    state: present
-  delegate_to: "{{ instance.db.delegate }}"
+- name: wordpress deploy updater cronjob
+  template:
+    src: website/wordpress/wordpress-updater.j2
+    dest: /etc/cron.daily/wordpress-updater
+    owner: root
+    group: root
+    mode: 0700
+  vars:
+    wordpress_instances: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
 
-#- name: create wordpress document root
-#  file:
-#    path: "{{ instance.path }}"
-#    owner: "{{ instance.user }}"
-#    group: "{{ instance.user }}"
-#    mode: 0770
-#    state: directory
-
-- name: install wordpress files
-  command: >
-    wp --path={{ instance.document_root }}
-      core download
-  become: yes
-  become_user: "{{ instance.name }}"
-  args:
-    creates: "{{ instance.document_root }}/wp-content"
-
-- name: create wordpress config file
-  command: >
-    wp --path={{ instance.document_root }}
-      config create
-        --dbhost={{ instance.db.host }}
-        --dbname={{ instance.db.name }}
-        --dbuser={{ instance.db.user }}
-        --dbpass={{ instance.db.password }}
-  become: yes
-  become_user: "{{ instance.name }}"
-  args:
-    creates: "{{ instance.document_root }}/wp-config.php"
-
-- name: get wordpress installation status
-  command: >
-    wp --path={{ instance.document_root }}
-      core is-installed
-  become: yes
-  become_user: "{{ instance.name }}"
-  register: instance_is_installed
-  changed_when: False
-  failed_when: False
-
-- name: finalize wordpress installation
-  command: >
-    wp --path={{ instance.document_root }}
-      core install
-        --skip-email
-        --url={{ instance.server_name }}
-        --title="{{ instance.website.name }}"
-        --admin_user={{ instance.hoster.user }}
-        --admin_password={{ instance.hoster.password }}
-        --admin_email={{ instance.hoster.email }}
-  become: yes
-  become_user: "{{ instance.name }}"
-  when: not ansible_check_mode and instance_is_installed.rc != 0
-
-- name: create wordpress customer admin user
-  command: >
-    wp --path={{ instance.document_root }}
-      user create
-        {{ instance.website.user }}
-        {{ instance.website.email|replace(webserver_website_wordpress_customer_admin_email_search, webserver_website_wordpress_customer_admin_email_replace) }}
-        --role=administrator
-        --user_pass={{ instance.website.password }}
-  become: yes
-  become_user: "{{ instance.name }}"
-  when: not ansible_check_mode and instance_is_installed.rc != 0
+- name: include vhosts with wordpress instance
+  include_tasks: wordpress_instance.yml
+  loop: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
+  loop_control:
+    loop_var: instance

@@ -2,6 +2,8 @@ include_webserver_apache2: True
 include_webserver_letsencrypt: True
 include_webserver_phpfpm: False
 include_webserver_website: False
+include_webserver_website_db: False
+include_webserver_website_wordpress: False
 include_webserver_sites_include: False
 include_webserver_vhosts: False
 include_webserver_website_statistics: True
