@@ -24,7 +24,12 @@ if [[ $AVAILABLE_UPDATES -gt 0 ]] ; then
     fi
 fi
 if [[ $UPDATE_PLUGINS -eq 1 ]] ; then
-    {{ WP_CMD }} plugin update --all
+    DRYRUN_PLUGIN_UPDATES=$({{ WP_CMD }} plugin update --all --dry-run)
+
+    if [[ $DRYRUN_PLUGIN_UPDATES != 'No plugin updates available.' ]]; then
+        echo "=== Updating WordPress plugins of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} plugin update --all
+    fi
 fi
 
 {% endfor %}
