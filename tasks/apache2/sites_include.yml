@@ -3,3 +3,10 @@
     repo: '{{ webserver_sites_include_repo }}'
     dest: '/etc/apache2/sites-include'
     update: no
+  when: webserver_sites_include_repo != ''
+
+- name: create sites-include directory
+  file:
+    path: /etc/apache2/sites-include
+    state: directory
+  when: webserver_sites_include_repo == ''
