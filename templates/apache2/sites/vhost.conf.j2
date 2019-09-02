@@ -117,11 +117,17 @@
 {% endif %}
 {% if vhost.https.require != '' %}
 {% if vhost.https.require == 'wsgi' %}
-  <Directory {{ vhost.document_root }}/{{ vhost.https.wsgi.app|dirname }}>
-    <Files {{ vhost.https.wsgi.app|basename }}>
+  <Directory "{{ vhost.document_root }}/{{ vhost.https.wsgi.app|dirname }}">
+    <Files "{{ vhost.https.wsgi.app|basename }}">
       Require all granted
     </Files>
   </Directory>
+{% for dir in vhost.https.wsgi.static %}
+  Alias "/{{ dir }}" "{{ vhost.document_root }}/{{ vhost.https.wsgi.app|dirname }}/{{ dir }}"
+  <Directory "{{ vhost.document_root }}/{{ vhost.https.wsgi.app|dirname }}/{{ dir }}">
+    Require all granted
+  </Directory>
+{% endfor %}
 {% else %}
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
@@ -164,11 +170,9 @@
   </Directory>
 {% endif %}
 {% if vhost.https.wsgi.app != '' %}
-  <IfFile "{{ vhost.document_root }}/{{ vhost.https.wsgi.app }}">
-    WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes=2 threads=5 display-name=%{GROUP}
-    WSGIProcessGroup {{ vhost.name }}
-    WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
-  </IfFile>
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
+  WSGIProcessGroup {{ vhost.name }}
+  WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
 {% endif %}
 {% for include in vhost.https.includes %}
   Include /etc/apache2/sites-include/{{ include }}.conf

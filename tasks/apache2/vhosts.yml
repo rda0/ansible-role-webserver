@@ -44,6 +44,7 @@
         fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
         wsgi:
           app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
+          static: "{{ ((item.https|default({})).wsgi|default({})).static|default([]) }}"
           script_alias: "{{ ((item.https|default({})).wsgi|default({})).script_alias|default('/') }}"
           processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
