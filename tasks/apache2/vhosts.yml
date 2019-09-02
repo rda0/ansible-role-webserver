@@ -35,6 +35,12 @@
         includes: "{{ (item.http|default({})).includes|default([]) }}"
         require: "{{ (item.http|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid: "{{ (item.http|default({})).fcgid|default([]) }}"
+        wsgi:
+          app: "{{ ((item.http|default({})).wsgi|default({})).app|default('') }}"
+          static: "{{ ((item.http|default({})).wsgi|default({})).static|default([]) }}"
+          script_alias: "{{ ((item.http|default({})).wsgi|default({})).script_alias|default('/') }}"
+          processes: "{{ ((item.http|default({})).wsgi|default({})).processes|default(2) }}"
+          threads: "{{ ((item.http|default({})).wsgi|default({})).threads|default(5) }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"

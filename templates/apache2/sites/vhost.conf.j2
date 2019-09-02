@@ -27,9 +27,23 @@
 {% endif %}
 {% if not vhost.http.empty %}
 {% if vhost.http.require != '' %}
+{% if vhost.http.require == 'wsgi' %}
+  <Directory "{{ vhost.document_root }}/{{ vhost.http.wsgi.app|dirname }}">
+    <Files "{{ vhost.http.wsgi.app|basename }}">
+      Require all granted
+    </Files>
+  </Directory>
+{% for dir in vhost.http.wsgi.static %}
+  Alias "/{{ dir }}" "{{ vhost.document_root }}/{{ vhost.http.wsgi.app|dirname }}/{{ dir }}"
+  <Directory "{{ vhost.document_root }}/{{ vhost.http.wsgi.app|dirname }}/{{ dir }}">
+    Require all granted
+  </Directory>
+{% endfor %}
+{% else %}
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_requires[vhost.http.require]|indent(width=4)).rstrip() }}
   </Directory>
+{% endif %}
 {% endif %}
 {% else %}
   <Location />
@@ -66,6 +80,11 @@
     FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
+{% endif %}
+{% if vhost.http.wsgi.app != '' %}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
+  WSGIProcessGroup {{ vhost.name }}
+  WSGIScriptAlias {{ vhost.http.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.http.wsgi.app }}
 {% endif %}
 {% endif %}
 {% for include in vhost.http.includes %}
