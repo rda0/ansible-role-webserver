@@ -33,15 +33,20 @@
         empty: "{{ (item.http|default({})).empty|default(True) }}"
         redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
         includes: "{{ (item.http|default({})).includes|default([]) }}"
-        require: "{{ (item.http|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.http|default({})).require|default('require_all_granted') }}"
-        fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
+        require: "{{ (item.http|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
+        fcgid: "{{ (item.http|default({})).fcgid|default([]) }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
         redirect: "{{ (item.https|default({})).redirect|default('' if item.server_alias|default('') == '' else ['https', item.server_name]|join(' ')) }}"
         includes: "{{ (item.https|default({})).includes|default([]) }}"
-        require: "{{ (item.https|default({})).require|default('grant_share_all') if item.type|default('server') == 'share' else (item.https|default({})).require|default('require_all_granted') }}"
+        require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
+        wsgi:
+          app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
+          script_alias: "{{ ((item.https|default({})).wsgi|default({})).script_alias|default('/') }}"
+          processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
+          threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
   loop: '{{ webserver_vhosts }}'
 
 #- name: debug _vhosts

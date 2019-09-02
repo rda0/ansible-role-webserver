@@ -116,9 +116,17 @@
   </Directory>
 {% endif %}
 {% if vhost.https.require != '' %}
+{% if vhost.https.require == 'wsgi' %}
+  <Directory {{ vhost.document_root }}/{{ vhost.https.wsgi.app|dirname }}>
+    <Files {{ vhost.https.wsgi.app|basename }}>
+      Require all granted
+    </Files>
+  </Directory>
+{% else %}
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
   </Directory>
+{% endif %}
 {% endif %}
 {% else %}
   <Location />
@@ -154,6 +162,13 @@
     FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
+{% endif %}
+{% if vhost.https.wsgi.app != '' %}
+  <IfFile "{{ vhost.document_root }}/{{ vhost.https.wsgi.app }}">
+    WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes=2 threads=5 display-name=%{GROUP}
+    WSGIProcessGroup {{ vhost.name }}
+    WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
+  </IfFile>
 {% endif %}
 {% for include in vhost.https.includes %}
   Include /etc/apache2/sites-include/{{ include }}.conf
