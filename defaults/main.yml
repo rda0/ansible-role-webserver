@@ -85,6 +85,8 @@ webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
 webserver_site_config_common_requires:
   require_all_granted: |
     Require all granted
+  require_all_denied: |
+    Require all denied
   require_phys_ldap_group_isg: |
     Use PhysLDAP
     Use RequirePhysLDAPGroup isg
