@@ -1,6 +1,7 @@
 {% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
 {{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
 {% endfor %}
+{% if _vhosts|selectattr('type', 'equalto', 'share')|list %}
 {
 	weekly
 	missingok
@@ -12,6 +13,7 @@
 	sharedscripts
 }
 
+{% endif %}
 /var/log/apache2/sites/*.log
 {
 	weekly
