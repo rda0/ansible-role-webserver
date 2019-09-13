@@ -88,7 +88,7 @@
 {% endif %}
 {% endif %}
 {% for include in vhost.http.includes %}
-  Include /etc/apache2/sites-include/{{ include }}.conf
+  IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
 {% endfor %}
 </VirtualHost>
 
@@ -194,7 +194,7 @@
   WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
 {% endif %}
 {% for include in vhost.https.includes %}
-  Include /etc/apache2/sites-include/{{ include }}.conf
+  IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
 {% endfor %}
 </VirtualHost>
 
