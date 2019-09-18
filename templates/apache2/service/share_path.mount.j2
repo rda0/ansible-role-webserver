@@ -1,0 +1,13 @@
+[Unit]
+Description=Bindmount {{ vhost.name }}
+DefaultDependencies=no
+Conflicts=umount.target
+Before=local-fs.target umount.target
+
+[Mount]
+What={{ vhost.data_path }}/{{ vhost.name }}
+Where={{ vhost.home_path }}/{{ vhost.name }}
+Options=bind
+
+[Install]
+WantedBy=local-fs.target
