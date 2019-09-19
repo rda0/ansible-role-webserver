@@ -87,6 +87,17 @@
 #    loop_var: vhost
 #    label: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
 
+- name: deploy /etc/auto.home
+  template:
+    src: "apache2/service/auto.home.j2"
+    dest: "/etc/auto.home"
+  notify: restart autofs
+  vars:
+    vhosts: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+
+- name: flush handlers
+  meta: flush_handlers
+
 - name: set fact _phpfpm_pool_names
   set_fact:
     _phpfpm_pool_names: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"

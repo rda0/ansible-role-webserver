@@ -1,0 +1,3 @@
+{% for vhost in vhosts %}
+{{ vhost.name }} :{{ vhost.data_path }}/{{ vhost.name }}
+{% endfor %}
