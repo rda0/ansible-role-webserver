@@ -67,25 +67,25 @@
   loop_control:
     loop_var: vhost
 
-- name: deploy systemd mount units for share bindmounts
-  template:
-    src: "apache2/service/share_path.mount.j2"
-    dest: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
-  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
-  loop_control:
-    loop_var: vhost
-    label: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
-
-- name: enable and start systemd mount units for share bindmounts
-  systemd:
-    daemon_reload: yes
-    enabled: yes
-    state: started
-    name: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
-  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
-  loop_control:
-    loop_var: vhost
-    label: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#- name: deploy systemd mount units for share bindmounts
+#  template:
+#    src: "apache2/service/share_path.mount.j2"
+#    dest: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+#  loop_control:
+#    loop_var: vhost
+#    label: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#
+#- name: enable and start systemd mount units for share bindmounts
+#  systemd:
+#    daemon_reload: yes
+#    enabled: yes
+#    state: started
+#    name: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+#  loop_control:
+#    loop_var: vhost
+#    label: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
 
 - name: set fact _phpfpm_pool_names
   set_fact:
