@@ -56,6 +56,8 @@
           processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
   loop: '{{ webserver_vhosts }}'
+  loop_control:
+    label: "{{ item.name }}"
 
 #- name: debug _vhosts
 #  debug:
@@ -116,6 +118,7 @@
   loop: '{{ _vhosts }}'
   loop_control:
     loop_var: vhost
+    label: "{{ vhost.name }}"
 
 - name: set fact _vhosts_fcgid
   set_fact:
@@ -126,6 +129,8 @@
       data_path: '{{ item.data_path }}'
       fcgid: '{{ item.https.fcgid }}'
   loop: "{{ _vhosts|selectattr('https.fcgid')|list }}"
+  loop_control:
+    label: "{{ item.name }}"
 
 #- name: debug _vhosts_fcgid
 #  debug:
@@ -146,3 +151,4 @@
   loop: '{{ _vhosts }}'
   loop_control:
     loop_var: vhost
+    label: "{{ vhost.name }}"
