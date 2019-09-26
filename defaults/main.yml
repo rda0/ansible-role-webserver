@@ -151,8 +151,8 @@ webserver_vhost_data_path:
   redirect: /var/www
   share: /export/data1
 webserver_vhost_home_path:
-  server: /home
-  redirect: /home
+  server: /var/www
+  redirect: /var/www
   share: /home
 webserver_vhosts: []
 webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap

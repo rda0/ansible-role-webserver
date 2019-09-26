@@ -13,8 +13,8 @@
 {% endif %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
-  ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/http_error.log
-  CustomLog {{ vhost.data_path }}/{{ vhost.name }}/logs/http_access.log combined env=!dontlog
+  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_error.log
+  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_access.log combined env=!dontlog
 {% elif vhost.type == 'redirect' %}
   ErrorLog ${APACHE_LOG_DIR}/sites/redirect_http_error.log
   CustomLog ${APACHE_LOG_DIR}/sites/redirect_http_access.log vhost_combined env=!dontlog
@@ -77,7 +77,7 @@
     AddHandler fcgid-script .{{ ext }}
 {% endfor %}
 {% for ext in vhost.http.fcgid if ext not in webserver_fcgid_fcgi_extensions %}
-    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
+    FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
 {% endif %}
@@ -112,8 +112,8 @@
 {% endif %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
-  ErrorLog {{ vhost.data_path }}/{{ vhost.name }}/logs/https_error.log
-  CustomLog {{ vhost.data_path }}/{{ vhost.name }}/logs/https_access.log combined env=!dontlog
+  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_error.log
+  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_access.log combined env=!dontlog
 {% elif vhost.type == 'redirect' %}
   ErrorLog ${APACHE_LOG_DIR}/sites/redirect_https_error.log
   CustomLog ${APACHE_LOG_DIR}/sites/redirect_https_access.log vhost_combined env=!dontlog
@@ -126,8 +126,8 @@
 {% endif %}
 {% if not vhost.https.empty %}
 {% if vhost.type == 'share' %}
-  Alias /website-statistics {{ vhost.data_path }}/{{ vhost.name }}/stats
-  <Directory {{ vhost.data_path }}/{{ vhost.name }}/stats>
+  Alias /website-statistics {{ vhost.home_path }}/{{ vhost.name }}/stats
+  <Directory {{ vhost.home_path }}/{{ vhost.name }}/stats>
     Use PhysLDAP
     Use RequirePhysLDAPGroup isg
     Use RequirePhysLDAPGroup {{ vhost.name }}
@@ -184,7 +184,7 @@
     AddHandler fcgid-script .{{ ext }}
 {% endfor %}
 {% for ext in vhost.https.fcgid if ext not in webserver_fcgid_fcgi_extensions %}
-    FcgidWrapper {{ vhost.data_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
+    FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
 {% endif %}
