@@ -60,8 +60,6 @@ webserver_https_certificate_ecdsa: True
 webserver_https_fail_if_certificate_missing: False
 webserver_doc_root: /var/www
 webserver_empty_doc_root: /var/www/empty
-webserver_webshare: False
-webserver_webshare_doc_root: /export/data1
 webserver_log_lastuse: False
 webserver_server_admin: isg@phys.ethz.ch
 webserver_hoster_name: isg
