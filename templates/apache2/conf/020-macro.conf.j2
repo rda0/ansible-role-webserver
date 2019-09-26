@@ -93,17 +93,6 @@
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
 </Macro>
-{% if webserver_webshare %}
-
-<Macro ShareLog $name $protocol>
-  LogLevel {{ websserver_log_level }}
-  ErrorLog ${webshare_doc_root}/$name/logs/$protocol_error.log
-  CustomLog ${webshare_doc_root}/$name/logs/$protocol_access.log combined env=!dontlog
-{% if webserver_log_lastuse %}
-  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
-{% endif %}
-</Macro>
-{% endif %}
 
 <Macro NoVHost404 $server_name>
     SetEnvIfExpr "tolower(req('Host')) == '$server_name'" server_name_match
@@ -137,60 +126,6 @@
     Require all granted
   </Directory>
 </Macro>
-{% if webserver_webshare %}
-
-<Macro GrantShareAll $name>
-  <Directory "${webshare_doc_root}/$name/public">
-    Require all granted
-    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
-    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
-    Options Multiviews Indexes SymLinksIfOwnerMatch
-  </Directory>
-  #<Directory "${webshare_doc_root}/$name/cgi-bin">
-  #  Require all granted
-  #  AllowOverride None
-  #  Options ExecCGI
-  #</Directory>
-</Macro>
-
-<Macro GrantSharePhysLDAP $name>
-  <Directory "${webshare_doc_root}/$name/public">
-    Use PhysLDAP
-    Require valid-user
-    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
-    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
-    Options Multiviews Indexes SymLinksIfOwnerMatch
-  </Directory>
-  #<Directory "${webshare_doc_root}/$name/cgi-bin">
-  #  Use PhysLDAP
-  #  Require valid-user
-  #  AllowOverride None
-  #  Options ExecCGI
-  #</Directory>
-</Macro>
-
-<Macro GrantSharePhysLDAPOrNetCAN $name>
-  <Directory "${webshare_doc_root}/$name/public">
-    Use PhysLDAP
-    <RequireAny>
-      Require valid-user
-      Use RequireNetCAN
-    </RequireAny>
-    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
-    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
-    Options Multiviews Indexes SymLinksIfOwnerMatch
-  </Directory>
-  #<Directory "${webshare_doc_root}/$name/cgi-bin">
-  #  Use PhysLDAP
-  #  <RequireAny>
-  #    Require valid-user
-  #    Use RequireNetCAN
-  #  </RequireAny>
-  #  AllowOverride None
-  #  Options ExecCGI
-  #</Directory>
-</Macro>
-{% endif %}
 
 ### Server configurations
 
@@ -236,49 +171,3 @@
 <Macro ServerEmptyRedirect $name $protocol $domain>
   Use ServerEmptyRedirectCustom $name $protocol $domain https $domain
 </Macro>
-{% if webserver_webshare %}
-
-### Share (for webshares "wwwshare")
-
-<Macro ShareCustom $name $protocol $domain $dir>
-  ServerName $domain
-  DocumentRoot "$dir"
-  Use ShareLog $name $protocol
-</Macro>
-
-<Macro Share $name $protocol $domain>
-  Use ShareCustom $name $protocol $domain ${webshare_doc_root}/$name/public
-</Macro>
-
-<Macro ShareRedirect $name $protocol $domain>
-  Use Share $name $protocol $domain
-  Use RedirectTo https $domain
-</Macro>
-
-<Macro ShareGrant $name $protocol $domain>
-  Use Share $name $protocol $domain
-  Use GrantShareAll $name
-</Macro>
-
-<Macro ShareRedirectGrant $name $protocol $domain>
-  Use ShareRedirect $name $protocol $domain
-  Use GrantShareAll $name
-</Macro>
-
-### ShareEmpty (for redirect only)
-
-<Macro ShareEmptyRedirectCustom $name $protocol $domain $redirect_protocol $redirect_domain>
-  ServerName $domain
-  DocumentRoot "${empty_doc_root}"
-  Use ShareLog $name $protocol
-  <Location />
-    Require all granted
-  </Location>
-  Use RedirectTo $redirect_protocol $redirect_domain
-</Macro>
-
-<Macro ShareEmptyRedirect $name $protocol $domain>
-  Use ShareEmptyRedirectCustom $name $protocol $domain https $domain
-</Macro>
-
-{% endif %}
