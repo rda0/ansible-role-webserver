@@ -65,19 +65,6 @@
     - global
     - sites
 
-#- name: deploy envvars
-#  blockinfile:
-#    path: /etc/apache2/envvars
-#    block: '{{ webserver_envvars }}'
-#  notify: restart apache2
-#
-#- name: deploy envvar webshare
-#  lineinfile:
-#    path: /etc/apache2/envvars
-#    line: '{{ webserver_webshare_doc_root }}'
-#  notify: restart apache2
-#  when: webserver_webshare
-
 - name: deploy /etc/ssl/certs/id_bd+quovadis.pem
   copy:
     src: apache2/id_bd+quovadis.pem
