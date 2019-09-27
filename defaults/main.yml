@@ -123,6 +123,24 @@ webserver_site_config_common_requires:
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
     AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
     Options Multiviews Indexes SymLinksIfOwnerMatch
+webserver_site_config_common_wordpress:
+  rewrite: |
+    <IfModule rewrite_module>
+      RewriteEngine On
+      RewriteBase /
+      RewriteRule ^index\.php$ - [L]
+      RewriteCond %{REQUEST_FILENAME} !-f
+      RewriteCond %{REQUEST_FILENAME} !-d
+      RewriteRule . /index.php [L]
+    </IfModule>
+  akismet: |
+    Require all denied
+    <FilesMatch "^(form\.js|akismet\.js|akismet\.css)$">
+      Require all granted
+    </FilesMatch>
+    <FilesMatch "^logo-full-2x\.png$">
+      Require all granted
+    </FilesMatch>
 webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_phys_ldap_group_isg }}"
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ ansible_hostname }}'

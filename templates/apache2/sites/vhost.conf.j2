@@ -86,6 +86,14 @@
   WSGIProcessGroup {{ vhost.name }}
   WSGIScriptAlias {{ vhost.http.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.http.wsgi.app }}
 {% endif %}
+{% if vhost.website.type == 'wordpress' %}
+  <Directory {{ vhost.document_root }}>
+    {{ (webserver_site_config_common_wordpress['rewrite']|indent(width=4)).rstrip() }}
+  </Directory>
+  <Directory {{ vhost.document_root }}wp-content/plugins/akismet>
+    {{ (webserver_site_config_common_wordpress['akismet']|indent(width=4)).rstrip() }}
+  </Directory>
+{% endif %}
 {% endif %}
 {% for include in vhost.http.includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
@@ -158,6 +166,7 @@
     Require all granted
   </Location>
 {% endif %}
+{% if not vhost.https.empty %}
 {% if vhost.name in phpfpm_pool_names %}
   DirectoryIndex index.php index.html
   # Enable http authorization headers
@@ -192,6 +201,15 @@
   WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
   WSGIProcessGroup {{ vhost.name }}
   WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
+{% endif %}
+{% if vhost.website.type == 'wordpress' %}
+  <Directory {{ vhost.document_root }}>
+    {{ (webserver_site_config_common_wordpress['rewrite']|indent(width=4)).rstrip() }}
+  </Directory>
+  <Directory {{ vhost.document_root }}/wp-content/plugins/akismet>
+    {{ (webserver_site_config_common_wordpress['akismet']|indent(width=4)).rstrip() }}
+  </Directory>
+{% endif %}
 {% endif %}
 {% for include in vhost.https.includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
