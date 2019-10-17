@@ -185,6 +185,8 @@ webserver_website_wordpress_admin_email_replace: '+wordpress@'
 webserver_website_wordpress_cli_version: '2.3.0'
 webserver_website_wordpress_cronjob_notify_only: False
 webserver_website_wordpress_cronjob_update_plugins: True
+webserver_website_wordpress_cronjob_update_themes: True
+webserver_website_wordpress_cronjob_update_languages: True
 webserver_db_delegate: phd-sqlweb
 webserver_db_host: sqlweb.phys.ethz.ch
 

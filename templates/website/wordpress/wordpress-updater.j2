@@ -7,6 +7,8 @@
 
 NOTIFY_ONLY={{ webserver_website_wordpress_cronjob_notify_only|ternary(1,0) }}
 UPDATE_PLUGINS={{ webserver_website_wordpress_cronjob_update_plugins|ternary(1,0) }}
+UPDATE_THEMES={{ webserver_website_wordpress_cronjob_update_themes|ternary(1,0) }}
+UPDATE_LANGUAGES={{ webserver_website_wordpress_cronjob_update_languages|ternary(1,0) }}
 
 {% for instance in wordpress_instances %}
 {% set WP_CMD = "sudo -u " + instance.name + " wp --path=" + instance.document_root %}
@@ -29,6 +31,32 @@ if [[ $UPDATE_PLUGINS -eq 1 ]] ; then
     if [[ $DRYRUN_PLUGIN_UPDATES != 'No plugin updates available.' ]]; then
         echo "=== Updating WordPress plugins of instance '{{ instance.name }}' ==="
         {{ WP_CMD }} plugin update --all
+    fi
+fi
+if [[ $UPDATE_THEMES -eq 1 ]] ; then
+    DRYRUN_THEME_UPDATES=$({{ WP_CMD }} theme update --all --dry-run)
+
+    if [[ $DRYRUN_THEME_UPDATES != 'No theme updates available.' ]]; then
+        echo "=== Updating WordPress themes of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} theme update --all
+    fi
+fi
+if [[ $UPDATE_LANGUAGES -eq 1 ]] ; then
+    DRYRUN_LANGUAGE_CORE_UPDATES=$({{ WP_CMD }} language core update --dry-run)
+    DRYRUN_LANGUAGE_PLUGIN_UPDATES=$({{ WP_CMD }} language plugin update --all --dry-run)
+    DRYRUN_LANGUAGE_THEME_UPDATES=$({{ WP_CMD }} language theme update --all --dry-run)
+
+    if [[ $DRYRUN_LANGUAGE_CORE_UPDATES != 'Success: Translations are up to date.' ]]; then
+        echo "=== Updating WordPress core language of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} language core update
+    fi
+    if [[ $DRYRUN_LANGUAGE_PLUGIN_UPDATES != 'Success: Translations are up to date.' ]]; then
+        echo "=== Updating WordPress plugins languages of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} language plugin update --all
+    fi
+    if [[ $DRYRUN_LANGUAGE_THEME_UPDATES != 'Success: Translations are up to date.' ]]; then
+        echo "=== Updating WordPress themes languages of instance '{{ instance.name }}' ==="
+        {{ WP_CMD }} language theme update --all
     fi
 fi
 
