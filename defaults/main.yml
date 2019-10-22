@@ -173,6 +173,8 @@ webserver_vhost_home_path:
   redirect: /var/www
   share: /home
 webserver_vhosts: []
+webserver_fcgid_conf_connect_timout: 20
+webserver_fcgid_conf_max_request_len: 10485760
 webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap
 webserver_fcgid_custom_wrappers:
   - php

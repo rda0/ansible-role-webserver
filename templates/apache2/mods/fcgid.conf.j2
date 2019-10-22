@@ -1,0 +1,8 @@
+<IfModule mod_fcgid.c>
+  FcgidConnectTimeout {{ webserver_fcgid_conf_connect_timout }}
+  FcgidMaxRequestLen {{ webserver_fcgid_conf_max_request_len }}
+
+  <IfModule mod_mime.c>
+    AddHandler fcgid-script .fcgi
+  </IfModule>
+</IfModule>
