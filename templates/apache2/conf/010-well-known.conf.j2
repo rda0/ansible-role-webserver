@@ -1,19 +1,19 @@
 <IfModule proxy_module>
-  ProxyPass /.well-known !
+  ProxyPass /.well-known/acme-challenge !
 </IfModule>
 
 Define well_known_enabled On
 Define well_known_root "/var/www/html"
 
-Alias /.well-known/ "${well_known_root}/.well-known/"
+Alias /.well-known/acme-challenge/ "${well_known_root}/.well-known/acme-challenge/"
 
-<Directory "${well_known_root}/.well-known">
+<Directory "${well_known_root}/.well-known/acme-challenge">
   Options None
   AllowOverride None
   Require all granted
 </Directory>
 
-<Location /.well-known>
+<Location /.well-known/acme-challenge>
   Options None
   Require all granted
 </Location>
