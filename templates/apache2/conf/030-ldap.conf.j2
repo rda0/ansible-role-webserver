@@ -12,7 +12,7 @@
         AuthType Basic
         AuthName "ETH D-PHYS Account"
         AuthBasicProvider ldap
-        AuthLDAPURL "ldap://ldap3.phys.ethz.ch ldap2.phys.ethz.ch ldap1.phys.ethz.ch/dc=phys,dc=ethz,dc=ch?uid?sub" TLS
+        AuthLDAPURL "ldap://ldap3.phys.ethz.ch ldap2.phys.ethz.ch ldap1.phys.ethz.ch/ou=people,dc=phys,dc=ethz,dc=ch?uid?one?(&(objectClass=dphysUser)(!(blocked=yes)))" TLS
         AuthLDAPGroupAttribute memberUid
         AuthLDAPGroupAttributeIsDN off
     </Macro>
