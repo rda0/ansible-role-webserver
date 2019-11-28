@@ -10,6 +10,11 @@
       server_admin: "{{ item.server_admin|default(webserver_server_admin) }}"
       data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
       home_path: "{{ item.home_path|default(webserver_vhost_home_path[item.type|default('server')]) }}"
+      home_user_owned: "{{ item.home_user_owned|default(False) }}"
+      home_perms:
+        owner: "{{ (item.home_perms|default({})).owner|default(item.name if item.home_user_owned|default(False) else 'www-data') }}"
+        group: "{{ (item.home_perms|default({})).group|default('www-data' if item.home_user_owned|default(False) else item.name) }}"
+        mode: "{{ (item.home_perms|default({})).mode|default('0510' if item.home_user_owned|default(False) else '0150') }}"
       document_root: "{{ item.document_root|default([item.home_path|default(webserver_vhost_home_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
       secret: "{{ item.secret|default('') }}"
       hoster:

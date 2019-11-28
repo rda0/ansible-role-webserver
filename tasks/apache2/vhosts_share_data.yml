@@ -7,8 +7,9 @@
     state: directory
   loop:
     - path: '{{ vhost.name }}'
-      owner: www-data
-      mode: '0150'
+      owner: '{{ vhost.home_perms.owner }}'
+      group: '{{ vhost.home_perms.group }}'
+      mode: '{{ vhost.home_perms.mode }}'
     - path: '{{ vhost.name }}/logs'
       owner: root
       mode: '0750'
