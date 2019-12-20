@@ -10,8 +10,27 @@ UPDATE_PLUGINS={{ webserver_website_wordpress_cronjob_update_plugins|ternary(1,0
 UPDATE_THEMES={{ webserver_website_wordpress_cronjob_update_themes|ternary(1,0) }}
 UPDATE_LANGUAGES={{ webserver_website_wordpress_cronjob_update_languages|ternary(1,0) }}
 
+# Keep track of original STDOUT as stream 3, then redirect STDOUT and STDERR to log file
+exec 3>&1 1>> /var/log/wordpress-updater/wordpress-updater.log 2>&1
+
+# Add separator line with current date to log
+echo "-------------------------------------------------------------"
+echo "Starting wordpress-updater on `date +'%Y-%m-%dT%H:%M:%S'`"
+
+log_failure()
+{
+    # The passed argument is the command to be executed
+    CMD=$1
+    $CMD
+    # Parse return-code
+    RC=$?
+    if [[ $RC -ne 0 ]] ; then
+        echo "ERROR the following command returned a non-zero code: '$CMD'" >&3
+    fi
+}
+
 {% for instance in wordpress_instances %}
-{% set WP_CMD = "sudo -u " + instance.name + " wp --path=" + instance.document_root %}
+{% set WP_CMD = "sudo -u " + instance.name + " HOME=" + instance.home_path + "/private wp --path=" + instance.document_root %}
 #======== {{ instance.name }} ========
 AVAILABLE_UPDATES=$({{ WP_CMD }} core check-update --format=count)
 
@@ -20,9 +39,9 @@ if [[ $AVAILABLE_UPDATES -gt 0 ]] ; then
         echo "=== Available updates for WordPress instance '{{ instance.name }}' ==="
     else
         echo "=== Updating WordPress files of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} core update
+        log_failure {{ WP_CMD }} core update
         echo "=== Updating WordPress database of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} core update-db
+        log_failure {{ WP_CMD }} core update-db
     fi
 fi
 if [[ $UPDATE_PLUGINS -eq 1 ]] ; then
@@ -30,7 +49,7 @@ if [[ $UPDATE_PLUGINS -eq 1 ]] ; then
 
     if [[ $DRYRUN_PLUGIN_UPDATES != 'No plugin updates available.' ]]; then
         echo "=== Updating WordPress plugins of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} plugin update --all
+        log_failure {{ WP_CMD }} plugin update --all
     fi
 fi
 if [[ $UPDATE_THEMES -eq 1 ]] ; then
@@ -38,7 +57,7 @@ if [[ $UPDATE_THEMES -eq 1 ]] ; then
 
     if [[ $DRYRUN_THEME_UPDATES != 'No theme updates available.' ]]; then
         echo "=== Updating WordPress themes of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} theme update --all
+        log_failure {{ WP_CMD }} theme update --all
     fi
 fi
 if [[ $UPDATE_LANGUAGES -eq 1 ]] ; then
@@ -48,16 +67,19 @@ if [[ $UPDATE_LANGUAGES -eq 1 ]] ; then
 
     if [[ $DRYRUN_LANGUAGE_CORE_UPDATES != 'Success: Translations are up to date.' ]]; then
         echo "=== Updating WordPress core language of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} language core update
+        log_failure {{ WP_CMD }} language core update
     fi
     if [[ $DRYRUN_LANGUAGE_PLUGIN_UPDATES != 'Success: Translations are up to date.' ]]; then
         echo "=== Updating WordPress plugins languages of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} language plugin update --all
+        log_failure {{ WP_CMD }} language plugin update --all
     fi
     if [[ $DRYRUN_LANGUAGE_THEME_UPDATES != 'Success: Translations are up to date.' ]]; then
         echo "=== Updating WordPress themes languages of instance '{{ instance.name }}' ==="
-        {{ WP_CMD }} language theme update --all
+        log_failure {{ WP_CMD }} language theme update --all
     fi
 fi
 
 {% endfor %}
+
+echo "Stopping wordpress-updater on `date +'%Y-%m-%dT%H:%M:%S'`"
+echo "-------------------------------------------------------------"

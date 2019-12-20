@@ -4,6 +4,18 @@
     dest: /usr/local/bin/wp
     mode: 0755
 
+- name: ensure wordpress-updater log folder exists
+  file:
+    path: /var/log/wordpress-updater
+    state: directory
+    owner: root
+    group: adm
+
+- name: deploy wordpress-updater logrotate config
+  template:
+    src: website/wordpress/logrotate-wordpress-updater.j2
+    dest: /etc/logrotate.d/wordpress-updater
+
 - name: wordpress deploy updater cronjob
   template:
     src: website/wordpress/wordpress-updater.j2
