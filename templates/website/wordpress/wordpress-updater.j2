@@ -30,7 +30,7 @@ log_failure()
 }
 
 {% for instance in wordpress_instances %}
-{% set WP_CMD = "sudo -u " + instance.name + " HOME=" + instance.home_path + "/private wp --path=" + instance.document_root %}
+{% set WP_CMD = "sudo -u " + instance.name + " HOME=" + instance.home_path + "/" + instance.name + "/private wp --path=" + instance.document_root %}
 #======== {{ instance.name }} ========
 AVAILABLE_UPDATES=$({{ WP_CMD }} core check-update --format=count)
 
