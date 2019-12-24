@@ -20,7 +20,7 @@ echo "Starting wordpress-updater on `date +'%Y-%m-%dT%H:%M:%S'`"
 log_failure()
 {
     # The passed argument is the command to be executed
-    CMD=$1
+    CMD=$@
     $CMD
     # Parse return-code
     RC=$?
