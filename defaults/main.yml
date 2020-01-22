@@ -51,7 +51,7 @@ webserver_https_ssl_protocol: '-all +TLSv1.3 +TLSv1.2'
 webserver_https_ssl_cipher_suite:
   tlsv1_3: "{{ webserver_tls_cipher_specs['tlsv1_3'][webserver_tls_cipher_order['tlsv1_3']] }}"
   tlsv1_2: "{{ webserver_tls_cipher_specs['tlsv1_2'][webserver_tls_v1_2_cipher_spec][webserver_tls_cipher_order['tlsv1_2']] }}"
-webserver_https_curves: X25519:secp521r1:secp384r1
+webserver_https_curves: X25519:secp521r1:secp384r1:prime256v1
 webserver_https_dh_params_custom: False
 webserver_https_dh_params_size: 4096
 webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
