@@ -50,4 +50,4 @@
     chdir: '{{ webserver_letsencrypt_path }}'
   when: webserver_letsencrypt_hosts_file.changed
   tags: webserver_letsencrypt_make_certificate
-  notify: reload apache2
+  notify: 'reload {{ webserver_tls_terminator }}'

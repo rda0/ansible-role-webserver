@@ -1,0 +1,89 @@
+- name: flush handlers
+  meta: flush_handlers
+
+- name: install nginx
+  package:
+    pkg:
+      - nginx
+
+- name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
+  command: 'openssl dhparam -out /etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem {{ webserver_https_dh_params_size }}'
+  args:
+    creates: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+  notify: restart nginx
+  when: webserver_https_dh_params_custom
+
+- name: set custom dh params permissions
+  file:
+    path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
+    owner: root
+    group: ssl-cert
+    mode: '0640'
+  when: webserver_https_dh_params_custom
+
+- name: create directories in /var/www
+  file:
+    path: '/var/www/{{ item }}'
+    state: directory
+  loop:
+    - empty
+    - default
+
+- name: create directories in /var/log/nginx
+  file:
+    path: '/var/log/nginx/{{ item }}'
+    state: directory
+  loop:
+    - global
+    - sites
+
+#- name: deploy main server config
+#  template:
+#    src: 'nginx/conf/{{ item }}.conf.j2'
+#    dest: '/etc/nginx/{{ item }}.conf'
+#  notify: restart nginx
+#  loop:
+#    - nginx
+
+- name: deploy default site content
+  template:
+    src: 'apache2/sites/default.index.html.j2'
+    dest: '/var/www/default/index.html'
+  when: webserver_site_deploy_default
+
+- name: cleanup default config
+  file:
+    dest: '/etc/nginx/sites-{{ item }}/default'
+    state: absent
+  loop:
+    - enabled
+    - available
+
+- name: deploy sites-available config - 000-default
+  template:
+    src: 'nginx/sites/000-default.conf.j2'
+    dest: '/etc/nginx/sites-available/000-default.conf'
+  notify: reload nginx
+  when: webserver_site_enable_default
+
+- name: enable sites-enabled config - 000-default
+  file:
+    src: '../sites-available/000-default.conf'
+    dest: '/etc/nginx/sites-enabled/000-default.conf'
+    state: link
+  notify: reload nginx
+  when: webserver_site_enable_default
+
+#- name: deploy nginx logrotate conf
+#  template:
+#    src: nginx/log/nginx.logrotate.j2
+#    dest: /etc/logrotate.d/nginx
+#
+#- name: remove obsolete log files
+#  file:
+#    path: /var/log/nginx/other_vhosts_access.log
+#    state: absent
+#
+#- name: include website statistics
+#  include_tasks: website_statistics.yml
+#  when: include_webserver_website_statistics
