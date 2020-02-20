@@ -10,6 +10,14 @@
 
   - block:
 
+    - name: include nginx
+      include_tasks: nginx/main.yml
+      when: include_webserver_nginx
+
+    tags: webserver_nginx
+
+  - block:
+
     - name: include letsencrypt
       include_tasks: letsencrypt/main.yml
       when: include_webserver_letsencrypt

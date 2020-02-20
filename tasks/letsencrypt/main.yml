@@ -29,7 +29,7 @@
     accept_hostkey: true
     update: no
     version: '{{ webserver_letsencrypt_branch }}'
-  notify: restart apache2
+  notify: 'restart {{ webserver_tls_terminator }}'
   register: webserver_letsencrypt_clone
   when: not webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_clone_repo
@@ -40,7 +40,7 @@
     {{ webserver_letsencrypt_restore_from_backup_path }} {{ webserver_letsencrypt_path }}/
   args:
     creates: '{{ webserver_letsencrypt_path }}/.git'
-  notify: restart apache2
+  notify: 'restart {{ webserver_tls_terminator }}'
   when: webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_restore_from_backup
 

@@ -11,6 +11,17 @@ The two most important Ansible files to understand are:
 - `roles-servers/webserver/defaults/main.yml`
 - `roles-servers/webserver/tasks/apache2/vhosts.yml`
 
+nginx
+-----
+
+To deploy `nginx` instead of `apache2`, add the following in the inventory:
+
+```yaml
+include_webserver_apache2: False
+include_webserver_nginx: True
+webserver_tls_terminator: nginx
+```
+
 VHost deployment
 ----------------
 
