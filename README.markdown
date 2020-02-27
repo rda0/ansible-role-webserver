@@ -48,3 +48,51 @@ fifo2syslog
 -----------
 
 The systemd service file `/etc/systemd/system/fifo2syslog.service` starts `fifo2syslog`, which in turn starts `apache_syslog_auth`. Note that apache will hang at start if the `/var/log/apache2/lastuse.fifo` is missing or the `fifo2syslog` service not running.
+
+Migration
+---------
+
+To migrate a host to this role, these instructions could be helpful:
+
+### 1. letsencrypt
+
+```bash
+cd /etc/apache2/conf-available
+unlink 010-well-known.conf
+scp phd-apache:/etc/apache2/conf-available/010-well-known.conf
+```
+
+Check where the certs are included:
+
+```bash
+grep -Ri SSLCertificate /etc/apache2
+```
+
+Change all to:
+
+```
+SSLCertificateFile      /opt/letsencrypt/le0.rsa.crt
+SSLCertificateKeyFile   /opt/letsencrypt/le0.rsa.key
+```
+
+Prepare ansible inventory:
+
+```yaml
+include_webserver_apache2: False
+webserver_letsencrypt_aliases:
+  - domains:
+      - '{{ ansible_fqdn }}'
+      - service.phys.ethz.ch
+      - ...
+```
+
+Make some cleanup:
+
+```bash
+cd /opt
+mv letsencrypt letsencrypt_bak
+apt purge acme-tiny
+userdel letsencrypt
+```
+
+Push the `webserver` role. Cleanup `letsencrypt_bak`.
