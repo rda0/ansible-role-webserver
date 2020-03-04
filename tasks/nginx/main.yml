@@ -45,6 +45,20 @@
 #  loop:
 #    - nginx
 
+- name: deploy openssl config
+  template:
+    src: 'openssl/openssl.cnf.j2'
+    dest: '/etc/ssl/openssl.cnf'
+  notify: restart nginx
+
+- name: deploy config snippets
+  template:
+    src: 'nginx/conf/{{ item }}.conf.j2'
+    dest: '/etc/nginx/snippets/{{ item }}.conf'
+  notify: restart nginx
+  loop:
+    - https
+
 - name: deploy default site content
   template:
     src: 'apache2/sites/default.index.html.j2'
