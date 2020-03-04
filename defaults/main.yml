@@ -31,8 +31,8 @@ webserver_tls_terminator: apache2
 webserver_tls_enable_insecure_compatibility: False
 webserver_tls_v1_2_cipher_spec: "{{ 'non_aead' if webserver_tls_enable_insecure_compatibility else 'aead' }}"
 webserver_tls_cipher_order:
-  tlsv1_3: chacha20_aes128_aes256
-  tlsv1_2: chacha20_aes128_aes256
+  tlsv1_3: aes128_aes256_chacha20
+  tlsv1_2: aes128_aes256_chacha20
 webserver_tls_cipher_specs:
   tlsv1_3:
     openssl_default: TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256
@@ -48,7 +48,8 @@ webserver_tls_cipher_specs:
       aes256_aes128_chacha20: kECDHE+aECDSA+AESGCM:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA384:kECDHE+aECDSA+AES+SHA256:kECDHE+aRSA+AESGCM:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA384:kECDHE+aRSA+AES+SHA256:kDHE+aRSA+AESGCM:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES+SHA256
       aes128_aes256_chacha20: kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+CHACHA20:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
       chacha20_aes128_aes256: kECDHE+aECDSA+CHACHA20:kECDHE+aECDSA+AESGCM+AES128:kECDHE+aECDSA+AESGCM+AES256:kECDHE+aECDSA+AES+SHA256:kECDHE+aECDSA+AES+SHA384:kECDHE+aRSA+CHACHA20:kECDHE+aRSA+AESGCM+AES128:kECDHE+aRSA+AESGCM+AES256:kECDHE+aRSA+AES+SHA256:kECDHE+aRSA+AES+SHA384:kDHE+aRSA+CHACHA20:kDHE+aRSA+AESGCM+AES128:kDHE+aRSA+AESGCM+AES256:kDHE+aRSA+AES128+SHA256:kDHE+aRSA+AES256+SHA256
-webserver_https_ssl_honor_cipher_order: 'on'
+webserver_https_ssl_honor_cipher_order: True
+webserver_https_ssl_cipher_suite_prioritize_chacha: True
 webserver_https_ssl_protocol: '-all +TLSv1.3 +TLSv1.2'
 webserver_https_ssl_protocol_nginx: 'TLSv1.2 TLSv1.3'
 webserver_https_ssl_cipher_suite:

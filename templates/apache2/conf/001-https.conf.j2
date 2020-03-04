@@ -1,6 +1,6 @@
 <IfModule ssl_module>
     SSLCompression off
-    SSLHonorCipherOrder {{ webserver_https_ssl_honor_cipher_order }}
+    SSLHonorCipherOrder {{ webserver_https_ssl_honor_cipher_order|ternary('on', 'off') }}
     SSLProtocol {{ webserver_https_ssl_protocol }}
     SSLCipherSuite TLSv1.3 {{ webserver_https_ssl_cipher_suite['tlsv1_3'] }}
     SSLCipherSuite SSL {{ webserver_https_ssl_cipher_suite['tlsv1_2'] }}

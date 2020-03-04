@@ -2,35 +2,40 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
-    listen 443 ssl http2 default_server;
-    listen [::]:443 ssl http2 default_server;
+    root /var/www/default;
 
-    ssl_certificate /opt/letsencrypt/le0.ecdsa.crt;
-    ssl_certificate_key /opt/letsencrypt/le0.ecdsa.key;
-    ssl_certificate /opt/letsencrypt/le0.rsa.crt;
-    ssl_certificate_key /opt/letsencrypt/le0.rsa.key;
-
-    ssl_prefer_server_ciphers {{ webserver_https_ssl_honor_cipher_order|ternary('on', 'off') }};
-    ssl_protocols {{ webserver_https_ssl_protocol_nginx }};
-    ssl_ciphers {{ webserver_https_ssl_cipher_suite['tlsv1_3'] }}:{{ webserver_https_ssl_cipher_suite['tlsv1_2'] }};
-    ssl_ecdh_curve {{ webserver_https_curves }};
-{% if webserver_https_dh_params_custom  %}
-    ssl_dhparam {{ webserver_https_dh_params_path }};
-{% endif %}
-    #ssl_session_cache off;
-    #ssl_stapling on;
-    #ssl_stapling_verify on;
-    #ssl_session_cache shared:SSL:20m;
-    #ssl_session_timeout 24h;
-    #ssl_buffer_size 1400;
-    #ssl_session_tickets off;
-    #add_header Strict-Transport-Security "max-age=31536000;includeSubDomains;preload";
-
-    root /var/www/html;
-
-    index index.html index.htm index.nginx-debian.html;
+    index index.html;
 
     server_name _;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+
+    location / {
+        return 301 https://$host$request_uri;
+    }
+
+}
+
+server {
+    listen 443 ssl http2 default_server;
+    listen [::]:443 ssl http2 default_server;
+    include snippets/https.conf;
+
+    root /var/www/default;
+
+    index index.html;
+
+    server_name _;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
 
     location / {
         try_files $uri $uri/ =404;
