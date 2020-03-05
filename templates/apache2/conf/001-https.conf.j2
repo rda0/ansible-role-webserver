@@ -11,5 +11,5 @@
     SSLUseStapling On
     SSLStaplingCache shmcb:${APACHE_RUN_DIR}/ssl_stapling(32768)
     # With SSLSessionTickets On (default), apache needs to be restarted daily for PFS
-    #SSLSessionTickets Off
+    SSLSessionTickets Off
 </IfModule>
