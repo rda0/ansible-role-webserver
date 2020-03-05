@@ -23,7 +23,7 @@ server {
 server {
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
-    include snippets/https.conf;
+    include snippets/https-{{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}.conf;
 
     root /var/www/default;
 

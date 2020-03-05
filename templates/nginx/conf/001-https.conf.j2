@@ -1,0 +1,13 @@
+ssl_prefer_server_ciphers {{ webserver_https_ssl_honor_cipher_order|ternary('on', 'off') }};
+ssl_protocols {{ webserver_https_ssl_protocol_nginx }};
+ssl_ciphers {{ webserver_https_ssl_cipher_suite['tlsv1_3'] }}:{{ webserver_https_ssl_cipher_suite['tlsv1_2'] }};
+ssl_ecdh_curve {{ webserver_https_curves }};
+{% if webserver_https_dh_params_custom  %}
+ssl_dhparam {{ webserver_https_dh_params_path }};
+{% endif %}
+ssl_session_timeout 10m;
+ssl_session_cache shared:SSL:10m;
+ssl_session_tickets off;
+ssl_stapling on;
+ssl_stapling_verify on;
+#ssl_buffer_size 1400;

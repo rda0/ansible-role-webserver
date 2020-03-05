@@ -37,13 +37,11 @@
     - global
     - sites
 
-#- name: deploy main server config
-#  template:
-#    src: 'nginx/conf/{{ item }}.conf.j2'
-#    dest: '/etc/nginx/{{ item }}.conf'
-#  notify: restart nginx
-#  loop:
-#    - nginx
+- name: deploy main server config
+  template:
+    src: 'nginx/conf/nginx.conf.j2'
+    dest: '/etc/nginx/nginx.conf'
+  notify: restart nginx
 
 - name: deploy openssl config
   template:
@@ -51,13 +49,25 @@
     dest: '/etc/ssl/openssl.cnf'
   notify: restart nginx
 
-- name: deploy config snippets
+- name: deploy conf.d config
   template:
     src: 'nginx/conf/{{ item }}.conf.j2'
-    dest: '/etc/nginx/snippets/{{ item }}.conf'
+    dest: '/etc/nginx/conf.d/{{ item }}.conf'
   notify: restart nginx
   loop:
-    - https
+    - 001-https
+    - 002-security
+
+- name: deploy config snippets for certificates
+  template:
+    src: 'nginx/conf/certificates.conf.j2'
+    dest: "/etc/nginx/snippets/https-{{ (item.name|default(''.join(['le',index|string]))) }}.conf"
+  notify: restart nginx
+  vars:
+    name: "{{ (item.name|default(''.join(['le',index|string]))) }}"
+  loop: '{{ webserver_letsencrypt_aliases|flatten(levels=1) }}'
+  loop_control:
+    index_var: index
 
 - name: deploy default site content
   template:

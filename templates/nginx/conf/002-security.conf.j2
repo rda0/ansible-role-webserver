@@ -1,0 +1,6 @@
+{% if webserver_https_hsts %}
+add_header Strict-Transport-Security "max-age={{ webserver_https_hsts_max_age }}; includeSubDomains{{ webserver_https_hsts_preload|ternary('; preload', '') }}";
+{% endif %}
+add_header X-Frame-Options DENY;
+add_header X-Content-Type-Options nosniff;
+add_header X-XSS-Protection "1; mode=block";
