@@ -27,7 +27,7 @@ VHost deployment
 
 By default this role only creates the default VHost, which is reserved and restricted for ISG internal use only.
 
-If the following is configured, it will also deploy VHosts for services and websites:
+If the following is configured (the default), it will also deploy VHosts for services and websites:
 
 ```yaml
 include_webserver_vhosts: True
