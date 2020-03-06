@@ -12,10 +12,10 @@ server {
         return 301 https://{{ vhost.server_name }}$request_uri;
     }
 }
+
 {% endif %}
 {% if vhost.https_port %}
 {% for domain in vhost.server_alias %}
-
 server {
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
@@ -30,8 +30,8 @@ server {
         return 301 https://{{ vhost.server_name }}$request_uri;
     }
 }
-{% endfor %}
 
+{% endfor %}
 server {
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
@@ -48,4 +48,5 @@ server {
         try_files $uri $uri/ =404;
     }
 }
+
 {% endif %}
