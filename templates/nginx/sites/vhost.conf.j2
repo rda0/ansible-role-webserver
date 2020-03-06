@@ -42,11 +42,9 @@ server {
         autoindex off;
         try_files $uri $uri/ =404;
     }
-    root /var/www/{{ vhost.name }};
-    index index.html;
-    location / {
-        try_files $uri $uri/ =404;
-    }
+{% if vhost.config %}
+    {{ (vhost.config|indent(width=4)).rstrip() }}
+{% endif %}
 }
 
 {% endif %}

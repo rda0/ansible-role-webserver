@@ -8,6 +8,7 @@
       server_alias: "{{ item.server_alias|default([]) }}"
       http_port: "{{ item.http_port|default(80) }}"
       https_port: "{{ item.https_port|default(443) }}"
+      config: "{{ item.config|default('') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
