@@ -158,7 +158,7 @@
   <body>
     <div class="main_page">
       <div class="page_header floating_element">
-        <img src="/icons/openlogo-75.png" alt="Debian Logo" class="floating_element"/>
+        <img src="webserver.png" alt="webserver logo" class="floating_element"/>
         <span class="floating_element">
           {{ webserver_site_content_default_title }}
         </span>
@@ -183,9 +183,14 @@
 {% if webserver_site_content_default_overview == '' %}
           Links:<br/>
           <ul>
+{% if webserver_tls_terminator == 'apache2' %}
             <li><a href="https://{{ ansible_fqdn }}/server-status">server-status</a></li>
 {% if webserver_ldap %}
             <li><a href="https://{{ ansible_fqdn }}/ldap-status">ldap-status</a></li>
+{% endif %}
+{% endif %}
+{% if webserver_tls_terminator == 'nginx' %}
+            <li><a href="https://{{ ansible_fqdn }}/stub_status">server-status</a></li>
 {% endif %}
             <li><a href="https://{{ ansible_fqdn }}/website-statistics">website-statistics</a></li>
           </ul>

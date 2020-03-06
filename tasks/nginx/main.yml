@@ -29,14 +29,6 @@
     - empty
     - default
 
-- name: create directories in /var/log/nginx
-  file:
-    path: '/var/log/nginx/{{ item }}'
-    state: directory
-  loop:
-    - global
-    - sites
-
 - name: deploy main server config
   template:
     src: 'nginx/conf/nginx.conf.j2'
@@ -69,10 +61,29 @@
   loop_control:
     index_var: index
 
+- name: deploy config snippets for networks
+  template:
+    src: 'nginx/conf/networks.conf.j2'
+    dest: '/etc/nginx/snippets/allow-net-{{ item.name }}.conf'
+  notify: restart nginx
+  loop:
+    - { name: adm, ipv4: '{{ webserver_net4_adm }}', ipv6: '{{ webserver_net6_adm }}' }
+    - { name: san, ipv4: '{{ webserver_net4_san }}', ipv6: '{{ webserver_net6_san }}' }
+    - { name: srv, ipv4: '{{ webserver_net4_srv }}', ipv6: '{{ webserver_net6_srv }}' }
+    - { name: lan, ipv4: '{{ webserver_net4_lan }}', ipv6: '{{ webserver_net6_lan }}' }
+    - { name: can, ipv4: '{{ webserver_net4_can + webserver_net4_prvcan }}', ipv6: '{{ webserver_net6_can + webserver_net6_prvcan }}' }
+    - { name: cun, ipv4: '{{ webserver_net4_cun }}', ipv6: '{{ webserver_net6_cun }}' }
+
 - name: deploy default site content
   template:
-    src: 'apache2/sites/default.index.html.j2'
+    src: 'sites/default.index.html.j2'
     dest: '/var/www/default/index.html'
+  when: webserver_site_deploy_default
+
+- name: deploy webserver logo
+  copy:
+    src: 'nginx/logo.png'
+    dest: '/var/www/default/webserver.png'
   when: webserver_site_deploy_default
 
 - name: cleanup default config
@@ -98,16 +109,7 @@
   notify: reload nginx
   when: webserver_site_enable_default
 
-#- name: deploy nginx logrotate conf
-#  template:
-#    src: nginx/log/nginx.logrotate.j2
-#    dest: /etc/logrotate.d/nginx
-#
-#- name: remove obsolete log files
-#  file:
-#    path: /var/log/nginx/other_vhosts_access.log
-#    state: absent
-#
-#- name: include website statistics
-#  include_tasks: website_statistics.yml
-#  when: include_webserver_website_statistics
+- name: deploy nginx logrotate conf
+  template:
+    src: nginx/log/nginx.logrotate.j2
+    dest: /etc/logrotate.d/nginx

@@ -178,8 +178,14 @@
 
 - name: deploy default site content
   template:
-    src: 'apache2/sites/default.index.html.j2'
+    src: 'sites/default.index.html.j2'
     dest: '/var/www/default/index.html'
+  when: webserver_site_deploy_default
+
+- name: deploy webserver logo
+  copy:
+    src: 'apache2/logo.png'
+    dest: '/var/www/default/webserver.png'
   when: webserver_site_deploy_default
 
 - name: deploy sites-available config - 000-default
@@ -221,7 +227,3 @@
   file:
     path: /var/log/apache2/other_vhosts_access.log
     state: absent
-
-- name: include website statistics
-  include_tasks: website_statistics.yml
-  when: include_webserver_website_statistics
