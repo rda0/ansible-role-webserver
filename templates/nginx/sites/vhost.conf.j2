@@ -1,0 +1,51 @@
+{% if vhost.http_port|bool %}
+server {
+    listen {{ vhost.http_port }};
+    listen [::]:{{ vhost.http_port }};
+    server_name {{ vhost.server_name }}{% if vhost.server_alias|bool %} {{ vhost.server_alias|join(' ') }}{% endif %};
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+    location / {
+        return 301 https://{{ vhost.server_name }}$request_uri;
+    }
+}
+{% endif %}
+{% if vhost.https_port|bool %}
+{% for domain in vhost.server_alias %}
+
+server {
+    listen {{ vhost.https_port }} ssl http2;
+    listen [::]:{{ vhost.https_port }} ssl http2;
+    include snippets/https-{{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}.conf;
+    server_name {{ domain }};
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+    location / {
+        return 301 https://{{ vhost.server_name }}$request_uri;
+    }
+}
+{% endfor %}
+
+server {
+    listen {{ vhost.https_port }} ssl http2;
+    listen [::]:{{ vhost.https_port }} ssl http2;
+    include snippets/https-{{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}.conf;
+    server_name {{ vhost.server_name }};
+    location /.well-known/acme-challenge/ {
+        root /var/www/html;
+        autoindex off;
+        try_files $uri $uri/ =404;
+    }
+    root /var/www/{{ vhost.name }};
+    index index.html;
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
+{% endif %}

@@ -109,6 +109,12 @@
   notify: reload nginx
   when: webserver_site_enable_default
 
+- block:
+  - name: include vhosts
+    include_tasks: vhosts.yml
+    when: include_webserver_vhosts
+  tags: webserver_vhosts
+
 - name: deploy nginx logrotate conf
   template:
     src: nginx/log/nginx.logrotate.j2
