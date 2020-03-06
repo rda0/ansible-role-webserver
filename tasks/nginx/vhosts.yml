@@ -13,10 +13,6 @@
   loop_control:
     label: "{{ item.name }}"
 
-- name: debug _vhosts
-  debug:
-    msg: "{{ _vhosts }}"
-
 - name: create vhosts
   template:
     src: "nginx/sites/vhost.conf.j2"
