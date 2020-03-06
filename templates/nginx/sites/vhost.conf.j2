@@ -1,4 +1,4 @@
-{% if vhost.http_port|bool %}
+{% if vhost.http_port %}
 server {
     listen {{ vhost.http_port }};
     listen [::]:{{ vhost.http_port }};
@@ -13,7 +13,7 @@ server {
     }
 }
 {% endif %}
-{% if vhost.https_port|bool %}
+{% if vhost.https_port %}
 {% for domain in vhost.server_alias %}
 
 server {
