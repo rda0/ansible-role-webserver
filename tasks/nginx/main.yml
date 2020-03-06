@@ -29,14 +29,6 @@
     - empty
     - default
 
-- name: create directories in /var/log/nginx
-  file:
-    path: '/var/log/nginx/{{ item }}'
-    state: directory
-  loop:
-    - global
-    - sites
-
 - name: deploy main server config
   template:
     src: 'nginx/conf/nginx.conf.j2'
@@ -98,16 +90,7 @@
   notify: reload nginx
   when: webserver_site_enable_default
 
-#- name: deploy nginx logrotate conf
-#  template:
-#    src: nginx/log/nginx.logrotate.j2
-#    dest: /etc/logrotate.d/nginx
-#
-#- name: remove obsolete log files
-#  file:
-#    path: /var/log/nginx/other_vhosts_access.log
-#    state: absent
-#
-#- name: include website statistics
-#  include_tasks: website_statistics.yml
-#  when: include_webserver_website_statistics
+- name: deploy nginx logrotate conf
+  template:
+    src: nginx/log/nginx.logrotate.j2
+    dest: /etc/logrotate.d/nginx

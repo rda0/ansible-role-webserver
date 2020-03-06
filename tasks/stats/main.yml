@@ -7,12 +7,12 @@
 
 - name: deploy goaccess.conf
   copy:
-    src: apache2/goaccess.conf
+    src: goaccess.conf
     dest: /etc/goaccess/goaccess.conf
 
 - name: deploy goaccess-last wrapper
   copy:
-    src: apache2/goaccess-last
+    src: goaccess-last
     dest: /usr/local/bin/goaccess-last
     mode: '0755'
 
@@ -28,6 +28,6 @@
 
 - name: create goaccess cronjob
   template:
-    src: apache2/log/website-statistics.j2
+    src: '{{ webserver_tls_terminator }}/log/website-statistics.j2'
     dest: /etc/cron.daily/website-statistics
     mode: '0755'

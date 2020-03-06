@@ -7,7 +7,7 @@ include_webserver_website_db: False
 include_webserver_website_wordpress: False
 include_webserver_sites_include: False
 include_webserver_vhosts: False
-include_webserver_website_statistics: True
+include_webserver_stats: True
 import_webserver_letsencrypt_cronjob: True
 
 websserver_log_level: warn

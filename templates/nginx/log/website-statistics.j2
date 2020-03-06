@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# global access.log
+find /var/log/nginx -mtime -3 -name "access.log*" -exec grep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path=/var/lib/goaccess/global --load-from-disk --keep-db-files -o /var/www/default/website-statistics/global/index.html -
