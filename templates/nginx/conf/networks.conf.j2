@@ -1,0 +1,10 @@
+{% for netlist in item.ipv4 %}
+{% for net in netlist.split() %}
+allow {{ net }};
+{% endfor %}
+{% endfor %}
+{% for netlist in item.ipv6 %}
+{% for net in netlist.split() %}
+allow {{ net }};
+{% endfor %}
+{% endfor %}
