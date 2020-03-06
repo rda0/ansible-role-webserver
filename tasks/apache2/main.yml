@@ -80,6 +80,12 @@
   loop:
     - apache2
 
+- name: deploy openssl config
+  template:
+    src: 'openssl/openssl.cnf.j2'
+    dest: '/etc/ssl/openssl.cnf'
+  notify: restart apache2
+
 - name: deploy conf-available
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'
