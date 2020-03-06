@@ -63,7 +63,8 @@ webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
 webserver_https_fail_if_certificate_missing: False
 webserver_https_hsts: True
-webserver_https_hsts_max_age: 63072000
+#webserver_https_hsts_max_age: 63072000
+webserver_https_hsts_max_age: 300
 webserver_https_hsts_preload: False
 webserver_doc_root: /var/www
 webserver_empty_doc_root: /var/www/empty
