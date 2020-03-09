@@ -1,7 +1,9 @@
 {% if webserver_https_hsts %}
 Header always set Strict-Transport-Security "max-age={{ webserver_https_hsts_max_age }}; includeSubDomains{{ webserver_https_hsts_preload|ternary('; preload', '') }}"
 {% endif %}
-Header always set X-Frame-Options DENY
+{% if webserver_header_security_x_frame_options %}
+Header always set X-Frame-Options {{ webserver_header_security_x_frame_options }}
+{% endif %}
 Header always set X-Content-Type-Options nosniff
 Header always set X-XSS-Protection "1; mode=block"
 
