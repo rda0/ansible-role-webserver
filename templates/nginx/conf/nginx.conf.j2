@@ -4,40 +4,40 @@ pid /run/nginx.pid;
 include /etc/nginx/modules-enabled/*.conf;
 
 events {
-	worker_connections 768;
-	# multi_accept on;
+    worker_connections 768;
+    # multi_accept on;
 }
 
 http {
-	sendfile on;
-	tcp_nopush on;
-	tcp_nodelay on;
-	keepalive_timeout 65;
-	types_hash_max_size 2048;
-	server_tokens off;
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+    server_tokens off;
 
-	# server_names_hash_bucket_size 64;
-	# server_name_in_redirect off;
+    # server_names_hash_bucket_size 64;
+    # server_name_in_redirect off;
 
-	include /etc/nginx/mime.types;
-	default_type application/octet-stream;
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
 
     log_format vhost_combined_tls '$host:$server_port $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_length $request_time "$http_referer" "$http_user_agent" $ssl_protocol $ssl_cipher';
     log_format vhost_combined '$host:$server_port $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_length $request_time "$http_referer" "$http_user_agent"';
     log_format combined_rl '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent $request_length $request_time "$http_referer" "$http_user_agent"';
 
-	access_log /var/log/nginx/access.log vhost_combined_tls;
-	error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log vhost_combined_tls;
+    error_log /var/log/nginx/error.log;
 
-	gzip on;
+    gzip on;
 
-	# gzip_vary on;
-	# gzip_proxied any;
-	# gzip_comp_level 6;
-	# gzip_buffers 16 8k;
-	# gzip_http_version 1.1;
-	# gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    # gzip_vary on;
+    # gzip_proxied any;
+    # gzip_comp_level 6;
+    # gzip_buffers 16 8k;
+    # gzip_http_version 1.1;
+    # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-	include /etc/nginx/conf.d/*.conf;
-	include /etc/nginx/sites-enabled/*;
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
 }

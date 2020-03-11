@@ -35,6 +35,9 @@
     dest: '/etc/nginx/nginx.conf'
   notify: restart nginx
 
+- name: flush handlers
+  meta: flush_handlers
+
 - name: deploy openssl config
   template:
     src: 'openssl/openssl.cnf.j2'
