@@ -2,7 +2,7 @@
 server {
     listen {{ vhost.http_port }};
     listen [::]:{{ vhost.http_port }};
-    server_name {{ vhost.server_name }}{% if vhost.server_alias|bool %} {{ vhost.server_alias|join(' ') }}{% endif %};
+    server_name {{ vhost.server_name }}{% if vhost.server_alias|length > 0 %} {{ vhost.server_alias|join(' ') }}{% endif %};
     location /.well-known/acme-challenge/ {
         root /var/www/html;
         autoindex off;
