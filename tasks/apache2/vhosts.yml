@@ -101,7 +101,7 @@
   notify: restart autofs
   vars:
     vhosts: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
-  when: vhosts|bool
+  when: vhosts|length > 0
 
 - name: flush handlers
   meta: flush_handlers
