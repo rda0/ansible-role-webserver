@@ -28,7 +28,7 @@
 {% if not vhost.http.empty %}
 {% if vhost.http.require != '' %}
 {% if vhost.http.require == 'wsgi' %}
-  <Directory "{{ vhost.document_root }}{{ vhost.http.wsgi.app|dirname|bool|ternary('/','') }}{{ vhost.http.wsgi.app|dirname }}">
+  <Directory "{{ vhost.document_root }}{{ vhost.http.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.http.wsgi.app|dirname }}">
     <Files "{{ vhost.http.wsgi.app|basename }}">
       Require all granted
     </Files>
@@ -144,7 +144,7 @@
 {% endif %}
 {% if vhost.https.require != '' %}
 {% if vhost.https.require == 'wsgi' %}
-  <Directory "{{ vhost.document_root }}{{ vhost.https.wsgi.app|dirname|bool|ternary('/','') }}{{ vhost.https.wsgi.app|dirname }}">
+  <Directory "{{ vhost.document_root }}{{ vhost.https.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.https.wsgi.app|dirname }}">
     <Files "{{ vhost.https.wsgi.app|basename }}">
       Require all granted
     </Files>
