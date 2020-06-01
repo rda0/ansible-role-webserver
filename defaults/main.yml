@@ -86,6 +86,13 @@ webserver_modules_default:
   - status
 webserver_modules_custom: []
 webserver_packages_custom: []
+webserver_config_default:
+  - 001-https
+  - 002-security
+  - 010-well-known
+  - 020-macro
+  - 021-macro-networks
+  - 030-ldap
 webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False

@@ -86,32 +86,20 @@
     dest: '/etc/ssl/openssl.cnf'
   notify: restart apache2
 
-- name: deploy conf-available
+- name: deploy default server config
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'
     dest: '/etc/apache2/conf-available/{{ item }}.conf'
   notify: reload apache2
-  loop:
-    - 001-https
-    - 002-security
-    - 010-well-known
-    - 020-macro
-    - 021-macro-networks
-    - 030-ldap
+  loop: "{{ webserver_config_default }}"
 
-- name: enable server config
+- name: enable default server config
   file:
     src: '../conf-available/{{ item }}.conf'
     dest: '/etc/apache2/conf-enabled/{{ item }}.conf'
     state: link
   notify: reload apache2
-  loop:
-    - 001-https
-    - 002-security
-    - 010-well-known
-    - 020-macro
-    - 021-macro-networks
-    - 030-ldap
+  loop: "{{ webserver_config_default }}"
 
 - name: enable custom server config
   file:
