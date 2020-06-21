@@ -7,4 +7,4 @@
   make:
     chdir: '{{ webserver_letsencrypt_path }}'
     target: cron
-  when: webserver_letsencrypt_cronjob.stat.exists is not defined or webserver_letsencrypt_cronjob.stat.exists == False
+  when: webserver_letsencrypt_cronjob.stat.exists is not defined or not webserver_letsencrypt_cronjob.stat.exists
