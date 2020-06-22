@@ -198,7 +198,9 @@
   </Directory>
 {% endif %}
 {% if vhost.https.wsgi.app != '' %}
+{% if vhost.http.wsgi.app == '' %}
   WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
+{% endif %}
   WSGIProcessGroup {{ vhost.name }}
   WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
 {% endif %}
