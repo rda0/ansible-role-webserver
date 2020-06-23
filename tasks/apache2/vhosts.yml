@@ -158,3 +158,4 @@
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
+  when: not ansible_check_mode
