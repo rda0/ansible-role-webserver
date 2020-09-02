@@ -7,6 +7,9 @@
   template:
     src: phpfpm/pool.conf.j2
     dest: '/etc/php/7.3/fpm/pool.d/{{ item.name }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: restart php-fpm
   vars:
     name: '{{ item.name }}'

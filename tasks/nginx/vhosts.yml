@@ -17,6 +17,9 @@
   template:
     src: "nginx/sites/vhost.conf.j2"
     dest: '/etc/nginx/sites-available/{{ vhost.name }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: reload nginx
   loop: '{{ _vhosts }}'
   loop_control:

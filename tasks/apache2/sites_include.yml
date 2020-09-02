@@ -9,4 +9,7 @@
   file:
     path: /etc/apache2/sites-include
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   when: webserver_sites_include_repo == ''

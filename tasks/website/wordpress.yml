@@ -10,11 +10,15 @@
     state: directory
     owner: root
     group: adm
+    mode: 0755
 
 - name: deploy wordpress-updater logrotate config
   template:
     src: website/wordpress/logrotate-wordpress-updater.j2
     dest: /etc/logrotate.d/wordpress-updater
+    owner: root
+    group: root
+    mode: 0644
 
 - name: wordpress deploy updater cronjob
   template:

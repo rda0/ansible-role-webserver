@@ -2,6 +2,9 @@
   file:
     path: '{{ webserver_letsencrypt_path }}/{{ item }}'
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   loop:
     - hosts
 
@@ -9,6 +12,9 @@
   template:
     src: letsencrypt/domains.j2
     dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name|default(''.join(['le',index|string]))) }}"
+    owner: root
+    group: root
+    mode: 0644
   vars:
     domains: '{{ item.domains }}'
   register: webserver_letsencrypt_hosts_file
@@ -29,7 +35,7 @@
     state: directory
     owner: letsencrypt
     group: ssl-cert
-    mode: '0110'
+    mode: 0110
 
 #- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
 #  file:

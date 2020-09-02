@@ -98,6 +98,9 @@
   template:
     src: "apache2/service/auto.home.j2"
     dest: "/etc/auto.home"
+    owner: root
+    group: root
+    mode: 0644
   notify: restart autofs
   vars:
     vhosts: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
@@ -118,6 +121,9 @@
   template:
     src: "apache2/sites/vhost.conf.j2"
     dest: '/etc/apache2/sites-available/{{ vhost.name }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: reload apache2
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'

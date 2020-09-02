@@ -10,12 +10,18 @@
   file:
     path: /etc/systemd/system/apache2.service.d/
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   when: webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom
 
 - name: deploy systemd apache2.service override
   template:
     src: apache2/service/override.conf.j2
     dest: /etc/systemd/system/apache2.service.d/override.conf
+    owner: root
+    group: root
+    mode: 0644
   notify: reload systemd
   when: webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom
 
@@ -46,13 +52,16 @@
     path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
     owner: root
     group: ssl-cert
-    mode: '0640'
+    mode: 0640
   when: webserver_https_dh_params_custom
 
 - name: create directories in /var/www
   file:
     path: '/var/www/{{ item }}'
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   loop:
     - empty
     - default
@@ -61,6 +70,9 @@
   file:
     path: '/var/log/apache2/{{ item }}'
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   loop:
     - global
     - sites
@@ -69,6 +81,9 @@
   copy:
     src: apache2/id_bd+quovadis.pem
     dest: /etc/ssl/certs/id_bd+quovadis.pem
+    owner: root
+    group: root
+    mode: 0644
   notify: restart apache2
   when: webserver_ldap_ethz
 
@@ -76,6 +91,9 @@
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'
     dest: '/etc/apache2/{{ item }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: restart apache2
   loop:
     - apache2
@@ -84,12 +102,18 @@
   template:
     src: 'openssl/openssl.cnf.j2'
     dest: '/etc/ssl/openssl.cnf'
+    owner: root
+    group: root
+    mode: 0644
   notify: restart apache2
 
 - name: deploy default server config
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'
     dest: '/etc/apache2/conf-available/{{ item }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: reload apache2
   loop: "{{ webserver_config_default }}"
 
@@ -132,6 +156,9 @@
   template:
     src: 'apache2/mods/{{ item }}.conf.j2'
     dest: '/etc/apache2/mods-available/{{ item }}.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: restart apache2
   loop:
     - dir
@@ -168,18 +195,27 @@
   template:
     src: 'sites/default.index.html.j2'
     dest: '/var/www/default/index.html'
+    owner: root
+    group: root
+    mode: 0644
   when: webserver_site_deploy_default
 
 - name: deploy webserver logo
   copy:
     src: 'apache2/logo.png'
     dest: '/var/www/default/webserver.png'
+    owner: root
+    group: root
+    mode: 0644
   when: webserver_site_deploy_default
 
 - name: deploy sites-available config - 000-default
   template:
     src: 'apache2/sites/000-default.conf.j2'
     dest: '/etc/apache2/sites-available/000-default.conf'
+    owner: root
+    group: root
+    mode: 0644
   notify: reload apache2
   when: webserver_site_enable_default
 
@@ -210,6 +246,9 @@
   template:
     src: apache2/log/apache2.logrotate.j2
     dest: /etc/logrotate.d/apache2
+    owner: root
+    group: root
+    mode: 0644
 
 - name: remove obsolete log files
   file:
