@@ -9,7 +9,7 @@
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
 {% if vhost.http.redirect != '' %}
-  Use RedirectTo{% if '/' in vhost.http.redirect %}Subdir{% endif %} {{ vhost.http.redirect }}
+  Use RedirectTo{% if vhost.http.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.http.redirect }}
 {% endif %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
@@ -116,7 +116,7 @@
   Use EnableSSLCert {{ vhost.https.cert }}
 {% endif %}
 {% if vhost.https.redirect != '' %}
-  Use RedirectTo{% if '/' in vhost.https.redirect %}Subdir{% endif %} {{ vhost.https.redirect }}
+  Use RedirectTo{% if vhost.https.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.https.redirect }}
 {% endif %}
   LogLevel {{ websserver_log_level }}
 {% if vhost.type == 'share' %}
