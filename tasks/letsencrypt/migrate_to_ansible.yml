@@ -1,0 +1,32 @@
+- name: deploy temporary server config
+  template:
+    src: 'apache2/conf/{{ item }}.conf.j2'
+    dest: '/etc/apache2/conf-available/{{ item }}.conf'
+    owner: root
+    group: root
+    mode: 0644
+  #notify: reload apache2
+  loop: "{{ ['010-well-known', '020-macro'] }}"
+
+#- name: enable temporary server config
+#  file:
+#    src: '../conf-available/{{ item }}.conf'
+#    dest: '/etc/apache2/conf-enabled/{{ item }}.conf'
+#    state: link
+#  #notify: reload apache2
+#  loop: "{{ ['010-well-known', '020-macro'] }}"
+
+- name: remove old cronjob /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
+  file:
+    path: /etc/cron.d/dphys-letsencrypt-acme-tiny-renewal
+    state: absent
+
+- name: move away old /opt/letsencrypt
+  command: mv /opt/letsencrypt /opt/letsencrypt_bak
+  args:
+    creates: /opt/letsencrypt_bak
+
+- name: remove acme-tiny package
+  package:
+    pkg: acme-tiny
+    state: absent

@@ -1,3 +1,9 @@
+- block:
+  - name: include migrate to ansible
+    include_tasks: migrate_to_ansible.yml
+    when: webserver_letsencrypt_migrate_to_ansible
+  tags: webserver_letsencrypt_migrate_to_ansible
+
 - name: install letsencrypt dependencies
   package:
     pkg:
