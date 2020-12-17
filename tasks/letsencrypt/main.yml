@@ -57,6 +57,7 @@
     owner: root
     group: letsencrypt
     mode: '0640'
+  no_log: true
   when: webserver_letsencrypt_deploy_account_key
   tags: webserver_letsencrypt_deploy_account_key
 
