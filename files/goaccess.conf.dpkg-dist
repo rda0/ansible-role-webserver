@@ -10,7 +10,7 @@
 # The following time format works with any of the
 # Apache/NGINX's log formats below.
 #
-time-format %H:%M:%S
+#time-format %H:%M:%S
 #
 # Google Cloud Storage or
 # The time in microseconds since the Unix epoch.
@@ -33,7 +33,7 @@ time-format %H:%M:%S
 # The following date format works with any of the
 # Apache/NGINX's log formats below.
 #
-date-format %d/%b/%Y
+#date-format %d/%b/%Y
 #
 # AWS | Amazon CloudFront (Download Distribution)
 # AWS | Elastic Load Balancing
@@ -65,12 +65,6 @@ date-format %d/%b/%Y
 
 # NCSA Combined Log Format with Virtual Host
 #log-format %v:%^ %h %^[%d:%t %^] "%r" %s %b "%R" "%u"
-
-# NCSA Combined Log Format (including "%I %D")
-#log-format %h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" K^ k^
-
-# NCSA Combined Log Format with Virtual Host (including "%I %D")
-log-format %v:%^ %h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %K %k
 
 # Common Log Format (CLF)
 #log-format %h %^[%d:%t %^] "%r" %s %b
@@ -369,15 +363,10 @@ with-output-resolver false
 # Ranges can be included as well using a dash in between
 # the IPs (start-end).
 #
-exclude-ip 127.0.0.1
+#exclude-ip 127.0.0.1
 #exclude-ip 192.168.0.1-192.168.0.100
-exclude-ip ::1
+#exclude-ip ::1
 #exclude-ip 0:0:0:0:0:ffff:808:804-0:0:0:0:0:ffff:808:808
-# monitoring server
-exclude-ip 129.132.80.42
-exclude-ip 2001:67c:10ec:3dc4::42
-# vulnerability scanning host
-exclude-ip 129.132.80.100
 
 # Include HTTP request method if found. This will create a
 # request key containing the request method + the actual request.
@@ -484,7 +473,7 @@ double-decode false
 # Note that it will count them towards the total
 # number of requests, but excluded from any of the panels.
 #
-ignore-crawlers true
+ignore-crawlers false
 
 # Parse and display crawlers only.
 # This will ignore all hosts except robots listed under browsers.c
@@ -534,7 +523,7 @@ ignore-panel KEYPHRASES
 # Keep the last specified number of days in storage. This will recycle the
 # storage tables. e.g., keep & show only the last 7 days.
 #
-keep-last 30
+# keep-last 7
 
 # Disable client IP validation. Useful if IP addresses have been
 # obfuscated before being logged.

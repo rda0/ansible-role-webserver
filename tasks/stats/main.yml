@@ -2,8 +2,6 @@
   package:
     pkg:
       - goaccess
-      - geoip-database
-      - geoip-database-extra
 
 - name: deploy goaccess.conf
   copy:
