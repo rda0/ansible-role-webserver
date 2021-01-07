@@ -61,6 +61,18 @@
   when: webserver_letsencrypt_deploy_account_key
   tags: webserver_letsencrypt_deploy_account_key
 
+- name: Toggle Let's Encrypt staging environment ({{ webserver_letsencrypt_use_staging }})
+  lineinfile:
+    path: '{{ webserver_letsencrypt_path }}/acme.conf'
+    create: true
+    regexp: '^ACME_DIRECTORY_URL='
+    line: 'ACME_DIRECTORY_URL=https://acme-staging-v02.api.letsencrypt.org/directory'
+    state: "{{ webserver_letsencrypt_use_staging | ternary('present', 'absent') }}"
+    owner: root
+    group: letsencrypt
+    mode: '0640'
+  tags: webserver_letsencrypt_use_staging
+
 - block:
   - name: include initialize automatic
     include_tasks: initialize_automatic.yml

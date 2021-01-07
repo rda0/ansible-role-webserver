@@ -33,7 +33,7 @@ If the following is configured (the default), it will also deploy VHosts for ser
 include_webserver_vhosts: True
 ```
 
-The task `set fact _vhosts` in `roles-servers/webserver/tasks/apache2/vhosts.yml` sets a lot of default values  
+The task `set fact _vhosts` in `roles-servers/webserver/tasks/apache2/vhosts.yml` sets a lot of default values
 only very few configuration options are required to create a VHost, namely that is the VHosts name:
 
 ```yaml
@@ -48,6 +48,12 @@ fifo2syslog
 -----------
 
 The systemd service file `/etc/systemd/system/fifo2syslog.service` starts `fifo2syslog`, which in turn starts `apache_syslog_auth`. Note that apache will hang at start if the `/var/log/apache2/lastuse.fifo` is missing or the `fifo2syslog` service not running.
+
+letsencrypt staging
+-------------------
+
+To use the [Let's Encrypt staging environment](https://letsencrypt.org/docs/staging-environment/) to to avoid hitting the rate limit set `webserver_letsencrypt_use_staging: True`
+
 
 Migration
 ---------
