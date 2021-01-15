@@ -1,3 +1,7 @@
+{% if vhost.backend_config %}
+{{ vhost.backend_config.rstrip() }}
+
+{% endif %}
 {% if vhost.http_port %}
 server {
     listen {{ vhost.http_port }};
