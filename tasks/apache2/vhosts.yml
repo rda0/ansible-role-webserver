@@ -73,6 +73,7 @@
   loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
   loop_control:
     loop_var: vhost
+    label: "{{ vhost.name }}"
 
 #- name: deploy systemd mount units for share bindmounts
 #  template:
