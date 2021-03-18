@@ -1,9 +1,14 @@
 #!/bin/bash
 
+ROTATE="$(date '+%d')"
+MONTH="$(date --date='1 day ago' +'%Y-%m')"
+
 # global access.log
 find /var/log/apache2/global -mtime -3 -name "access.log*" -exec zgrep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path=/var/lib/goaccess/global --restore --persist -o /var/www/default/website-statistics/global/index.html -
+if [ ${ROTATE} == 01 ]; then cp -rp /var/www/default/website-statistics/global/index.html "/var/www/default/website-statistics/archive/${MONTH}.html"; fi
 {% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
 
 # {{ vhost.name }} https_access.log
-find {{ vhost.data_path }}/{{ vhost.name }}/logs -mtime -3 -name "https_access.log*" -exec zgrep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path={{ vhost.data_path }}/{{ vhost.name }}/logs/goaccess/current --restore --persist -o {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html --log-format='%h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %K %k' -
+find {{ vhost.data_path }}/{{ vhost.name }}/logs -mtime -3 -name "https_access.log*" -exec zgrep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --anonymize-ip --no-progress --db-path={{ vhost.data_path }}/{{ vhost.name }}/logs/goaccess/current --restore --persist -o {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html --log-format='%h %^[%d:%t %^] "%r" %s %b %^ %D "%R" "%u" %K %k' -
+if [ ${ROTATE} == 01 ]; then cp -rp {{ vhost.data_path }}/{{ vhost.name }}/stats/current/index.html "{{ vhost.data_path }}/{{ vhost.name }}/stats/archive/${MONTH}.html"; fi
 {% endfor %}

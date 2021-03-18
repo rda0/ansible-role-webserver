@@ -30,13 +30,16 @@
     - /var/lib/goaccess
     - /var/lib/goaccess/global
 
-- name: create website-statistics directory
+- name: create website-statistics directories
   file:
     path: /var/www/default/website-statistics/global
     state: directory
     owner: root
     group: root
     mode: 0755
+  loop:
+    - /var/www/default/website-statistics/global
+    - /var/www/default/website-statistics/archive
 
 - name: create goaccess cronjob
   template:

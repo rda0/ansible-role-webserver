@@ -1,4 +1,8 @@
 #!/bin/bash
 
+ROTATE="$(date '+%d')"
+MONTH="$(date --date='1 day ago' +'%Y-%m')"
+
 # global access.log
 find /var/log/nginx -mtime -3 -name "access.log*" -exec zgrep "[[]$(date '+%d\/%b\/%Y' -d 'yesterday')" {} \; | goaccess -a --no-progress --db-path=/var/lib/goaccess/global --restore --persist -o /var/www/default/website-statistics/global/index.html -
+if [ ${ROTATE} == 01 ]; then cp -rp /var/www/default/website-statistics/global/index.html "/var/www/default/website-statistics/archive/${MONTH}.html"; fi
