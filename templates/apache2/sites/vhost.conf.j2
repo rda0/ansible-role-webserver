@@ -11,7 +11,7 @@
 {% if vhost.http.redirect != '' %}
   Use RedirectTo{% if vhost.http.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.http.redirect }}
 {% endif %}
-  LogLevel {{ websserver_log_level }}
+  LogLevel {{ webserver_log_level }}
 {% if vhost.type == 'share' %}
   ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_error.log
   CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_access.log combined env=!dontlog
@@ -118,7 +118,7 @@
 {% if vhost.https.redirect != '' %}
   Use RedirectTo{% if vhost.https.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.https.redirect }}
 {% endif %}
-  LogLevel {{ websserver_log_level }}
+  LogLevel {{ webserver_log_level }}
 {% if vhost.type == 'share' %}
   ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_error.log
   CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_access.log combined env=!dontlog
