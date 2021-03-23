@@ -7,6 +7,11 @@
     ifempty
     create 0640 www-data adm
     sharedscripts
+{% if webserver_logrotate_nginx_date_extension %}
+    dateext
+    dateformat .%Y-%m-%d
+    extension .log
+{% endif %}
     postrotate
         invoke-rc.d nginx rotate >/dev/null 2>&1
     endscript
