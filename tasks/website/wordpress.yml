@@ -35,3 +35,4 @@
   loop: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
   loop_control:
     loop_var: instance
+    label: "{{ instance.name }}"
