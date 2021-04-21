@@ -1,11 +1,3 @@
-#- name: find php version
-#  package_facts:
-#
-#- name:
-#  set_fact:
-#    # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
-#    webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-
 - name: delete default php-fpm pool
   file:
     path: "/etc/php/{{ webserver_php_version }}/fpm/pool.d/www.conf"
