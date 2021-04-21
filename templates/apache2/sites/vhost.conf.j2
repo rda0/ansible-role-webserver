@@ -59,7 +59,7 @@
   </IfModule>
   # Use php-fpm socket
   <FilesMatch "\.(?i:php[3457]?)$">
-    SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ vhost.name }}.sock|fcgi://localhost"
+    SetHandler "proxy:unix:/run/php/php{{ webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
 {% if vhost.http.fcgid %}
@@ -175,7 +175,7 @@
   </IfModule>
   # Use php-fpm socket
   <FilesMatch "\.(?i:php[3457]?)$">
-    SetHandler "proxy:unix:/run/php/php7.3-fpm-{{ vhost.name }}.sock|fcgi://localhost"
+    SetHandler "proxy:unix:/run/php/php{{ webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
 {% if vhost.https.fcgid %}
