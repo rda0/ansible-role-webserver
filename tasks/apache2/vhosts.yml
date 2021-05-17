@@ -125,6 +125,7 @@
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
+  when: webserver_phpfpm_pools|length > 0
 
 - name: create vhosts
   template:
