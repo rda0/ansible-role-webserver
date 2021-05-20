@@ -114,6 +114,8 @@ webserver_site_config_common_requires:
       Use RequireNetCan
       Use RequirePhysLDAPGroup isg
     </RequireAll>
+  require_net_can: |
+      Use RequireNetCan
   grant_share_all: |
     Require all granted
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
