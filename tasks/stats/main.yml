@@ -32,7 +32,7 @@
 
 - name: create website-statistics directories
   file:
-    path: /var/www/default/website-statistics/global
+    path: '{{ item }}'
     state: directory
     owner: root
     group: root
