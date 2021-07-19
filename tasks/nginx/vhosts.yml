@@ -10,6 +10,7 @@
       https_port: "{{ item.https_port|default(443) }}"
       config: "{{ item.config|default('') }}"
       backend_config: "{{ item.backend_config|default('') }}"
+      http_config: "{{ item.http_config|default('') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"

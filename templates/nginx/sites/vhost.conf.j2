@@ -12,9 +12,13 @@ server {
         autoindex off;
         try_files $uri $uri/ =404;
     }
+{% if vhost.http_config %}
+    {{ (vhost.http_config|indent(width=4)).rstrip() }}
+{% else %}
     location / {
         return 301 https://{{ vhost.server_name }}$request_uri;
     }
+{% endif %}
 }
 
 {% endif %}
