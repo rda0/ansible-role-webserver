@@ -79,8 +79,8 @@
 
 - name: deploy /etc/ssl/certs/id_bd+quovadis.pem
   copy:
-    src: apache2/id_bd+quovadis.pem
-    dest: /etc/ssl/certs/id_bd+quovadis.pem
+    src: apache2/id_bd+quovadis_global_ica_g2+quovadis_europe_ca_g2.pem
+    dest: /etc/ssl/certs/id_bd+quovadis_global_ica_g2+quovadis_europe_ca_g2.pem
     owner: root
     group: root
     mode: 0644
