@@ -9,6 +9,7 @@ server {
     server_name {{ vhost.server_name }}{% if vhost.server_alias|length > 0 %} {{ vhost.server_alias|join(' ') }}{% endif %};
     location /.well-known/acme-challenge/ {
         root /var/www/html;
+        allow all;
         autoindex off;
         try_files $uri $uri/ =404;
     }
@@ -31,6 +32,7 @@ server {
     server_name {{ domain }};
     location /.well-known/acme-challenge/ {
         root /var/www/html;
+        allow all;
         autoindex off;
         try_files $uri $uri/ =404;
     }
@@ -47,6 +49,7 @@ server {
     server_name {{ vhost.server_name }};
     location /.well-known/acme-challenge/ {
         root /var/www/html;
+        allow all;
         autoindex off;
         try_files $uri $uri/ =404;
     }
