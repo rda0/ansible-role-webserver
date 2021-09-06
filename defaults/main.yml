@@ -165,7 +165,7 @@ webserver_site_config_common_wordpress:
     </FilesMatch>
 webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_phys_ldap_group_isg }}"
 webserver_site_deploy_default: True
-webserver_site_content_default_title: '{{ ansible_hostname }}'
+webserver_site_content_default_title: '{{ inventory_hostname }}'
 webserver_site_content_default_description: This server is managed by the <a href="https://www.phys.ethz.ch/services/physics-isg.html">IT Services Group (ISG) in the Physics Department</a>.
 webserver_site_content_default_overview: ''
 
@@ -186,7 +186,7 @@ webserver_letsencrypt_deploy_account_key: True
 webserver_letsencrypt_use_staging: False
 
 webserver_phpfpm_pools: []
-webserver_sites_include_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ ansible_hostname }}-sites-include.git'
+webserver_sites_include_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ inventor_hostname }}-sites-include.git'
 webserver_vhost_data_path:
   server: /var/www
   redirect: /var/www
