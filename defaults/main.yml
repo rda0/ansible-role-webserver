@@ -98,6 +98,7 @@ webserver_config_default:
 webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False
+webserver_service_nginx_limit_number_of_open_files: ''
 webserver_site_enable_default: True
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
 webserver_site_config_common_requires:
