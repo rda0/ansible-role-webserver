@@ -66,6 +66,9 @@
     SetHandler ldap-status
     {{ (webserver_site_config_default_vhost_default_require|indent(width=4)).rstrip() }}
   </Location>
+{% if webserver_site_config_default_vhost_custom != '' %}
+  {{ (webserver_site_config_default_vhost_custom|indent(width=2)).rstrip() }}
+{% endif %}
 </VirtualHost>
 
 # vim: syntax=apache
