@@ -95,6 +95,9 @@
   </Directory>
 {% endif %}
 {% endif %}
+{% if vhost.http.config %}
+  {{ (vhost.http.config|indent(width=2)).rstrip() }}
+{% endif %}
 {% for include in vhost.http.includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
 {% endfor %}
@@ -212,6 +215,9 @@
     {{ (webserver_site_config_common_wordpress['akismet']|indent(width=4)).rstrip() }}
   </Directory>
 {% endif %}
+{% endif %}
+{% if vhost.https.config %}
+  {{ (vhost.https.config|indent(width=2)).rstrip() }}
 {% endif %}
 {% for include in vhost.https.includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf

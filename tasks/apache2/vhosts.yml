@@ -38,6 +38,7 @@
       http:
         empty: "{{ (item.http|default({})).empty|default(True) }}"
         redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
+        config: "{{ (item.http|default({})).config|default('') }}"
         includes: "{{ (item.http|default({})).includes|default([]) }}"
         require: "{{ (item.http|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid: "{{ (item.http|default({})).fcgid|default([]) }}"
@@ -51,6 +52,7 @@
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
         redirect: "{{ (item.https|default({})).redirect|default('' if item.server_alias|default('') == '' else ['https', item.server_name]|join(' ')) }}"
+        config: "{{ (item.https|default({})).config|default('') }}"
         includes: "{{ (item.https|default({})).includes|default([]) }}"
         require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
