@@ -4,6 +4,10 @@
     dest: /usr/local/bin/wp
     mode: 0755
 
+- name: install wp-cli dependencies
+  package:
+    pkg: mariadb-client
+
 - name: ensure wordpress-updater log folder exists
   file:
     path: /var/log/wordpress-updater
