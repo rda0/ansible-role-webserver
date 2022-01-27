@@ -20,6 +20,16 @@
   args:
     creates: "{{ instance.document_root }}/wp-config.php"
 
+- name: 'wordpress {{ instance.name }} set database host'
+  lineinfile:
+    path: "{{ instance.document_root }}/wp-config.php"
+    regexp: "^define\\(\\s*'DB_HOST',\\s*'[^']+'\\s*\\)\\s*;"
+    line: "define( 'DB_HOST', '{{ webserver_website_wordpress_db_host }}' );"
+    owner: '{{ instance.name }}'
+    group: '{{ instance.name }}'
+    mode: '0644'
+  when: webserver_website_wordpress_set_db_host
+
 - name: 'wordpress {{ instance.name }} get installation status'
   command: >
     wp --path={{ instance.document_root }}
