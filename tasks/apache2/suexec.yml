@@ -1,0 +1,17 @@
+- name: create directory /etc/apache2/suexec
+  file:
+    path: /etc/apache2/suexec
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: "'apache2-suexec-custom' in webserver_packages_custom"
+
+- name: suexec config file
+  copy:
+    dest: /etc/apache2/suexec/www-data
+    content: '{{ webserver_suexec_custom_config }}'
+    owner: root
+    group: root
+    mode: '0644'
+  when: "'apache2-suexec-custom' in webserver_packages_custom and webserver_suexec_custom_config"

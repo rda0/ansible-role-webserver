@@ -219,6 +219,7 @@ webserver_website_wordpress_cronjob_update_themes: True
 webserver_website_wordpress_cronjob_update_languages: True
 webserver_website_wordpress_db_host: '{{ webserver_db_host }}'
 webserver_website_wordpress_set_db_host: True
+webserver_suexec_custom_config: ''
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
