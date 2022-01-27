@@ -1,12 +1,12 @@
 - name: delete default php-fpm pool
   file:
-    path: "/etc/php/{{ webserver_php_version }}/fpm/pool.d/www.conf"
+    path: "/etc/php/{{ _webserver_php_version }}/fpm/pool.d/www.conf"
     state: absent
 
 - name: create php-fpm pools
   template:
     src: phpfpm/pool.conf.j2
-    dest: '/etc/php/{{ webserver_php_version }}/fpm/pool.d/{{ item.name }}.conf'
+    dest: '/etc/php/{{ _webserver_php_version }}/fpm/pool.d/{{ item.name }}.conf'
     owner: root
     group: root
     mode: 0644

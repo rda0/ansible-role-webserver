@@ -1,4 +1,4 @@
 - name: restart php-fpm
   service:
-    name: "php{{ webserver_php_version }}-fpm"
+    name: "php{{ _webserver_php_version }}-fpm"
     state: restarted
