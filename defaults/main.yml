@@ -188,6 +188,7 @@ webserver_letsencrypt_deploy_account_key: True
 webserver_letsencrypt_use_staging: False
 
 webserver_phpfpm_pools: []
+webserver_phpfpm_start_after_nss_user_lookup: False
 webserver_sites_include_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ inventory_hostname }}-sites-include.git'
 webserver_vhost_data_path:
   server: /var/www
