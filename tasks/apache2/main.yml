@@ -36,6 +36,10 @@
   package:
     pkg: "{{ webserver_packages_custom }}"
 
+- name: include shibboleth
+  include_tasks: shibboleth.yml
+  when: "'shib' in webserver_modules_custom"
+
 - name: include lastuse fifo
   include_tasks: log_lastuse.yml
   when: webserver_log_lastuse

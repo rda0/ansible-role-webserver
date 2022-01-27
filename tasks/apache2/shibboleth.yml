@@ -1,0 +1,20 @@
+- name: add gpg key for switchaai repo
+  # KeyID 294E37D154156E00FB96D7AA26C3C46915B76742
+  copy:
+    src: apache2/switchaai.asc
+    dest: /etc/apt/trusted.gpg.d/switchaai.asc
+    owner: root
+    group: root
+    mode: 0644
+
+- name: add switchaai repo
+  apt_repository:
+    repo: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_distribution_release }} main"
+    filename: switchaai
+    state: present
+
+- name: install shibboleth (switchaai) packages
+  package:
+    name:
+      - shibboleth
+      - libapache2-mod-shib
