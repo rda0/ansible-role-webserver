@@ -44,6 +44,13 @@ webserver_vhosts:
 
 Just add any parameters that deviate from the default value.
 
+To filter vhosts and apply vhost settings to a single vhost or a set of vhosts for the current run,
+use the `vhostfilter` setting, example:
+
+```bash
+-e vhostfilter=vhost1
+```
+
 fifo2syslog
 -----------
 

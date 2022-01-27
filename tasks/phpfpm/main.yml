@@ -20,4 +20,4 @@
     min_spare_servers: "{{ item.min_spare_servers|default(1) }}"
     max_spare_servers: "{{ item.max_spare_servers|default(3) }}"
     php_options: "{{ item.php_options|default('') }}"
-  loop: '{{ webserver_phpfpm_pools }}'
+  loop: "{{ webserver_phpfpm_pools|selectattr('name', 'in', _vhostfilter)|list }}"

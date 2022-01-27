@@ -70,9 +70,17 @@
 #  debug:
 #    msg: "{{ _vhosts }}"
 
+- name: set fact _vhostfilter
+  set_fact:
+    _vhostfilter: "{{ vhostfilter|default(_vhosts|map(attribute='name')|list) }}"
+
+#- name: debug _vhostfilter
+#  debug:
+#    msg: "{{ _vhostfilter }}"
+
 - name: include vhosts share data
   include_tasks: vhosts_share_data.yml
-  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -139,7 +147,7 @@
   notify: reload apache2
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
-  loop: '{{ _vhosts }}'
+  loop: "{{ _vhosts|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -152,7 +160,7 @@
       name: '{{ item.name }}'
       data_path: '{{ item.data_path }}'
       fcgid: '{{ item.https.fcgid }}'
-  loop: "{{ _vhosts|selectattr('https.fcgid')|list }}"
+  loop: "{{ _vhosts|selectattr('https.fcgid')|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -162,7 +170,7 @@
 
 - name: include fcgid
   include_tasks: vhosts_fcgid.yml
-  loop: "{{ _vhosts_fcgid }}"
+  loop: "{{ _vhosts_fcgid|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     loop_var: vhost_fcgid
 
@@ -172,7 +180,7 @@
     dest: '/etc/apache2/sites-enabled/{{ vhost.name }}.conf'
     state: link
   notify: reload apache2
-  loop: '{{ _vhosts }}'
+  loop: "{{ _vhosts|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
