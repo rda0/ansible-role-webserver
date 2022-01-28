@@ -8,10 +8,13 @@
     mode: 0644
 
 - name: add switchaai repo
-  apt_repository:
-    repo: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_distribution_release }} main"
-    filename: switchaai
-    state: present
+  copy:
+    dest: /etc/apt/sources.list.d/switchaai.list
+    content: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_distribution_release }} main\n"
+    owner: root
+    group: root
+    mode: 0644
+  notify: apt update
 
 - name: install shibboleth (switchaai) packages
   package:
