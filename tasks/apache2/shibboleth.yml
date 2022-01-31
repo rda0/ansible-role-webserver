@@ -14,7 +14,12 @@
     owner: root
     group: root
     mode: 0644
-  notify: apt update
+  register: switchaai_apt_repo
+
+- name: trigger apt update on repo change
+  apt:
+    update_cache: yes
+  when: switchaai_apt_repo.changed
 
 - name: install shibboleth (switchaai) packages
   package:
