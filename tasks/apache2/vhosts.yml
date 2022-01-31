@@ -48,6 +48,9 @@
           script_alias: "{{ ((item.http|default({})).wsgi|default({})).script_alias|default('/') }}"
           processes: "{{ ((item.http|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.http|default({})).wsgi|default({})).threads|default(5) }}"
+          venv: "{{ ((item.http|default({})).wsgi|default({})).venv|default(False) }}"
+          venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv') }}"
+          venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt') }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
@@ -62,6 +65,9 @@
           script_alias: "{{ ((item.https|default({})).wsgi|default({})).script_alias|default('/') }}"
           processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
+          venv: "{{ ((item.https|default({})).wsgi|default({})).venv|default(False) }}"
+          venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv') }}"
+          venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
@@ -173,6 +179,36 @@
   loop: "{{ _vhosts_fcgid|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     loop_var: vhost_fcgid
+
+- name: set fact _vhosts_wsgi_venv
+  set_fact:
+    _vhosts_wsgi_venv: "{{ _vhosts_wsgi_venv + [_vhost_wsgi_venv] }}"
+  vars:
+    _vhost_wsgi_venv:
+      name: '{{ item.name }}'
+      document_root: '{{ item.document_root }}'
+      venv: '{{ item.https.wsgi.venv }}'
+      venv_path: '{{ item.https.wsgi.venv_path }}'
+      venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
+  loop: "{{ _vhosts|selectattr('https.wsgi.venv')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+#- name: debug _vhosts_wsgi_venv
+#  debug:
+#    msg: "{{ _vhosts_wsgi_venv }}"
+
+- name: install wsgi venv dependencies
+  package:
+    name: python3-venv
+    state: present
+  when: _vhosts_wsgi_venv
+
+- name: include wsgi venv
+  include_tasks: vhosts_wsgi_venv.yml
+  loop: "{{ _vhosts_wsgi_venv|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop_control:
+    loop_var: vhost_wsgi_venv
 
 - name: enable vhosts
   file:

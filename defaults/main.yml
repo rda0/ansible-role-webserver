@@ -221,10 +221,12 @@ webserver_website_wordpress_cronjob_update_languages: True
 webserver_website_wordpress_db_host: '{{ webserver_db_host }}'
 webserver_website_wordpress_set_db_host: True
 webserver_suexec_custom_config: ''
+webserver_wsgi_venv_reinit: False
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
 _vhosts_fcgid: []
 _vhosts_db: []
+_vhosts_wsgi_venv: []
 _vhostfilter: []
 _webserver_php_version: ''
