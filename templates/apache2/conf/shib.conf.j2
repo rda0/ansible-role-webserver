@@ -1,0 +1,6 @@
+# Turn this on to support "require valid-user" rules from other
+# mod_authn_* modules, and use "require shib-session" for anonymous
+# session-based authorization in mod_shib.
+# In other words: turn this on or all other normally working authn_*
+# modules that use "require valid-user" will be broken server wide.
+ShibCompatValidUser On

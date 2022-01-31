@@ -26,3 +26,19 @@
     name:
       - shibboleth
       - libapache2-mod-shib
+
+- name: deploy server wide shibboleth (switchaai) conf
+  template:
+    src: 'apache2/conf/shib.conf.j2'
+    dest: '/etc/apache2/conf-available/shib.conf'
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload apache2
+
+- name: enable server wide shibboleth (switchaai) conf
+  file:
+    src: '../conf-available/shib.conf'
+    dest: '/etc/apache2/conf-enabled/shib.conf'
+    state: link
+  notify: reload apache2
