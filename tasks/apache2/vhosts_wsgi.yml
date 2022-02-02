@@ -1,3 +1,12 @@
+- name: deploy default wsgi app
+  copy:
+    content: '{{ vhost_wsgi.content }}'
+    dest: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.app }}'
+    owner: '{{ vhost_wsgi.owner }}'
+    group: '{{ vhost_wsgi.group }}'
+    mode: '{{ vhost_wsgi.mode }}'
+    force: no
+
 - block:
 
   - name: remove venv (reinit)

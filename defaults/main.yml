@@ -222,6 +222,16 @@ webserver_website_wordpress_db_host: '{{ webserver_db_host }}'
 webserver_website_wordpress_set_db_host: True
 webserver_suexec_custom_config: ''
 webserver_wsgi_venv_reinit: False
+webserver_wsgi_app_content_default: |
+  import os
+  def dummy_app(environ, start_response):
+      status = '200 OK'
+      output = 'It works!<br/><br/>'
+      output += 'To get started read: <a href="https://readme.phys.ethz.ch/web/webshares/">https://readme.phys.ethz.ch/web/webshares/<a/>'
+      response_headers = [('Content-type', 'text/html'), ('Content-Length', str(len(output)))]
+      start_response(status, response_headers)
+      return [output.encode('utf8')]
+  application = dummy_app
 
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
