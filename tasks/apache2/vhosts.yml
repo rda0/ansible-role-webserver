@@ -49,8 +49,8 @@
           processes: "{{ ((item.http|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.http|default({})).wsgi|default({})).threads|default(5) }}"
           venv: "{{ ((item.http|default({})).wsgi|default({})).venv|default(False) }}"
-          venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv') }}"
-          venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt') }}"
+          venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
+          venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
@@ -66,8 +66,8 @@
           processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
           venv: "{{ ((item.https|default({})).wsgi|default({})).venv|default(False) }}"
-          venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv') }}"
-          venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt') }}"
+          venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
+          venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"

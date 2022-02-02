@@ -82,7 +82,7 @@
   </Directory>
 {% endif %}
 {% if vhost.http.wsgi.app != '' %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}{% if vhost.http.wsgi.venv %} python-home={{ vhost.document_root }}/{{ vhost.http.wsgi.venv_path }}{{ '\n' }}{% endif %}
   WSGIProcessGroup {{ vhost.name }}
   WSGIScriptAlias {{ vhost.http.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.http.wsgi.app }}
 {% endif %}
@@ -202,7 +202,7 @@
 {% endif %}
 {% if vhost.https.wsgi.app != '' %}
 {% if vhost.http.wsgi.app == '' %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}{% if vhost.https.wsgi.venv %} python-home={{ vhost.document_root }}/{{ vhost.https.wsgi.venv_path }}{{ '\n' }}{% endif %}
 {% endif %}
   WSGIProcessGroup {{ vhost.name }}
   WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
