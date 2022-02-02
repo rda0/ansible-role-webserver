@@ -227,6 +227,6 @@ webserver_wsgi_venv_reinit: False
 _vhosts: []
 _vhosts_fcgid: []
 _vhosts_db: []
-_vhosts_wsgi_venv: []
+_vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''

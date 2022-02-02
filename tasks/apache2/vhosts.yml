@@ -180,35 +180,36 @@
   loop_control:
     loop_var: vhost_fcgid
 
-- name: set fact _vhosts_wsgi_venv
+- name: set fact _vhosts_wsgi
   set_fact:
-    _vhosts_wsgi_venv: "{{ _vhosts_wsgi_venv + [_vhost_wsgi_venv] }}"
+    _vhosts_wsgi: "{{ _vhosts_wsgi + [_vhost_wsgi] }}"
   vars:
-    _vhost_wsgi_venv:
+    _vhost_wsgi:
       name: '{{ item.name }}'
       document_root: '{{ item.document_root }}'
+      app: '{{ item.https.wsgi.app }}'
       venv: '{{ item.https.wsgi.venv }}'
       venv_path: '{{ item.https.wsgi.venv_path }}'
       venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
-  loop: "{{ _vhosts|selectattr('https.wsgi.venv')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts|selectattr('https.wsgi.app')|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     label: "{{ item.name }}"
 
-#- name: debug _vhosts_wsgi_venv
+#- name: debug _vhosts_wsgi
 #  debug:
-#    msg: "{{ _vhosts_wsgi_venv }}"
+#    msg: "{{ _vhosts_wsgi }}"
 
 - name: install wsgi venv dependencies
   package:
     name: python3-venv
     state: present
-  when: _vhosts_wsgi_venv
+  when: _vhosts_wsgi|selectattr('venv')|list
 
-- name: include wsgi venv
-  include_tasks: vhosts_wsgi_venv.yml
-  loop: "{{ _vhosts_wsgi_venv|selectattr('name', 'in', _vhostfilter)|list }}"
+- name: include wsgi
+  include_tasks: vhosts_wsgi.yml
+  loop: "{{ _vhosts_wsgi|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
-    loop_var: vhost_wsgi_venv
+    loop_var: vhost_wsgi
 
 - name: enable vhosts
   file:
