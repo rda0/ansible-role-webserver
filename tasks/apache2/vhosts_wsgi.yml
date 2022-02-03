@@ -9,6 +9,20 @@
 
 - block:
 
+  - name: deploy empty requirements
+    copy:
+      content: ''
+      dest: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_requirements }}'
+      owner: '{{ vhost_wsgi.owner }}'
+      group: '{{ vhost_wsgi.group }}'
+      mode: '{{ vhost_wsgi.mode }}'
+      force: no
+
+  - name: check if venv_freeze already exists
+    stat:
+      path: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze }}'
+    register: webserver_wsgi_venv_freeze
+
   - name: remove venv (reinit)
     file:
       path: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}'
@@ -31,19 +45,29 @@
         state: latest  # noqa package-latest
         virtualenv: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}'
         virtualenv_command: /usr/bin/python3 -m venv
+        extra_args: --no-cache-dir
       become: yes
       become_user: "{{ vhost_wsgi.name }}"
       register: webserver_wsgi_venv_initialize
 
-    - name: install requirements
+    - name: install from freeze if exists or else from requirements
       pip:
-        requirements: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_requirements }}'
+        requirements: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze if webserver_wsgi_venv_freeze.stat.exists else vhost_wsgi.venv_requirements }}'
         virtualenv: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}'
         virtualenv_command: /usr/bin/python3 -m venv
+        extra_args: --no-cache-dir
       become: yes
       become_user: "{{ vhost_wsgi.name }}"
+      register: webserver_wsgi_venv_install_requirements
       when: webserver_wsgi_venv_initialize.changed
 
     when: not webserver_wsgi_venv_directory.stat.exists
+
+  - name: generate venv freeze file
+    shell:
+      cmd: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}/bin/pip freeze > {{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze }}'
+    become: yes
+    become_user: "{{ vhost_wsgi.name }}"
+    when: not webserver_wsgi_venv_freeze.stat.exists or ((webserver_wsgi_venv_initialize is defined and webserver_wsgi_venv_initialize.changed) or (webserver_wsgi_venv_install_requirements is defined and webserver_wsgi_venv_install_requirements.changed))
 
   when: vhost_wsgi.venv

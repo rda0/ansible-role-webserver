@@ -55,6 +55,7 @@
           venv: "{{ ((item.http|default({})).wsgi|default({})).venv|default(False) }}"
           venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
           venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
+          venv_freeze: "{{ ((item.http|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
       https:
         cert: "{{ (item.https|default({})).cert|default('') }}"
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
@@ -76,6 +77,7 @@
           venv: "{{ ((item.https|default({})).wsgi|default({})).venv|default(False) }}"
           venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
           venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
+          venv_freeze: "{{ ((item.https|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
@@ -203,6 +205,7 @@
       venv: '{{ item.https.wsgi.venv }}'
       venv_path: '{{ item.https.wsgi.venv_path }}'
       venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
+      venv_freeze: '{{ item.https.wsgi.venv_freeze }}'
   loop: "{{ _vhosts|selectattr('https.wsgi.app')|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     label: "{{ item.name }}"
