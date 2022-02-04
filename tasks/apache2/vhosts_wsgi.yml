@@ -60,6 +60,7 @@
       become_user: "{{ vhost_wsgi.name }}"
       register: webserver_wsgi_venv_install_requirements
       when: webserver_wsgi_venv_initialize.changed
+      ignore_errors: True
 
     when: not webserver_wsgi_venv_directory.stat.exists
 
