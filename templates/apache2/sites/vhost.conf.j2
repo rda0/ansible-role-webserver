@@ -88,6 +88,9 @@
   WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }}
 {% endif %}
   WSGIProcessGroup {{ vhost.name }}
+{% if vhost.http.wsgi.application_group != '' %}
+  WSGIApplicationGroup {{ vhost.http.wsgi.application_group }}
+{% endif %}
   WSGIScriptAlias {{ vhost.http.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.http.wsgi.app }}
 {% endif %}
 {% if vhost.website.type == 'wordpress' %}
@@ -213,6 +216,9 @@
 {% endif %}
 {% endif %}
   WSGIProcessGroup {{ vhost.name }}
+{% if vhost.https.wsgi.application_group != '' %}
+  WSGIApplicationGroup {{ vhost.https.wsgi.application_group }}
+{% endif %}
   WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
 {% endif %}
 {% if vhost.website.type == 'wordpress' %}

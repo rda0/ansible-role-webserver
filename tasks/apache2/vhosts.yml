@@ -44,6 +44,7 @@
         fcgid: "{{ (item.http|default({})).fcgid|default([]) }}"
         wsgi:
           app: "{{ ((item.http|default({})).wsgi|default({})).app|default('') }}"
+          application_group: "{{ ((item.http|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
           content: "{{ ((item.http|default({})).wsgi|default({})).content|default(webserver_wsgi_app_content_default) }}"
           owner: "{{ ((item.http|default({})).wsgi|default({})).owner|default(item.name) }}"
           group: "{{ ((item.http|default({})).wsgi|default({})).group|default(item.name) }}"
@@ -66,6 +67,7 @@
         fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
         wsgi:
           app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
+          application_group: "{{ ((item.https|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
           content: "{{ ((item.https|default({})).wsgi|default({})).content|default(webserver_wsgi_app_content_default) }}"
           owner: "{{ ((item.https|default({})).wsgi|default({})).owner|default(item.name) }}"
           group: "{{ ((item.https|default({})).wsgi|default({})).group|default(item.name) }}"
@@ -198,6 +200,7 @@
       name: '{{ item.name }}'
       document_root: '{{ item.document_root }}'
       app: '{{ item.https.wsgi.app }}'
+      application_group: '{{ item.https.wsgi.app }}'
       content: '{{ item.https.wsgi.content }}'
       owner: '{{ item.https.wsgi.owner }}'
       group: '{{ item.https.wsgi.group }}'
