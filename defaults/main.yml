@@ -131,6 +131,11 @@ webserver_site_config_common_requires:
     Require all granted
     AllowOverride All
     Options All Multiviews SymLinksIfOwnerMatch
+  grant_share_all_allow_override_auth: |
+    Require all granted
+    AllowOverride AuthConfig
+    AllowOverrideList None
+    Options Multiviews SymLinksIfOwnerMatch
   grant_share_phys_ldap: |
     Use PhysLDAP
     Require valid-user
