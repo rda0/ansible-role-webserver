@@ -241,6 +241,7 @@ webserver_wsgi_app_content_default: |
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
 _vhosts_fcgid: []
+_vhosts_fcgid_php: []
 _vhosts_db: []
 _vhosts_wsgi: []
 _vhostfilter: []

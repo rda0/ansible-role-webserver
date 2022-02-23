@@ -1,3 +1,0 @@
-#!/bin/sh
-export PHPRC="/etc/php/7.3/cgi/"
-exec /usr/bin/php-cgi

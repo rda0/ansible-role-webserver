@@ -148,14 +148,19 @@
 #  debug:
 #    msg: "{{ _phpfpm_pool_names }}"
 
+- name: set fact _vhosts_fcgid_php
+  set_fact:
+    _vhosts_fcgid_php: "{{ _vhosts|selectattr('https.fcgid', 'contains', 'php')|selectattr('name', 'in', _vhostfilter)|list|map(attribute='name') }}"
+
 - name: find php upstream version
   package_facts:
+  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php > 0
 
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-  when: webserver_phpfpm_pools|length > 0
+  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php > 0
 
 - name: create vhosts
   template:
