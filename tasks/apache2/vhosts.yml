@@ -69,8 +69,7 @@
         require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid:
           extensions: "{{ ((item.https|default({})).fcgid|default({})).extensions|default([]) }}"
-          options: "{{ ((item.https|default({})).fcgid|default({})).options|default([]) }}"
-          #options: "{{ ((item.https|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
+          options: "{{ ((item.https|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
         wsgi:
           app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
           application_group: "{{ ((item.https|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
