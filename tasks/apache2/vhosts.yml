@@ -65,7 +65,7 @@
         empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
         redirect: "{{ (item.https|default({})).redirect|default('' if item.server_alias|default('') == '' else ['https', item.server_name]|join(' ')) }}"
         config: "{{ (item.https|default({})).config|default('') }}"
-        includes: "{{ (item.https|default({})).includes|default([]) }}"
+        includes: "{{ (item.https|default({})).includes|default([item.name]) }}"
         require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
         fcgid:
           extensions: "{{ ((item.https|default({})).fcgid|default({})).extensions|default([]) }}"
