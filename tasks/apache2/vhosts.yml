@@ -41,7 +41,9 @@
         config: "{{ (item.http|default({})).config|default('') }}"
         includes: "{{ (item.http|default({})).includes|default([]) }}"
         require: "{{ (item.http|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
-        fcgid: "{{ (item.http|default({})).fcgid|default([]) }}"
+        fcgid:
+          extensions: "{{ ((item.http|default({})).fcgid|default({})).extensions|default([]) }}"
+          options: "{{ ((item.http|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
         wsgi:
           app: "{{ ((item.http|default({})).wsgi|default({})).app|default('') }}"
           application_group: "{{ ((item.http|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
@@ -65,7 +67,10 @@
         config: "{{ (item.https|default({})).config|default('') }}"
         includes: "{{ (item.https|default({})).includes|default([]) }}"
         require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
-        fcgid: "{{ (item.https|default({})).fcgid|default([]) }}"
+        fcgid:
+          extensions: "{{ ((item.https|default({})).fcgid|default({})).extensions|default([]) }}"
+          options: "{{ ((item.https|default({})).fcgid|default({})).options|default([]) }}"
+          #options: "{{ ((item.https|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
         wsgi:
           app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
           application_group: "{{ ((item.https|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
@@ -150,7 +155,7 @@
 
 - name: set fact _vhosts_fcgid_php
   set_fact:
-    _vhosts_fcgid_php: "{{ _vhosts|selectattr('https.fcgid', 'contains', 'php')|selectattr('name', 'in', _vhostfilter)|list|map(attribute='name') }}"
+    _vhosts_fcgid_php: "{{ _vhosts|selectattr('https.fcgid.extensions', 'contains', 'php')|selectattr('name', 'in', _vhostfilter)|list|map(attribute='name') }}"
 
 - name: find php upstream version
   package_facts:
@@ -185,7 +190,7 @@
       name: '{{ item.name }}'
       data_path: '{{ item.data_path }}'
       fcgid: '{{ item.https.fcgid }}'
-  loop: "{{ _vhosts|selectattr('https.fcgid')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts|selectattr('https.fcgid.extensions')|selectattr('name', 'in', _vhostfilter)|list }}"
   loop_control:
     label: "{{ item.name }}"
 

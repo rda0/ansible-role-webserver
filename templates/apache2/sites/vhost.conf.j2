@@ -62,8 +62,8 @@
     SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
-{% if vhost.http.fcgid %}
-  DirectoryIndex{% for ext in vhost.http.fcgid %} index.{{ ext }}{% endfor %} index.html
+{% if vhost.http.fcgid.extensions %}
+  DirectoryIndex{% for ext in vhost.http.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
   </IfModule>
@@ -73,10 +73,10 @@
   </IfModule>
   <Directory {{ vhost.document_root }}>
     Options +ExecCGI
-{% for ext in vhost.http.fcgid %}
+{% for ext in vhost.http.fcgid.extensions %}
     AddHandler fcgid-script .{{ ext }}
 {% endfor %}
-{% for ext in vhost.http.fcgid if ext not in webserver_fcgid_fcgi_extensions %}
+{% for ext in vhost.http.fcgid.extensions if ext not in webserver_fcgid_fcgi_extensions %}
     FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
@@ -188,8 +188,8 @@
     SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
-{% if vhost.https.fcgid %}
-  DirectoryIndex{% for ext in vhost.https.fcgid %} index.{{ ext }}{% endfor %} index.html
+{% if vhost.https.fcgid.extensions %}
+  DirectoryIndex{% for ext in vhost.https.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
   </IfModule>
@@ -199,10 +199,10 @@
   </IfModule>
   <Directory {{ vhost.document_root }}>
     Options +ExecCGI
-{% for ext in vhost.https.fcgid %}
+{% for ext in vhost.https.fcgid.extensions %}
     AddHandler fcgid-script .{{ ext }}
 {% endfor %}
-{% for ext in vhost.https.fcgid if ext not in webserver_fcgid_fcgi_extensions %}
+{% for ext in vhost.https.fcgid.extensions if ext not in webserver_fcgid_fcgi_extensions %}
     FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>

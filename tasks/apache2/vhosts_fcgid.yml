@@ -14,7 +14,7 @@
     owner: "{{ vhost_fcgid.name }}"
     group: "{{ vhost_fcgid.name }}"
     mode: '0550'
-  loop: "{{ vhost_fcgid.fcgid|reject('in', webserver_fcgid_custom_wrappers)|list }}"
+  loop: "{{ vhost_fcgid.fcgid.extensions|reject('in', webserver_fcgid_custom_wrappers)|list }}"
   when: fcgid_type not in webserver_fcgid_fcgi_extensions
   loop_control:
     loop_var: fcgid_type
@@ -27,7 +27,9 @@
     owner: "{{ vhost_fcgid.name }}"
     group: "{{ vhost_fcgid.name }}"
     mode: '0550'
-  loop: "{{ vhost_fcgid.fcgid|select('in', webserver_fcgid_custom_wrappers)|list }}"
+  vars:
+    options: "{{ vhost_fcgid.fcgid.options[fcgid_type]|default([]) }}"
+  loop: "{{ vhost_fcgid.fcgid.extensions|select('in', webserver_fcgid_custom_wrappers)|list }}"
   when: fcgid_type not in webserver_fcgid_fcgi_extensions
   loop_control:
     loop_var: fcgid_type

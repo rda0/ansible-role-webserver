@@ -209,6 +209,10 @@ webserver_fcgid_conf_max_request_len: 134217728
 webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap
 webserver_fcgid_custom_wrappers:
   - php
+webserver_fcgid_custom_options:
+  php:
+    - post_max_size=128M
+    - upload_max_filesize=128M
 webserver_fcgid_fcgi_extensions:
   - fcgi
 webserver_db_delegate: phd-sqlweb
