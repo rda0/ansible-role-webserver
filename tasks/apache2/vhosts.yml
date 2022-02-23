@@ -158,13 +158,13 @@
 
 - name: find php upstream version
   package_facts:
-  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php > 0
+  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php|length > 0
 
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php > 0
+  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php|length > 0
 
 - name: create vhosts
   template:
