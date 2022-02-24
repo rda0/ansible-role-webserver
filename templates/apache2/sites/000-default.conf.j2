@@ -47,7 +47,7 @@
 <VirtualHost *:443>
   ServerName {{ ansible_fqdn }}
   DocumentRoot /var/www/default
-  {{ webserver_site_config_default_vhost_default_https_enablessl }}
+  {{ (webserver_site_config_default_vhost_default_https_enablessl|indent(width=2)).rstrip() }}
   Use RedirectTo https {{ ansible_fqdn }}
   LogLevel {{ webserver_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/default_https_error.log
