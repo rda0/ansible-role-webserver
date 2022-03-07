@@ -63,6 +63,7 @@ webserver_https_dh_params_size: 4096
 webserver_https_dh_params_path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
 webserver_https_certificate_rsa: True
 webserver_https_certificate_ecdsa: True
+webserver_https_certificate_custom: False
 webserver_https_fail_if_certificate_missing: False
 webserver_https_hsts: True
 #webserver_https_hsts_max_age: 63072000

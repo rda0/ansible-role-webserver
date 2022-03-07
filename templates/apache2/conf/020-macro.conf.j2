@@ -63,6 +63,18 @@
     </IfFile>
 {% endif %}
 {% endif %}
+{% if webserver_https_certificate_custom %}
+    <IfFile /etc/ssl/certs/$certname.crt>
+      SSLEngine On
+      SSLCertificateFile /etc/ssl/certs/$certname.crt
+      SSLCertificateKeyFile /etc/ssl/private/$certname.key
+    </IfFile>
+{% if webserver_https_fail_if_certificate_missing %}
+    <IfFile !/etc/ssl/certs/$certname.crt>
+      Error "No certificate file: /etc/ssl/certs/$certname.crt"
+    </IfFile>
+{% endif %}
+{% endif %}
   </IfModule>
 </Macro>
 
