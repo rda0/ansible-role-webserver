@@ -179,7 +179,7 @@ For details and all other settings refer to `tasks/apache2/vhosts.yml`.
 
 The venv is deployed according to `private/requirements.txt`, this is the file that should be maintained by the user.
 If a `private/freeze.txt` is found, this will take precedence over `private/requirements.txt`.
-After generating the venv, a `private/freeze.txt` will be generated (for later exact reproducapility).
+After generating the venv, a `private/freeze.txt` will be generated (for later exact reproducibility).
 
 To regenerate the venv use `-e webserver_wsgi_venv_freeze=True`.
 
