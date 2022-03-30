@@ -181,7 +181,7 @@ The venv is deployed according to `private/requirements.txt`, this is the file t
 If a `private/freeze.txt` is found, this will take precedence over `private/requirements.txt`.
 After generating the venv, a `private/freeze.txt` will be generated (for later exact reproducibility).
 
-To regenerate the venv use `-e webserver_wsgi_venv_freeze=True`.
+To regenerate the venv use `-e webserver_wsgi_venv_reinit=True`. In addition you may want to manually delete the `freeze.txt` beforehand.
 
 ### fifo2syslog
 
