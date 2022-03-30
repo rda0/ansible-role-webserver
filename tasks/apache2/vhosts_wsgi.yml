@@ -45,6 +45,7 @@
         state: latest  # noqa package-latest
         virtualenv: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}'
         virtualenv_command: /usr/bin/python3 -m venv
+        virtualenv_site_packages: "{{ vhost_wsgi.venv_system_pkgs | ternary('yes', 'no') }}"
         extra_args: --no-cache-dir
       become: yes
       become_user: "{{ vhost_wsgi.name }}"
@@ -66,7 +67,7 @@
 
   - name: 'wsgi {{ vhost_wsgi.name }} generate venv freeze file'
     shell:
-      cmd: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}/bin/pip freeze > {{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze }}'
+      cmd: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}/bin/pip freeze --local > {{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze }}'
     become: yes
     become_user: "{{ vhost_wsgi.name }}"
     when: not webserver_wsgi_venv_freeze.stat.exists or ((webserver_wsgi_venv_initialize is defined and webserver_wsgi_venv_initialize.changed) or (webserver_wsgi_venv_install_requirements is defined and webserver_wsgi_venv_install_requirements.changed))

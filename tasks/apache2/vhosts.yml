@@ -82,6 +82,7 @@
           processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
           venv: "{{ ((item.https|default({})).wsgi|default({})).venv|default(False) }}"
+          venv_system_pkgs: "{{ ((item.https|default({})).wsgi|default({})).venv_system_pkgs|default(False) }}"
           venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
           venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
           venv_freeze: "{{ ((item.https|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
@@ -217,6 +218,7 @@
       group: '{{ item.https.wsgi.group }}'
       mode: '{{ item.https.wsgi.mode }}'
       venv: '{{ item.https.wsgi.venv }}'
+      venv_system_pkgs: '{{ item.https.wsgi.venv_system_pkgs }}'
       venv_path: '{{ item.https.wsgi.venv_path }}'
       venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
       venv_freeze: '{{ item.https.wsgi.venv_freeze }}'

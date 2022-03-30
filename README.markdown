@@ -183,6 +183,8 @@ After generating the venv, a `private/freeze.txt` will be generated (for later e
 
 To regenerate the venv use `-e webserver_wsgi_venv_reinit=True`. In addition you may want to manually delete the `freeze.txt` beforehand.
 
+In rare exceptions you may need to enable access to system-wide Python packages from inside the venv using the `venv_system_pkgs: True` flag. This can be useful if the required packages have no wheels, are non-trivial to build from source, but readily available as Debian package. In general this setting should be avoided as the webshare may be impacted by Debian package and release upgrades.
+
 ### fifo2syslog
 
 The systemd service file `/etc/systemd/system/fifo2syslog.service` starts `fifo2syslog`, which in turn starts `apache_syslog_auth`. Note that apache will hang at start if the `/var/log/apache2/lastuse.fifo` is missing or the `fifo2syslog` service not running.
