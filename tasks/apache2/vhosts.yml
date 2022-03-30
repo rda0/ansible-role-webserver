@@ -56,6 +56,7 @@
           processes: "{{ ((item.http|default({})).wsgi|default({})).processes|default(2) }}"
           threads: "{{ ((item.http|default({})).wsgi|default({})).threads|default(5) }}"
           venv: "{{ ((item.http|default({})).wsgi|default({})).venv|default(False) }}"
+          venv_system_pkgs: "{{ ((item.http|default({})).wsgi|default({})).venv_system_pkgs|default(False) }}"
           venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
           venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
           venv_freeze: "{{ ((item.http|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
