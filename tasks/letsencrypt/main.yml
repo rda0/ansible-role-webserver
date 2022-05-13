@@ -1,4 +1,5 @@
-- block:
+- name: tags-block
+  block:
   - name: include migrate to ansible
     include_tasks: migrate_to_ansible.yml
     when: webserver_letsencrypt_migrate_to_ansible
@@ -73,13 +74,15 @@
     mode: '0640'
   tags: webserver_letsencrypt_use_staging
 
-- block:
+- name: tags-block
+  block:
   - name: include initialize automatic
     include_tasks: initialize_automatic.yml
     when: not webserver_letsencrypt_initialize_manually
   tags: webserver_letsencrypt_initialize_automatic
 
-- block:
+- name: tags-block
+  block:
   - name: include initialize manually
     include_tasks: initialize_manually.yml
     when: webserver_letsencrypt_initialize_manually

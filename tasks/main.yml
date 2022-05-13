@@ -1,6 +1,8 @@
-- block:
+- name: tags-block
+  block:
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include apache2
       include_tasks: apache2/main.yml
@@ -8,7 +10,8 @@
 
     tags: webserver_apache2
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include nginx
       include_tasks: nginx/main.yml
@@ -16,7 +19,8 @@
 
     tags: webserver_nginx
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include stats
       include_tasks: stats/main.yml
@@ -24,7 +28,8 @@
 
     tags: webserver_stats
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include letsencrypt
       include_tasks: letsencrypt/main.yml
@@ -32,7 +37,8 @@
 
     tags: webserver_letsencrypt
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include php fpm
       include_tasks: phpfpm/main.yml
@@ -40,7 +46,8 @@
 
     tags: webserver_phpfpm
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: include website
       include_tasks: website/main.yml

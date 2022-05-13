@@ -77,7 +77,7 @@ webserver_empty_doc_root: /var/www/empty
 webserver_log_lastuse: False
 webserver_server_admin: isg@phys.ethz.ch
 webserver_hoster_name: isg
-webserver_ldap: "{{ True if include_webserver_apache2 else False}}"
+webserver_ldap: "{{ True if include_webserver_apache2 else False }}"
 webserver_ldap_ethz: False
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/eth.crt
 webserver_modules_default:

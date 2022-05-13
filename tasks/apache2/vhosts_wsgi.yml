@@ -7,7 +7,8 @@
     mode: '{{ vhost_wsgi.mode }}'
     force: no
 
-- block:
+- name: tags-block
+  block:
 
   - name: 'wsgi {{ vhost_wsgi.name }} deploy empty requirements'
     copy:
@@ -34,7 +35,8 @@
       path: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}'
     register: webserver_wsgi_venv_directory
 
-  - block:
+  - name: tags-block
+    block:
 
     - name: 'wsgi {{ vhost_wsgi.name }} initialize venv (pip, setuptools, wheel)'
       pip:
