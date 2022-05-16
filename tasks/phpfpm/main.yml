@@ -26,6 +26,9 @@
   file:
     path: '/etc/systemd/system/php{{ _webserver_php_version }}-fpm.service.d'
     state: directory
+    owner: root
+    group: root
+    mode: 0755
   when: webserver_phpfpm_start_after_nss_user_lookup
 
 - name: 'override systemd php{{ _webserver_php_version }}-fpm.service'
@@ -34,5 +37,8 @@
     content: |
       [Unit]
       After=nss-user-lookup.target
+    owner: root
+    group: root
+    mode: 0644
   notify: reload systemd
   when: webserver_phpfpm_start_after_nss_user_lookup
