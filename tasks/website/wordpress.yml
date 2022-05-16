@@ -33,6 +33,7 @@
     mode: 0700
   vars:
     wordpress_instances: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
+  when: webserver_website_wordpress_cronjob
 
 - name: include vhosts with wordpress instance
   include_tasks: wordpress_instance.yml
