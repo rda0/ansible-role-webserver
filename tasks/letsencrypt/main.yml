@@ -34,9 +34,8 @@
     repo: '{{ webserver_letsencrypt_repo }}'
     dest: '{{ webserver_letsencrypt_path }}'
     accept_hostkey: true
-    update: no
+    update: yes
     version: '{{ webserver_letsencrypt_branch }}'
-  notify: 'restart {{ webserver_tls_terminator }}'
   register: webserver_letsencrypt_clone
   when: not webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_clone_repo
