@@ -32,12 +32,12 @@
     group: root
     mode: 0700
   vars:
-    wordpress_instances: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|list }}"
+    wordpress_instances: "{{ _vhosts | selectattr('website.type', 'equalto', 'wordpress') | list }}"
   when: webserver_website_wordpress_cronjob
 
 - name: include vhosts with wordpress instance
   include_tasks: wordpress_instance.yml
-  loop: "{{ _vhosts|selectattr('website.type', 'equalto', 'wordpress')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('website.type', 'equalto', 'wordpress') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: instance
     label: "{{ instance.name }}"

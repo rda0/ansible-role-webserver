@@ -6,7 +6,7 @@
   loop: "{{ _databases }}"
   loop_control:
     loop_var: instance
-    label: "{{ instance|combine({'password': 'redacted'}) }}"
+    label: "{{ instance | combine({'password': 'redacted'}) }}"
 
 - name: 'database create users'
   mysql_user:
@@ -19,4 +19,4 @@
   loop: "{{ _databases }}"
   loop_control:
     loop_var: instance
-    label: "{{ instance|combine({'password': 'redacted'}) }}"
+    label: "{{ instance | combine({'password': 'redacted'}) }}"

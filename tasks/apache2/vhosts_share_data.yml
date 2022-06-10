@@ -1,9 +1,9 @@
 - name: create webshare data structure and permissions
   file:
     path: '{{ vhost.data_path }}/{{ item.path }}'
-    owner: '{{ item.owner|default(vhost.name) }}'
-    group: '{{ item.group|default(vhost.name) }}'
-    mode: "{{ item.mode|default('2770') }}"
+    owner: '{{ item.owner | default(vhost.name) }}'
+    group: '{{ item.group | default(vhost.name) }}'
+    mode: "{{ item.mode | default('2770') }}"
     state: directory
   loop:
     - path: '{{ vhost.name }}'

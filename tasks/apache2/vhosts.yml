@@ -4,90 +4,90 @@
   vars:
     _vhost:
       name: '{{ item.name }}'
-      type: "{{ item.type|default('server') }}"
+      type: "{{ item.type | default('server') }}"
       server_name: '{{ item.server_name }}'
-      server_alias: "{{ item.server_alias|default('') }}"
-      server_admin: "{{ item.server_admin|default(webserver_server_admin) }}"
-      data_path: "{{ item.data_path|default(webserver_vhost_data_path[item.type|default('server')]) }}"
-      home_path: "{{ item.home_path|default(webserver_vhost_home_path[item.type|default('server')]) }}"
-      home_user_owned: "{{ item.home_user_owned|default(False) }}"
+      server_alias: "{{ item.server_alias | default('') }}"
+      server_admin: "{{ item.server_admin | default(webserver_server_admin) }}"
+      data_path: "{{ item.data_path | default(webserver_vhost_data_path[item.type | default('server')]) }}"
+      home_path: "{{ item.home_path | default(webserver_vhost_home_path[item.type | default('server')]) }}"
+      home_user_owned: "{{ item.home_user_owned | default(False) }}"
       home_perms:
-        owner: "{{ (item.home_perms|default({})).owner|default(item.name if item.home_user_owned|default(False) else 'www-data') }}"
-        group: "{{ (item.home_perms|default({})).group|default('www-data' if item.home_user_owned|default(False) else item.name) }}"
-        mode: "{{ (item.home_perms|default({})).mode|default('0510' if item.home_user_owned|default(False) else '0150') }}"
-      document_root: "{{ item.document_root|default([item.home_path|default(webserver_vhost_home_path[item.type|default('server')]), item.name]|join('/')) }}{{ '/public' if item.type|default('server') == 'share' else '' }}"
-      secret: "{{ item.secret|default('') }}"
+        owner: "{{ (item.home_perms | default({})).owner | default(item.name if item.home_user_owned | default(False) else 'www-data') }}"
+        group: "{{ (item.home_perms | default({})).group | default('www-data' if item.home_user_owned | default(False) else item.name) }}"
+        mode: "{{ (item.home_perms | default({})).mode | default('0510' if item.home_user_owned | default(False) else '0150') }}"
+      document_root: "{{ item.document_root | default([item.home_path | default(webserver_vhost_home_path[item.type | default('server')]), item.name] | join('/')) }}{{ '/public' if item.type | default('server') == 'share' else '' }}"
+      secret: "{{ item.secret | default('') }}"
       hoster:
-        user: "{{ (item.hoster|default({})).user|default(webserver_hoster_name) }}"
-        email: "{{ (item.hoster|default({})).email|default(webserver_website_admin_email) }}"
-        password: "{{ (item.hoster|default({})).password|default(item.secret|default('')) }}"
+        user: "{{ (item.hoster | default({})).user | default(webserver_hoster_name) }}"
+        email: "{{ (item.hoster | default({})).email | default(webserver_website_admin_email) }}"
+        password: "{{ (item.hoster | default({})).password | default(item.secret | default('')) }}"
       website:
-        db: "{{ (item.website|default({})).db|default(True if (item.website|default({})).type|default('') in ['wordpress'] else False) }}"
-        type: "{{ (item.website|default({})).type|default('') }}"
-        name: "{{ (item.website|default({})).name|default(item.name) }}"
-        user: "{{ (item.website|default({})).user|default(webserver_website_admin_name) }}"
-        email: "{{ (item.website|default({})).email|default(webserver_website_admin_email) }}"
-        password: "{{ (item.website|default({})).password|default(item.secret|default('')) }}"
-        migrate: "{{ (item.website|default({})).migrate|default(False) }}"
+        db: "{{ (item.website | default({})).db | default(True if (item.website | default({})).type | default('') in ['wordpress'] else False) }}"
+        type: "{{ (item.website | default({})).type | default('') }}"
+        name: "{{ (item.website | default({})).name | default(item.name) }}"
+        user: "{{ (item.website | default({})).user | default(webserver_website_admin_name) }}"
+        email: "{{ (item.website | default({})).email | default(webserver_website_admin_email) }}"
+        password: "{{ (item.website | default({})).password | default(item.secret | default('')) }}"
+        migrate: "{{ (item.website | default({})).migrate | default(False) }}"
       db:
-        delegate: "{{ (item.db|default({})).delegate|default(webserver_db_delegate) }}"
-        host: "{{ (item.db|default({})).host|default(webserver_db_host) }}"
-        name: "{{ (item.db|default({})).name|default(item.name) }}"
-        user: "{{ (item.db|default({})).user|default(item.name) }}"
-        password: "{{ (item.db|default({})).password|default(item.secret|default('')) }}"
+        delegate: "{{ (item.db | default({})).delegate | default(webserver_db_delegate) }}"
+        host: "{{ (item.db | default({})).host | default(webserver_db_host) }}"
+        name: "{{ (item.db | default({})).name | default(item.name) }}"
+        user: "{{ (item.db | default({})).user | default(item.name) }}"
+        password: "{{ (item.db | default({})).password | default(item.secret | default('')) }}"
       http:
-        empty: "{{ (item.http|default({})).empty|default(True) }}"
-        redirect: "{{ (item.http|default({})).redirect|default(['https', item.server_name]|join(' ')) }}"
-        config: "{{ (item.http|default({})).config|default('') }}"
-        includes: "{{ (item.http|default({})).includes|default([]) }}"
-        require: "{{ (item.http|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
+        empty: "{{ (item.http | default({})).empty | default(True) }}"
+        redirect: "{{ (item.http | default({})).redirect | default(['https', item.server_name] | join(' ')) }}"
+        config: "{{ (item.http | default({})).config | default('') }}"
+        includes: "{{ (item.http | default({})).includes | default([]) }}"
+        require: "{{ (item.http | default({})).require | default('grant_share_all' if item.type | default('server') == 'share' else 'require_all_granted') }}"
         fcgid:
-          extensions: "{{ ((item.http|default({})).fcgid|default({})).extensions|default([]) }}"
-          options: "{{ ((item.http|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
+          extensions: "{{ ((item.http | default({})).fcgid | default({})).extensions | default([]) }}"
+          options: "{{ ((item.http | default({})).fcgid | default({})).options | default(webserver_fcgid_custom_options) }}"
         wsgi:
-          app: "{{ ((item.http|default({})).wsgi|default({})).app|default('') }}"
-          application_group: "{{ ((item.http|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
-          content: "{{ ((item.http|default({})).wsgi|default({})).content|default(webserver_wsgi_app_content_default) }}"
-          owner: "{{ ((item.http|default({})).wsgi|default({})).owner|default(item.name) }}"
-          group: "{{ ((item.http|default({})).wsgi|default({})).group|default(item.name) }}"
-          mode: "{{ ((item.http|default({})).wsgi|default({})).mode|default('0664') }}"
-          static: "{{ ((item.http|default({})).wsgi|default({})).static|default([]) }}"
-          script_alias: "{{ ((item.http|default({})).wsgi|default({})).script_alias|default('/') }}"
-          processes: "{{ ((item.http|default({})).wsgi|default({})).processes|default(2) }}"
-          threads: "{{ ((item.http|default({})).wsgi|default({})).threads|default(5) }}"
-          venv: "{{ ((item.http|default({})).wsgi|default({})).venv|default(False) }}"
-          venv_system_pkgs: "{{ ((item.http|default({})).wsgi|default({})).venv_system_pkgs|default(False) }}"
-          venv_path: "{{ ((item.http|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
-          venv_requirements: "{{ ((item.http|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
-          venv_freeze: "{{ ((item.http|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
-          locale: "{{ ((item.http|default({})).wsgi|default({})).locale|default('en_US.UTF-8') }}"
+          app: "{{ ((item.http | default({})).wsgi | default({})).app | default('') }}"
+          application_group: "{{ ((item.http | default({})).wsgi | default({})).application_group | default('%{GLOBAL}') }}"
+          content: "{{ ((item.http | default({})).wsgi | default({})).content | default(webserver_wsgi_app_content_default) }}"
+          owner: "{{ ((item.http | default({})).wsgi | default({})).owner | default(item.name) }}"
+          group: "{{ ((item.http | default({})).wsgi | default({})).group | default(item.name) }}"
+          mode: "{{ ((item.http | default({})).wsgi | default({})).mode | default('0664') }}"
+          static: "{{ ((item.http | default({})).wsgi | default({})).static | default([]) }}"
+          script_alias: "{{ ((item.http | default({})).wsgi | default({})).script_alias | default('/') }}"
+          processes: "{{ ((item.http | default({})).wsgi | default({})).processes | default(2) }}"
+          threads: "{{ ((item.http | default({})).wsgi | default({})).threads | default(5) }}"
+          venv: "{{ ((item.http | default({})).wsgi | default({})).venv | default(False) }}"
+          venv_system_pkgs: "{{ ((item.http | default({})).wsgi | default({})).venv_system_pkgs | default(False) }}"
+          venv_path: "{{ ((item.http | default({})).wsgi | default({})).venv_path | default('../private/venv' if item.type | default('server') == 'share' else 'venv') }}"
+          venv_requirements: "{{ ((item.http | default({})).wsgi | default({})).venv_requirements | default('../private/requirements.txt' if item.type | default('server') == 'share' else 'requirements.txt') }}"
+          venv_freeze: "{{ ((item.http | default({})).wsgi | default({})).venv_freeze | default('../private/freeze.txt' if item.type | default('server') == 'share' else 'freeze.txt') }}"
+          locale: "{{ ((item.http | default({})).wsgi | default({})).locale | default('en_US.UTF-8') }}"
       https:
-        cert: "{{ (item.https|default({})).cert|default('') }}"
-        empty: "{{ (item.https|default({})).empty|default(True if item.type|default('server') == 'redirect' else False) }}"
-        redirect: "{{ (item.https|default({})).redirect|default('' if item.server_alias|default('') == '' else ['https', item.server_name]|join(' ')) }}"
-        config: "{{ (item.https|default({})).config|default('') }}"
-        includes: "{{ (item.https|default({})).includes|default([item.name] if item.type|default('server') == 'share' else []) }}"
-        require: "{{ (item.https|default({})).require|default('grant_share_all' if item.type|default('server') == 'share' else 'require_all_granted') }}"
+        cert: "{{ (item.https | default({})).cert | default('') }}"
+        empty: "{{ (item.https | default({})).empty | default(True if item.type | default('server') == 'redirect' else False) }}"
+        redirect: "{{ (item.https | default({})).redirect | default('' if item.server_alias | default('') == '' else ['https', item.server_name] | join(' ')) }}"
+        config: "{{ (item.https | default({})).config | default('') }}"
+        includes: "{{ (item.https | default({})).includes | default([item.name] if item.type | default('server') == 'share' else []) }}"
+        require: "{{ (item.https | default({})).require | default('grant_share_all' if item.type | default('server') == 'share' else 'require_all_granted') }}"
         fcgid:
-          extensions: "{{ ((item.https|default({})).fcgid|default({})).extensions|default([]) }}"
-          options: "{{ ((item.https|default({})).fcgid|default({})).options|default(webserver_fcgid_custom_options) }}"
+          extensions: "{{ ((item.https | default({})).fcgid | default({})).extensions | default([]) }}"
+          options: "{{ ((item.https | default({})).fcgid | default({})).options | default(webserver_fcgid_custom_options) }}"
         wsgi:
-          app: "{{ ((item.https|default({})).wsgi|default({})).app|default('') }}"
-          application_group: "{{ ((item.https|default({})).wsgi|default({})).application_group|default('%{GLOBAL}') }}"
-          content: "{{ ((item.https|default({})).wsgi|default({})).content|default(webserver_wsgi_app_content_default) }}"
-          owner: "{{ ((item.https|default({})).wsgi|default({})).owner|default(item.name) }}"
-          group: "{{ ((item.https|default({})).wsgi|default({})).group|default(item.name) }}"
-          mode: "{{ ((item.https|default({})).wsgi|default({})).mode|default('0664') }}"
-          static: "{{ ((item.https|default({})).wsgi|default({})).static|default([]) }}"
-          script_alias: "{{ ((item.https|default({})).wsgi|default({})).script_alias|default('/') }}"
-          processes: "{{ ((item.https|default({})).wsgi|default({})).processes|default(2) }}"
-          threads: "{{ ((item.https|default({})).wsgi|default({})).threads|default(5) }}"
-          venv: "{{ ((item.https|default({})).wsgi|default({})).venv|default(False) }}"
-          venv_system_pkgs: "{{ ((item.https|default({})).wsgi|default({})).venv_system_pkgs|default(False) }}"
-          venv_path: "{{ ((item.https|default({})).wsgi|default({})).venv_path|default('../private/venv' if item.type|default('server') == 'share' else 'venv') }}"
-          venv_requirements: "{{ ((item.https|default({})).wsgi|default({})).venv_requirements|default('../private/requirements.txt' if item.type|default('server') == 'share' else 'requirements.txt') }}"
-          venv_freeze: "{{ ((item.https|default({})).wsgi|default({})).venv_freeze|default('../private/freeze.txt' if item.type|default('server') == 'share' else 'freeze.txt') }}"
-          locale: "{{ ((item.https|default({})).wsgi|default({})).locale|default('en_US.UTF-8') }}"
+          app: "{{ ((item.https | default({})).wsgi | default({})).app | default('') }}"
+          application_group: "{{ ((item.https | default({})).wsgi | default({})).application_group | default('%{GLOBAL}') }}"
+          content: "{{ ((item.https | default({})).wsgi | default({})).content | default(webserver_wsgi_app_content_default) }}"
+          owner: "{{ ((item.https | default({})).wsgi | default({})).owner | default(item.name) }}"
+          group: "{{ ((item.https | default({})).wsgi | default({})).group | default(item.name) }}"
+          mode: "{{ ((item.https | default({})).wsgi | default({})).mode | default('0664') }}"
+          static: "{{ ((item.https | default({})).wsgi | default({})).static | default([]) }}"
+          script_alias: "{{ ((item.https | default({})).wsgi | default({})).script_alias | default('/') }}"
+          processes: "{{ ((item.https | default({})).wsgi | default({})).processes | default(2) }}"
+          threads: "{{ ((item.https | default({})).wsgi | default({})).threads | default(5) }}"
+          venv: "{{ ((item.https | default({})).wsgi | default({})).venv | default(False) }}"
+          venv_system_pkgs: "{{ ((item.https | default({})).wsgi | default({})).venv_system_pkgs | default(False) }}"
+          venv_path: "{{ ((item.https | default({})).wsgi | default({})).venv_path | default('../private/venv' if item.type | default('server') == 'share' else 'venv') }}"
+          venv_requirements: "{{ ((item.https | default({})).wsgi | default({})).venv_requirements | default('../private/requirements.txt' if item.type | default('server') == 'share' else 'requirements.txt') }}"
+          venv_freeze: "{{ ((item.https | default({})).wsgi | default({})).venv_freeze | default('../private/freeze.txt' if item.type | default('server') == 'share' else 'freeze.txt') }}"
+          locale: "{{ ((item.https | default({})).wsgi | default({})).locale | default('en_US.UTF-8') }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
@@ -98,7 +98,7 @@
 
 - name: set fact _vhostfilter
   set_fact:
-    _vhostfilter: "{{ vhostfilter|default(_vhosts|map(attribute='name')|list) }}"
+    _vhostfilter: "{{ vhostfilter | default(_vhosts | map(attribute='name') | list) }}"
 
 #- name: debug _vhostfilter
 #  debug:
@@ -106,7 +106,7 @@
 
 - name: include vhosts share data
   include_tasks: vhosts_share_data.yml
-  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -114,22 +114,22 @@
 #- name: deploy systemd mount units for share bindmounts
 #  template:
 #    src: "apache2/service/share_path.mount.j2"
-#    dest: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
-#  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+#    dest: "/etc/systemd/system/{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
+#  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
 #  loop_control:
 #    loop_var: vhost
-#    label: "/etc/systemd/system/{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#    label: "/etc/systemd/system/{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
 #
 #- name: enable and start systemd mount units for share bindmounts
 #  systemd:
 #    daemon_reload: yes
 #    enabled: yes
 #    state: started
-#    name: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
-#  loop: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
+#    name: "{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
+#  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
 #  loop_control:
 #    loop_var: vhost
-#    label: "{{ vhost.home_path|regex_replace('^\\/', '')|replace('/', '-') }}-{{ vhost.name }}.mount"
+#    label: "{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
 
 - name: deploy /etc/auto.home
   template:
@@ -140,15 +140,15 @@
     mode: 0644
   notify: restart autofs
   vars:
-    vhosts: "{{ _vhosts|selectattr('type', 'equalto', 'share')|list }}"
-  when: vhosts|length > 0
+    vhosts: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
+  when: vhosts | length > 0
 
 - name: flush handlers
   meta: flush_handlers
 
 - name: set fact _phpfpm_pool_names
   set_fact:
-    _phpfpm_pool_names: "{{ webserver_phpfpm_pools|map(attribute='name')|list }}"
+    _phpfpm_pool_names: "{{ webserver_phpfpm_pools | map(attribute='name') | list }}"
 
 #- name: debug _phpfpm_pool_names
 #  debug:
@@ -156,17 +156,17 @@
 
 - name: set fact _vhosts_fcgid_php
   set_fact:
-    _vhosts_fcgid_php: "{{ _vhosts|selectattr('https.fcgid.extensions', 'contains', 'php')|selectattr('name', 'in', _vhostfilter)|list|map(attribute='name') }}"
+    _vhosts_fcgid_php: "{{ _vhosts | selectattr('https.fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _vhostfilter) | list | map(attribute='name') }}"
 
 - name: find php upstream version
   package_facts:
-  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php|length > 0
+  when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
 
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-  when: webserver_phpfpm_pools|length > 0 or _vhosts_fcgid_php|length > 0
+  when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
 
 - name: create vhosts
   template:
@@ -178,7 +178,7 @@
   notify: reload apache2
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
-  loop: "{{ _vhosts|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -191,7 +191,7 @@
       name: '{{ item.name }}'
       data_path: '{{ item.data_path }}'
       fcgid: '{{ item.https.fcgid }}'
-  loop: "{{ _vhosts|selectattr('https.fcgid.extensions')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('https.fcgid.extensions') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -201,7 +201,7 @@
 
 - name: include fcgid
   include_tasks: vhosts_fcgid.yml
-  loop: "{{ _vhosts_fcgid|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts_fcgid | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_fcgid
 
@@ -223,7 +223,7 @@
       venv_path: '{{ item.https.wsgi.venv_path }}'
       venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
       venv_freeze: '{{ item.https.wsgi.venv_freeze }}'
-  loop: "{{ _vhosts|selectattr('https.wsgi.app')|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('https.wsgi.app') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -235,11 +235,11 @@
   package:
     name: python3-venv
     state: present
-  when: _vhosts_wsgi|selectattr('venv')|list
+  when: _vhosts_wsgi | selectattr('venv') | list
 
 - name: include wsgi
   include_tasks: vhosts_wsgi.yml
-  loop: "{{ _vhosts_wsgi|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts_wsgi | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_wsgi
 
@@ -249,7 +249,7 @@
     dest: '/etc/apache2/sites-enabled/{{ vhost.name }}.conf'
     state: link
   notify: reload apache2
-  loop: "{{ _vhosts|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop: "{{ _vhosts | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"

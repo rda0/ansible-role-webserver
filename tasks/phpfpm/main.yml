@@ -13,14 +13,14 @@
   notify: restart php-fpm
   vars:
     name: '{{ item.name }}'
-    user: '{{ item.user|default(item.name) }}'
-    group: '{{ item.group|default(item.name) }}'
-    max_children: "{{ item.max_children|default(5) }}"
-    start_servers: "{{ item.start_servers|default(2) }}"
-    min_spare_servers: "{{ item.min_spare_servers|default(1) }}"
-    max_spare_servers: "{{ item.max_spare_servers|default(3) }}"
-    php_options: "{{ item.php_options|default('') }}"
-  loop: "{{ webserver_phpfpm_pools|selectattr('name', 'in', _vhostfilter)|list }}"
+    user: '{{ item.user | default(item.name) }}'
+    group: '{{ item.group | default(item.name) }}'
+    max_children: "{{ item.max_children | default(5) }}"
+    start_servers: "{{ item.start_servers | default(2) }}"
+    min_spare_servers: "{{ item.min_spare_servers | default(1) }}"
+    max_spare_servers: "{{ item.max_spare_servers | default(3) }}"
+    php_options: "{{ item.php_options | default('') }}"
+  loop: "{{ webserver_phpfpm_pools | selectattr('name', 'in', _vhostfilter) | list }}"
 
 - name: 'create directory /etc/systemd/system/php{{ _webserver_php_version }}-fpm.service.d'
   file:
