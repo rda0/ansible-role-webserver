@@ -28,14 +28,15 @@
     target: permissions
   changed_when: False
   when: webserver_letsencrypt_clone.changed
+  tags: webserver_letsencrypt_make_permissions
 
 - name: 'apply permissions on {{ webserver_letsencrypt_path }}'
   file:
     path: '{{ webserver_letsencrypt_path }}'
     state: directory
-    owner: letsencrypt
+    owner: root
     group: ssl-cert
-    mode: 0110
+    mode: 0711
 
 #- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
 #  file:

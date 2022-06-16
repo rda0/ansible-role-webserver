@@ -29,17 +29,6 @@
     group: letsencrypt
   tags: webserver_letsencrypt_user
 
-- name: 'clone git repo to {{ webserver_letsencrypt_path }}'
-  git:
-    repo: '{{ webserver_letsencrypt_repo }}'
-    dest: '{{ webserver_letsencrypt_path }}'
-    accept_hostkey: true
-    update: yes
-    version: '{{ webserver_letsencrypt_branch }}'
-  register: webserver_letsencrypt_clone
-  when: not webserver_letsencrypt_restore_from_backup
-  tags: webserver_letsencrypt_clone_repo
-
 - name: 'initialize {{ webserver_letsencrypt_path }} by restoring from backup'
   command: >
     rsync -av -e 'ssh -o StrictHostKeyChecking=no' --usermap=1-999:letsencrypt --groupmap=1-999:ssl-cert
@@ -49,6 +38,17 @@
   notify: 'restart {{ webserver_tls_terminator }}'
   when: webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_restore_from_backup
+
+- name: 'clone git repo to {{ webserver_letsencrypt_path }}'
+  git:
+    repo: '{{ webserver_letsencrypt_repo }}'
+    dest: '{{ webserver_letsencrypt_path }}'
+    accept_hostkey: true
+    update: yes
+    version: '{{ webserver_letsencrypt_branch }}'
+  throttle: 10
+  register: webserver_letsencrypt_clone
+  tags: webserver_letsencrypt_clone_repo
 
 - name: deploy account.key
   copy:
