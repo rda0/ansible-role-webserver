@@ -107,6 +107,9 @@ webserver_site_config_common_requires:
     Require all granted
   require_all_denied: |
     Require all denied
+  require_phys_ldap_valid_user: |
+    Use PhysLDAP
+    Require valid-user
   require_phys_ldap_group_isg: |
     Use PhysLDAP
     Use RequirePhysLDAPGroup isg

@@ -46,9 +46,17 @@
 {% endif %}
 {% endif %}
 {% else %}
+{% if vhost.http.require != '' %}
+{% if vhost.type == 'server' %}
+  <Location />
+    {{ (webserver_site_config_common_requires[vhost.http.require]|indent(width=4)).rstrip() }}
+  </Location>
+{% else %}
   <Location />
     Require all granted
   </Location>
+{% endif %}
+{% endif %}
 {% endif %}
 {% if not vhost.http.empty %}
 {% if vhost.name in phpfpm_pool_names %}
@@ -172,9 +180,17 @@
 {% endif %}
 {% endif %}
 {% else %}
+{% if vhost.https.require != '' %}
+{% if vhost.type == 'server' %}
+  <Location />
+    {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
+  </Location>
+{% else %}
   <Location />
     Require all granted
   </Location>
+{% endif %}
+{% endif %}
 {% endif %}
 {% if not vhost.https.empty %}
 {% if vhost.name in phpfpm_pool_names %}
