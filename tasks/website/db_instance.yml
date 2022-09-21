@@ -20,3 +20,16 @@
   loop_control:
     loop_var: instance
     label: "{{ instance | combine({'password': 'redacted'}) }}"
+
+- name: deploy db parameters file
+  template:
+    src: website/db/database.yml.j2
+    dest: '{{ vhost.home_path }}/{{ vhost.name }}/private/database.yml'
+    owner: root
+    group: '{{ vhost.name }}'
+    mode: '0640'
+  diff: no
+  loop: "{{ _vhosts|selectattr('website.db', 'equalto', True)|selectattr('name', 'in', _vhostfilter)|list }}"
+  loop_control:
+    loop_var: vhost
+    label: "{{ vhost.home_path }}/{{ vhost.name }}/private/database.yml"
