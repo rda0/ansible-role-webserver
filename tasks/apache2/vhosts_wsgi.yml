@@ -8,6 +8,7 @@
     force: no
 
 - name: tags-block
+  when: vhost_wsgi.venv
   block:
 
   - name: 'wsgi {{ vhost_wsgi.name }} deploy empty requirements'
@@ -36,6 +37,7 @@
     register: webserver_wsgi_venv_directory
 
   - name: tags-block
+    when: not webserver_wsgi_venv_directory.stat.exists
     block:
 
     - name: 'wsgi {{ vhost_wsgi.name }} initialize venv (pip, setuptools, wheel)'
@@ -65,13 +67,9 @@
       when: webserver_wsgi_venv_initialize.changed
       ignore_errors: True
 
-    when: not webserver_wsgi_venv_directory.stat.exists
-
   - name: 'wsgi {{ vhost_wsgi.name }} generate venv freeze file'
     shell:
       cmd: '{{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_path }}/bin/pip freeze --local > {{ vhost_wsgi.document_root }}/{{ vhost_wsgi.venv_freeze }}'
     become: yes
     become_user: "{{ vhost_wsgi.name }}"
     when: not webserver_wsgi_venv_freeze.stat.exists or ((webserver_wsgi_venv_initialize is defined and webserver_wsgi_venv_initialize.changed) or (webserver_wsgi_venv_install_requirements is defined and webserver_wsgi_venv_install_requirements.changed))
-
-  when: vhost_wsgi.venv

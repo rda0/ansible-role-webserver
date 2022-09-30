@@ -1,58 +1,51 @@
 - name: tags-block
+  tags: webserver
   block:
 
   - name: tags-block
+    tags: webserver_apache2
     block:
 
     - name: include apache2
       include_tasks: apache2/main.yml
       when: include_webserver_apache2
 
-    tags: webserver_apache2
-
   - name: tags-block
+    tags: webserver_nginx
     block:
 
     - name: include nginx
       include_tasks: nginx/main.yml
       when: include_webserver_nginx
 
-    tags: webserver_nginx
-
   - name: tags-block
+    tags: webserver_stats
     block:
 
     - name: include stats
       include_tasks: stats/main.yml
       when: include_webserver_stats and (include_webserver_apache2 or include_webserver_nginx)
 
-    tags: webserver_stats
-
   - name: tags-block
+    tags: webserver_letsencrypt
     block:
 
     - name: include letsencrypt
       include_tasks: letsencrypt/main.yml
       when: include_webserver_letsencrypt
 
-    tags: webserver_letsencrypt
-
   - name: tags-block
+    tags: webserver_phpfpm
     block:
 
     - name: include php fpm
       include_tasks: phpfpm/main.yml
       when: include_webserver_phpfpm
 
-    tags: webserver_phpfpm
-
   - name: tags-block
+    tags: webserver_website
     block:
 
     - name: include website
       include_tasks: website/main.yml
       when: include_webserver_website
-
-    tags: webserver_website
-
-  tags: webserver
