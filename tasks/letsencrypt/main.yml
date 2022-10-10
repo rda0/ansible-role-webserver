@@ -88,6 +88,7 @@
     include_tasks: initialize_manually.yml
     when: webserver_letsencrypt_initialize_manually
 
-- import_tasks: cronjob.yml
+- name: import tasks from cronjob.yml
+  import_tasks: cronjob.yml
   tags: webserver_letsencrypt_cronjob
   when: import_webserver_letsencrypt_cronjob
