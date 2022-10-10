@@ -1,4 +1,4 @@
 - name: include db instance
   include_tasks: db_instance.yml
   vars:
-    _databases: "{{ _vhosts|selectattr('website.db', 'equalto', True)|selectattr('name', 'in', _vhostfilter)|list|map(attribute='db')|list }}"
+    _databases: "{{ _vhosts | selectattr('website.db', 'equalto', True) | selectattr('name', 'in', _vhostfilter) | list | map(attribute='db') | list }}"

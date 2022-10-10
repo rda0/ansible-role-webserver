@@ -11,7 +11,7 @@
 - name: create hosts file(s)
   template:
     src: letsencrypt/domains.j2
-    dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name | default(''.join(['le',index | string]))) }}"
+    dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name | default(''.join(['le', index | string]))) }}"
     owner: root
     group: root
     mode: 0644
