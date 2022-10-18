@@ -14,6 +14,12 @@
       owner: root
       mode: '0750'
       state: "{{ 'directory' if vhost.authorized_keys else 'absent' }}"
+    - path: '{{ vhost.name }}/.ssh/known_hosts'
+      mode: '0600'
+      state: "{{ 'touch' if vhost.authorized_keys else 'absent' }}"
+    - path: '{{ vhost.name }}/.bash_history'
+      mode: '0600'
+      state: "{{ 'touch' if vhost.authorized_keys else 'absent' }}"
 
 - name: deploy webshare authorized_keys
   template:
