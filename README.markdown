@@ -223,7 +223,7 @@ webserver_share_authorized_keys_vars_file: authorized_keys.yml
 webserver_share_authorized_keys_vars_file_var_name: foo_authorized_keys
 ```
 
-To protect the users of a multi-user webshare against ssh-agent forwarding attacks,
+To protect the users of a multi-user webshare against forwarded ssh-agent hijacking attacks,
 ssh-agent forwarding is disabled by default for shares with more than one ssh user.
 This can be controlled via:
 
