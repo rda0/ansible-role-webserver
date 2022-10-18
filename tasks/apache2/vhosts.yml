@@ -11,6 +11,7 @@
       data_path: "{{ item.data_path | default(webserver_vhost_data_path[item.type | default('server')]) }}"
       home_path: "{{ item.home_path | default(webserver_vhost_home_path[item.type | default('server')]) }}"
       home_user_owned: "{{ item.home_user_owned | default(False) }}"
+      authorized_keys: "{{ item.authorized_keys | default([]) }}"
       home_perms:
         owner: "{{ (item.home_perms | default({})).owner | default(item.name if item.home_user_owned | default(False) else 'www-data') }}"
         group: "{{ (item.home_perms | default({})).group | default('www-data' if item.home_user_owned | default(False) else item.name) }}"
@@ -110,6 +111,13 @@
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
+
+- name: tags-block
+  tags: webserver_authorized_keys
+  block:
+  - name: include authorized keys
+    include_tasks: authorized_keys.yml
+    when: include_webserver_authorized_keys
 
 #- name: deploy systemd mount units for share bindmounts
 #  template:

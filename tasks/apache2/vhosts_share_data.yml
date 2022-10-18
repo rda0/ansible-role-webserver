@@ -4,7 +4,7 @@
     owner: '{{ item.owner | default(vhost.name) }}'
     group: '{{ item.group | default(vhost.name) }}'
     mode: "{{ item.mode | default('2770') }}"
-    state: directory
+    state: "{{ item.state | default('directory') }}"
   loop:
     - path: '{{ vhost.name }}'
       owner: '{{ vhost.home_perms.owner }}'
@@ -33,3 +33,7 @@
       owner: www-data
       mode: '0550'
     - path: '{{ vhost.name }}/tmp'
+    #- path: '{{ vhost.name }}/.ssh'
+    #  owner: root
+    #  mode: '0750'
+    #  state: "{{ 'directory' if vhost.authorized_keys else 'absent' }}"

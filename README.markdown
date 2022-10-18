@@ -189,6 +189,48 @@ In rare exceptions you may need to enable access to system-wide Python packages 
 
 The systemd service file `/etc/systemd/system/fifo2syslog.service` starts `fifo2syslog`, which in turn starts `apache_syslog_auth`. Note that apache will hang at start if the `/var/log/apache2/lastuse.fifo` is missing or the `fifo2syslog` service not running.
 
+### authorized keys
+
+To access shares via ssh, `sshd` needs to be configured with `StrictModes no` and ssh keys must be used.
+The users need to connect as the webshare user in the form of `ssh wwwshare@server`.
+
+Keys per user must be defined in `webserver_share_authorized_keys` or a global vars file in the following format:
+
+```yaml
+webserver_share_authorized_keys:
+  user1: |
+    # User1 <user1@email>
+    ssh-ed25519 pub-key user1@host
+  user2: |
+    # User2 <user2@email>
+    ssh-rsa pub-key user2@host
+```
+
+and can be deployed on a vhost as follows:
+
+```yaml
+webserver_vhosts:
+  - type: share
+    authorized_keys:
+      - user1
+      - user2
+```
+
+A global vars file in `vars/` can be included with (example):
+
+```yaml
+webserver_share_authorized_keys_vars_file: authorized_keys.yml
+webserver_share_authorized_keys_vars_file_var_name: foo_authorized_keys
+```
+
+To protect the users of a multi-user webshare against ssh-agent forwarding attacks,
+ssh-agent forwarding is disabled by default for shares with more than one ssh user.
+This can be controlled via:
+
+```yaml
+webserver_share_authorized_keys_multiuser_restrict_options: 'restrict,pty'
+```
+
 Migration
 ---------
 

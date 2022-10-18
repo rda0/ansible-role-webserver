@@ -1,0 +1,15 @@
+{% if webserver_share_authorized_keys_multiuser_restrict_options and vhost.authorized_keys | length > 1 %}
+  {%- for name in vhost.authorized_keys | sort %}
+    {%- for line in _webserver_share_authorized_keys[name].rstrip() | split('\n') %}
+      {%- if not line.startswith('#') -%}
+        {{ webserver_share_authorized_keys_multiuser_restrict_options }} {{ line }}{{ '\n' }}
+      {%- else -%}
+        {{ line }}{{ '\n' }}
+      {%- endif %}
+    {%- endfor %}
+  {%- endfor %}
+{% else %}
+  {%- for name in vhost.authorized_keys | sort -%}
+    {{ _webserver_share_authorized_keys[name] }}
+  {%- endfor %}
+{% endif %}

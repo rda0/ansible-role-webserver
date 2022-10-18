@@ -1,0 +1,28 @@
+# TODO: this can potentially be merged with vhosts_share_data.yml later
+- name: create webshare data structure and permissions
+  file:
+    path: '{{ vhost.data_path }}/{{ item.path }}'
+    owner: '{{ item.owner | default(vhost.name) }}'
+    group: '{{ item.group | default(vhost.name) }}'
+    mode: "{{ item.mode | default('2770') }}"
+    state: "{{ item.state | default('directory') }}"
+  loop:
+    - path: '{{ vhost.name }}/private/.ssh'
+      mode: '0700'
+      state: "{{ 'directory' if vhost.authorized_keys else 'absent' }}"
+    - path: '{{ vhost.name }}/.ssh'
+      owner: root
+      mode: '0750'
+      state: "{{ 'directory' if vhost.authorized_keys else 'absent' }}"
+
+- name: deploy webshare authorized_keys
+  template:
+    src: 'apache2/ssh/{{ item }}.j2'
+    dest: '{{ vhost.data_path }}/{{ vhost.name }}/.ssh/{{ item }}'
+    owner: root
+    group: '{{ vhost.name }}'
+    mode: '0640'
+  when: vhost.authorized_keys
+  loop:
+    - authorized_keys
+    - config

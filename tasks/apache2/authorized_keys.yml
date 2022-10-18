@@ -1,0 +1,20 @@
+- name: load vars file with authorized keys
+  include_vars:
+    file: '{{ webserver_share_authorized_keys_vars_file }}'
+  when: webserver_share_authorized_keys_vars_file and webserver_share_authorized_keys_vars_file_var_name
+
+- name: set fact _webserver_share_authorized_keys_vars
+  set_fact:
+    _webserver_share_authorized_keys_vars: "{{ lookup('vars', webserver_share_authorized_keys_vars_file_var_name) }}"
+  when: webserver_share_authorized_keys_vars_file and webserver_share_authorized_keys_vars_file_var_name
+
+- name: set fact _webserver_share_authorized_keys
+  set_fact:
+    _webserver_share_authorized_keys: "{{ _webserver_share_authorized_keys_vars | combine(webserver_share_authorized_keys) }}"
+
+- name: include authorized keys share data
+  include_tasks: authorized_keys_share_data.yml
+  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop_control:
+    loop_var: vhost
+    label: "{{ vhost.name }}"
