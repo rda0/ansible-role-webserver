@@ -6,6 +6,8 @@
     group: '{{ item.group | default(vhost.name) }}'
     mode: "{{ item.mode | default('2770') }}"
     state: "{{ item.state | default('directory') }}"
+    access_time: "{{ item.access_time | default('preserve') }}"
+    modification_time: "{{ item.modification_time | default('preserve') }}"
   loop:
     - path: '{{ vhost.name }}/private/.ssh'
       mode: '0700'
