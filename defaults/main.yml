@@ -222,6 +222,7 @@ webserver_fcgid_fcgi_extensions:
   - fcgi
 webserver_db_delegate: phd-sqlweb
 webserver_db_host: sqlweb.phys.ethz.ch
+webserver_db_grant_additional_hosts: []
 webserver_stats_generate: True
 webserver_website_admin_name: admin
 webserver_website_admin_email: '{{ webserver_server_admin }}'

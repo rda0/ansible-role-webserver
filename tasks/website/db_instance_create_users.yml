@@ -1,0 +1,12 @@
+- name: 'database create users'
+  mysql_user:
+    name: "{{ instance.user }}"
+    password: "{{ instance.password }}"
+    priv: "{{ instance.name }}.*:ALL"
+    host: "{{ _db_grant_host }}"
+    state: present
+  delegate_to: "{{ instance.delegate }}"
+  loop: "{{ _databases }}"
+  loop_control:
+    loop_var: instance
+    label: "{{ instance | combine({'password': 'redacted'}) }}"

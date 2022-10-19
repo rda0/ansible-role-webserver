@@ -8,18 +8,17 @@
     loop_var: instance
     label: "{{ instance | combine({'password': 'redacted'}) }}"
 
-- name: 'database create users'
-  mysql_user:
-    name: "{{ instance.user }}"
-    password: "{{ instance.password }}"
-    priv: "{{ instance.name }}.*:ALL"
-    host: "{{ ansible_fqdn }}"
-    state: present
-  delegate_to: "{{ instance.delegate }}"
-  loop: "{{ _databases }}"
-  loop_control:
-    loop_var: instance
-    label: "{{ instance | combine({'password': 'redacted'}) }}"
+- name: include db instance create users
+  include_tasks: db_instance_create_users.yml
+  vars:
+    _db_grant_host: "{{ ansible_fqdn }}"
+
+- name: include db instance create users for additional host grants
+  include_tasks: db_instance_create_users.yml
+  vars:
+    _db_grant_host: "{{ item }}"
+  loop: '{{ webserver_db_grant_additional_hosts }}'
+  when: webserver_db_grant_additional_hosts
 
 - name: deploy db parameters file
   template:
