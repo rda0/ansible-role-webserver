@@ -249,6 +249,8 @@ This can be controlled via:
 webserver_share_authorized_keys_multiuser_restrict_options: 'restrict,pty'
 ```
 
+To override this on a vhost use `vhost.authorized_keys_multiuser_options`.
+
 Migration
 ---------
 
