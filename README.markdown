@@ -219,8 +219,26 @@ webserver_vhosts:
 A global vars file in `vars/` can be included with (example):
 
 ```yaml
-webserver_share_authorized_keys_vars_file: authorized_keys.yml
-webserver_share_authorized_keys_vars_file_var_name: foo_authorized_keys
+webserver_share_authorized_keys_vars:
+  - file: authorized_keys_admin.yml
+    var_name: ssh_authorized_keys_admin
+  - file: authorized_keys_other.yml
+    var_name: ssh_authorized_keys_other
+```
+
+To automatically fill a facts variable `webserver_admin_keys` with a list of admin user names
+gathered from a specific `webserver_share_authorized_keys_vars.file` use:
+
+```yaml
+webserver_admin_keys_var_name: ssh_authorized_keys_admin
+```
+
+Which can be used in vhosts as follows:
+
+```yaml
+webserver_vhosts:
+  - type: share
+    authorized_keys: "{{ webserver_admin_keys }}"
 ```
 
 To protect the users of a multi-user webshare against forwarded ssh-agent hijacking attacks,

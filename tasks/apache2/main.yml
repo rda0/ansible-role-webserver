@@ -236,6 +236,15 @@
     when: include_webserver_sites_include
 
 - name: tags-block
+  tags:
+    - webserver_vhosts
+    - webserver_authorized_keys
+  block:
+  - name: include load authorized keys
+    include_tasks: load_authorized_keys.yml
+    when: include_webserver_authorized_keys
+
+- name: tags-block
   tags: webserver_vhosts
   block:
   - name: include vhosts

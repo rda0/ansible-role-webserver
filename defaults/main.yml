@@ -249,8 +249,9 @@ webserver_wsgi_app_content_default: |
       return [output.encode('utf8')]
   application = dummy_app
 webserver_share_authorized_keys: {}
-webserver_share_authorized_keys_vars_file: ''
-webserver_share_authorized_keys_vars_file_var_name: ''
+webserver_share_authorized_keys_vars: []
+webserver_admin_keys: []
+webserver_admin_keys_var_name: ''
 webserver_share_authorized_keys_multiuser_restrict_options: 'restrict,pty'
 
 # private set_fact variable defaults (do not use in inventory)
@@ -262,4 +263,3 @@ _vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''
 _webserver_share_authorized_keys: {}
-_webserver_share_authorized_keys_vars: {}
