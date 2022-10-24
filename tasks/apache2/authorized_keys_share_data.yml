@@ -38,7 +38,7 @@
 - name: deploy .my.cnf file
   template:
     src: apache2/ssh/my.cnf.j2
-    dest: '{{ vhost.home_path }}/{{ vhost.name }}/.my.cnf'
+    dest: '{{ vhost.data_path }}/{{ vhost.name }}/.my.cnf'
     owner: root
     group: '{{ vhost.name }}'
     mode: '0640'
