@@ -1,11 +1,6 @@
-- name: load vars files with authorized keys
-  include_vars:
-    file: '{{ item.file }}'
-  loop: '{{ webserver_share_authorized_keys_vars }}'
-
 - name: set fact _webserver_share_authorized_keys
   set_fact:
-    _webserver_share_authorized_keys: "{{ _webserver_share_authorized_keys | combine(lookup('vars', item.var_name)) }}"
+    _webserver_share_authorized_keys: "{{ _webserver_share_authorized_keys | combine(lookup('vars', item)) }}"
   loop: '{{ webserver_share_authorized_keys_vars }}'
 
 - name: combine _webserver_share_authorized_keys with webserver_share_authorized_keys
@@ -14,5 +9,5 @@
 
 - name: set fact webserver_admin_keys
   set_fact:
-    webserver_admin_keys: "{{ lookup('vars', webserver_admin_keys_var_name).keys() }}"
+    webserver_admin_keys: "{{ lookup('vars', webserver_admin_keys_var_name) }}"
   when: webserver_admin_keys_var_name

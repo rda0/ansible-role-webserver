@@ -216,21 +216,19 @@ webserver_vhosts:
       - user2
 ```
 
-A global vars file in `vars/` can be included with (example):
+Global variables with key definitions can be included with (example):
 
 ```yaml
 webserver_share_authorized_keys_vars:
-  - file: authorized_keys_admin.yml
-    var_name: ssh_authorized_keys_admin
-  - file: authorized_keys_other.yml
-    var_name: ssh_authorized_keys_other
+  - ssh_authorized_keys_admin
+  - ssh_authorized_keys_other
 ```
 
 To automatically fill a facts variable `webserver_admin_keys` with a list of admin user names
-gathered from a specific `webserver_share_authorized_keys_vars.file` use:
+gathered from a specific list or `webserver_share_authorized_keys_vars` variable use:
 
 ```yaml
-webserver_admin_keys_var_name: ssh_authorized_keys_admin
+webserver_admin_keys_var_name: ssh_authorized_keys_admin_list
 ```
 
 Which can be used in vhosts as follows:
