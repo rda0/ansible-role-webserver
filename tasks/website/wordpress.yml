@@ -3,7 +3,7 @@
     url: "https://github.com/wp-cli/wp-cli/releases/download/v{{ webserver_website_wordpress_cli_version }}/wp-cli-{{ webserver_website_wordpress_cli_version }}.phar"
     dest: /usr/local/bin/wp
     mode: 0755
-  ignore_errors: yes
+  ignore_errors: yes  # noqa ignore-errors
 
 - name: install wp-cli dependencies
   package:
