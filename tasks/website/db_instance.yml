@@ -1,5 +1,5 @@
 - name: 'database create instances'
-  mysql_db:
+  community.mysql.mysql_db:
     name: "{{ instance.name }}"
     state: present
   delegate_to: "{{ instance.delegate }}"

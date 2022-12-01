@@ -23,7 +23,7 @@
     index_var: index
 
 - name: make permissions
-  make:
+  community.general.make:
     chdir: '{{ webserver_letsencrypt_path }}'
     target: permissions
   changed_when: False
@@ -46,14 +46,14 @@
 #    mode: '0640'
 
 - name: make check
-  make:
+  community.general.make:
     chdir: '{{ webserver_letsencrypt_path }}'
     target: check
   when: webserver_letsencrypt_hosts_file.changed
   changed_when: False
 
 - name: make certificate
-  make:
+  community.general.make:
     chdir: '{{ webserver_letsencrypt_path }}'
   when: webserver_letsencrypt_hosts_file.changed
   tags: webserver_letsencrypt_make_certificate

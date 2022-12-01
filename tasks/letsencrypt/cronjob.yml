@@ -4,7 +4,7 @@
   register: webserver_letsencrypt_cronjob
 
 - name: make cron
-  make:
+  community.general.make:
     chdir: '{{ webserver_letsencrypt_path }}'
     target: cron
   when: webserver_letsencrypt_cronjob.stat.exists is not defined or not webserver_letsencrypt_cronjob.stat.exists
