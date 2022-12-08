@@ -181,7 +181,7 @@ The venv is deployed according to `private/requirements.txt`, this is the file t
 If a `private/freeze.txt` is found, this will take precedence over `private/requirements.txt`.
 After generating the venv, a `private/freeze.txt` will be generated (for later exact reproducibility).
 
-To regenerate the venv use `-e webserver_wsgi_venv_reinit=True`. In addition you may want to manually delete the `freeze.txt` beforehand.
+To regenerate the venv use `-e '{"webserver_wsgi_venv_reinit": True}'`. In addition you may want to manually delete the `freeze.txt` beforehand.
 
 In rare exceptions you may need to enable access to system-wide Python packages from inside the venv using the `venv_system_pkgs: True` flag. This can be useful if the required packages have no wheels, are non-trivial to build from source, but readily available as Debian package. In general this setting should be avoided as the webshare may be impacted by Debian package and release upgrades.
 
