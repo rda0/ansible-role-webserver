@@ -67,7 +67,7 @@
     create: true
     regexp: '^ACME_DIRECTORY_URL='
     line: 'ACME_DIRECTORY_URL=https://acme-staging-v02.api.letsencrypt.org/directory'
-    state: "{{ webserver_letsencrypt_use_staging | ternary('present', 'absent') }}"
+    state: "{{ webserver_letsencrypt_use_staging | ternary('present', 'absent') }}"  # noqa args[module]
     owner: root
     group: letsencrypt
     mode: '0640'

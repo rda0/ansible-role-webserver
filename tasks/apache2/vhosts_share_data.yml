@@ -4,7 +4,7 @@
     owner: '{{ item.owner | default(vhost.name) }}'
     group: '{{ item.group | default(vhost.name) }}'
     mode: "{{ item.mode | default('2770') }}"
-    state: "{{ item.state | default('directory') }}"
+    state: "{{ item.state | default('directory') }}"  # noqa args[module]
   loop:
     - path: '{{ vhost.name }}'
       owner: '{{ vhost.home_perms.owner }}'
