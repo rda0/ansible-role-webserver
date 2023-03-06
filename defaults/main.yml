@@ -185,8 +185,11 @@ webserver_site_content_default_overview: ''
 webserver_letsencrypt_initialize_manually: False
 webserver_letsencrypt_restore_from_backup: False
 
-webserver_letsencrypt_restore_from_backup_path: ''
-#webserver_letsencrypt_restore_from_backup_path: 'phd-bkp-gw.ethz.ch:/export/backup/system/phd-hostname/current/opt/letsencrypt/'
+webserver_letsencrypt_restore_from_backup_image: ''
+#webserver_letsencrypt_restore_from_backup_image: 'phd-hostname-root.raw'
+
+# The restore path may have to be adapted for instance if /opt has it's own raw image.
+webserver_letsencrypt_restore_from_backup_image_path: "{{ webserver_letsencrypt_path }}"
 
 webserver_letsencrypt_path: /opt/letsencrypt
 webserver_letsencrypt_repo: git@gitlab.phys.ethz.ch:Misc/letsencrypt-acmetiny.git
