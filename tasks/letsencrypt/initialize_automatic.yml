@@ -28,7 +28,9 @@
     target: permissions
   changed_when: False
   when: webserver_letsencrypt_clone.changed
-  tags: webserver_letsencrypt_make_permissions
+  tags:
+    - webserver_letsencrypt_make_permissions
+    - webserver_letsencrypt_clone_repo
 
 - name: 'apply permissions on {{ webserver_letsencrypt_path }}'
   file:
