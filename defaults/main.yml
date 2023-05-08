@@ -275,7 +275,6 @@ _webserver_vhost_template:
     user: "{{ webserver_hoster_name }}"
     email: "{{ webserver_website_admin_email }}"
   website:
-    type: ''
     user: "{{ webserver_website_admin_name }}"
     email: "{{ webserver_website_admin_email }}"
     migrate: False
