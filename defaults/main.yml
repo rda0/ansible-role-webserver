@@ -267,3 +267,55 @@ _vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''
 _webserver_share_authorized_keys: {}
+_webserver_vhost_template:
+  server_admin: "{{ webserver_server_admin }}"
+  authorized_keys: []
+  authorized_keys_multiuser_options: "{{ webserver_share_authorized_keys_multiuser_restrict_options }}"
+  hoster:
+    user: "{{ webserver_hoster_name }}"
+    email: "{{ webserver_website_admin_email }}"
+  website:
+    type: ''
+    user: "{{ webserver_website_admin_name }}"
+    email: "{{ webserver_website_admin_email }}"
+    migrate: False
+  db:
+    delegate: "{{ webserver_db_delegate }}"
+    host: "{{ webserver_db_host }}"
+  http:
+    empty: True
+    config: ''
+    includes: []
+    fcgid:
+      extensions: []
+      options: "{{ webserver_fcgid_custom_options }}"
+    wsgi:
+      app: ''
+      application_group: '%{GLOBAL}'
+      content: "{{ webserver_wsgi_app_content_default }}"
+      mode: '0664'
+      static: []
+      script_alias: '/'
+      processes: 2
+      threads: 5
+      venv: False
+      venv_system_pkgs: False
+      locale: 'en_US.UTF-8'
+  https:
+    cert: ''
+    config: ''
+    fcgid:
+      extensions: []
+      options: "{{ webserver_fcgid_custom_options }}"
+    wsgi:
+      app: ''
+      application_group: '%{GLOBAL}'
+      content: "{{ webserver_wsgi_app_content_default }}"
+      mode: '0664'
+      static: []
+      script_alias: '/'
+      processes: 2
+      threads: 5
+      venv: False
+      venv_system_pkgs: False
+      locale: 'en_US.UTF-8'
