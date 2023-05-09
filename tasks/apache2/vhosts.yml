@@ -1,46 +1,46 @@
 - name: set fact _vhosts
   set_fact:
-    _vhosts: "{{ _vhosts + [_static | combine(_dynamic, recursive=True) | combine(item, recursive=True)] }}"
+    _vhosts: "{{ _vhosts + [_vhost_defaults_static | combine(_item, recursive=True) | combine(_dynamic, recursive=True) | combine(item, recursive=True)] }}"
   vars:
-    _static: '{{ _webserver_vhost_template | combine(item, recursive=True) }}'
+    _item: '{{ _vhost_defaults_dynamic | combine(item, recursive=True) }}'
     _dynamic:
-      data_path: "{{ webserver_vhost_data_path[_static.type] }}"
-      home_path: "{{ webserver_vhost_home_path[_static.type] }}"
+      data_path: "{{ webserver_vhost_data_path[_item.type] }}"
+      home_path: "{{ webserver_vhost_home_path[_item.type] }}"
       home_perms:
-        owner: "{{ item.name if _static.home_user_owned else 'www-data' }}"
-        group: "{{ 'www-data' if _static.home_user_owned else item.name }}"
-        mode: "{{ '0510' if _static.home_user_owned else '0150' }}"
-      document_root: "{{ [webserver_vhost_home_path[_static.type], item.name] | join('/') }}{{ '/public' if _static.type == 'share' else '' }}"
+        owner: "{{ item.name if _item.home_user_owned else 'www-data' }}"
+        group: "{{ 'www-data' if _item.home_user_owned else item.name }}"
+        mode: "{{ '0510' if _item.home_user_owned else '0150' }}"
+      document_root: "{{ [webserver_vhost_home_path[_item.type], item.name] | join('/') }}{{ '/public' if _item.type == 'share' else '' }}"
       hoster:
-        password: "{{ _static.secret }}"
+        password: "{{ _item.secret }}"
       website:
-        db: "{{ True if _static.website.type in ['wordpress'] else False }}"
+        db: "{{ True if _item.website.type in ['wordpress'] else False }}"
         name: "{{ item.name }}"
-        password: "{{ _static.secret }}"
+        password: "{{ _item.secret }}"
       db:
         name: "{{ item.name }}"
         user: "{{ item.name }}"
-        password: "{{ _static.secret }}"
+        password: "{{ _item.secret }}"
       http:
         redirect: "{{ ['https', item.server_name] | join(' ') }}"
-        require: "{{ 'grant_share_all' if _static.type == 'share' else 'require_all_granted' }}"
+        require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
         wsgi:
           owner: "{{ item.name }}"
           group: "{{ item.name }}"
-          venv_path: "{{ '../private/venv' if _static.type == 'share' else 'venv' }}"
-          venv_requirements: "{{ '../private/requirements.txt' if _static.type == 'share' else 'requirements.txt' }}"
-          venv_freeze: "{{ '../private/freeze.txt' if _static.type == 'share' else 'freeze.txt' }}"
+          venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
+          venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
+          venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
       https:
-        empty: "{{ True if _static.type == 'redirect' else False }}"
-        redirect: "{{ '' if _static.server_alias == '' else ['https', item.server_name] | join(' ') }}"
-        includes: "{{ [item.name] if _static.type == 'share' else [] }}"
-        require: "{{ 'grant_share_all' if _static.type == 'share' else 'require_all_granted' }}"
+        empty: "{{ True if _item.type == 'redirect' else False }}"
+        redirect: "{{ '' if _item.server_alias == '' else ['https', item.server_name] | join(' ') }}"
+        includes: "{{ [item.name] if _item.type == 'share' else [] }}"
+        require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
         wsgi:
           owner: "{{ item.name }}"
           group: "{{ item.name }}"
-          venv_path: "{{ '../private/venv' if _static.type == 'share' else 'venv' }}"
-          venv_requirements: "{{ '../private/requirements.txt' if _static.type == 'share' else 'requirements.txt' }}"
-          venv_freeze: "{{ '../private/freeze.txt' if _static.type == 'share' else 'freeze.txt' }}"
+          venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
+          venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
+          venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"

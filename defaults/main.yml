@@ -267,21 +267,23 @@ _vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''
 _webserver_share_authorized_keys: {}
-_webserver_vhost_template:
-  #name: required
+_vhost_defaults_dynamic:
   type: 'server'
-  #server_name: required
   server_alias: ''
-  server_admin: "{{ webserver_server_admin }}"
   home_user_owned: False
+  secret: ''
+  website:
+    type: ''
+_vhost_defaults_static:
+  #name: required
+  #server_name: required
+  server_admin: "{{ webserver_server_admin }}"
   authorized_keys: []
   authorized_keys_multiuser_options: "{{ webserver_share_authorized_keys_multiuser_restrict_options }}"
-  secret: ''
   hoster:
     user: "{{ webserver_hoster_name }}"
     email: "{{ webserver_website_admin_email }}"
   website:
-    type: ''
     user: "{{ webserver_website_admin_name }}"
     email: "{{ webserver_website_admin_email }}"
     migrate: False
