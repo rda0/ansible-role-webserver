@@ -267,6 +267,7 @@ _vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''
 _webserver_share_authorized_keys: {}
+# dynamic vhost defaults used in set_fact _vhosts task
 _vhost_defaults_dynamic:
   type: 'server'
   server_alias: ''
@@ -274,6 +275,7 @@ _vhost_defaults_dynamic:
   secret: ''
   website:
     type: ''
+# static vhost defaults
 _vhost_defaults_static:
   #name: required
   #server_name: required
