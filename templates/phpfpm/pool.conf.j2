@@ -1,7 +1,7 @@
-[{{ name }}]
+[{{ poolname }}]
 user = {{ user }}
 group = {{ group }}
-listen = /run/php/php{{ _webserver_php_version }}-fpm-{{ name }}.sock
+listen = /run/php/php{{ _webserver_php_version }}-fpm-{{ poolname }}.sock
 listen.owner = www-data
 listen.group = www-data
 pm = dynamic

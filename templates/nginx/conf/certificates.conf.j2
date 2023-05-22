@@ -1,8 +1,8 @@
 {% if webserver_https_certificate_ecdsa %}
-ssl_certificate /opt/letsencrypt/{{ name }}.ecdsa.crt;
-ssl_certificate_key /opt/letsencrypt/{{ name }}.ecdsa.key;
+ssl_certificate /opt/letsencrypt/{{ certname }}.ecdsa.crt;
+ssl_certificate_key /opt/letsencrypt/{{ certname }}.ecdsa.key;
 {% endif %}
 {% if webserver_https_certificate_rsa %}
-ssl_certificate /opt/letsencrypt/{{ name }}.rsa.crt;
-ssl_certificate_key /opt/letsencrypt/{{ name }}.rsa.key;
+ssl_certificate /opt/letsencrypt/{{ certname }}.rsa.crt;
+ssl_certificate_key /opt/letsencrypt/{{ certname }}.rsa.key;
 {% endif %}

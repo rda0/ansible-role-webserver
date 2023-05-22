@@ -100,7 +100,7 @@
     mode: 0644
   notify: restart nginx
   vars:
-    name: "{{ (item.name | default(''.join(['le', index | string]))) }}"
+    certname: "{{ (item.name | default(''.join(['le', index | string]))) }}"
   loop: '{{ webserver_letsencrypt_aliases | flatten(levels=1) }}'
   loop_control:
     index_var: index

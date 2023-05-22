@@ -12,7 +12,7 @@
     mode: 0644
   notify: restart php-fpm
   vars:
-    name: '{{ item.name }}'
+    poolname: '{{ item.name }}'
     user: '{{ item.user | default(item.name) }}'
     group: '{{ item.group | default(item.name) }}'
     max_children: "{{ item.max_children | default(5) }}"
