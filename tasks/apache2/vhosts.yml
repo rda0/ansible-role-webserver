@@ -21,29 +21,25 @@
         name: "{{ item.name }}"
         user: "{{ item.name }}"
         password: "{{ _item.secret }}"
-      http:
-        redirect: "{{ ['https', item.server_name] | join(' ') }}"
-        require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
-        wsgi:
-          owner: "{{ item.name }}"
-          group: "{{ item.name }}"
-          venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
-          venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
-          venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
-      https:
-        empty: "{{ True if _item.type == 'redirect' else False }}"
-        redirect: "{{ '' if _item.server_alias == '' else ['https', item.server_name] | join(' ') }}"
-        includes: "{{ [item.name] if _item.type == 'share' else [] }}"
-        require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
-        wsgi:
-          owner: "{{ item.name }}"
-          group: "{{ item.name }}"
-          venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
-          venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
-          venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
+      wsgi:
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
+        venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
+        venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
+      ports:
+        http:
+          redirect: "{{ ['https', item.server_name] | join(' ') }}"
+          require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
+        https:
+          empty: "{{ True if _item.type == 'redirect' else False }}"
+          redirect: "{{ '' if _item.server_alias == '' else ['https', item.server_name] | join(' ') }}"
+          includes: "{{ [item.name] if _item.type == 'share' else [] }}"
+          require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
+  tags: webserver_tmp_vhost_debug_set_fact_performance
 
 #- name: debug _vhosts
 #  debug:
@@ -116,7 +112,7 @@
 
 - name: set fact _vhosts_fcgid_php
   set_fact:
-    _vhosts_fcgid_php: "{{ _vhosts | selectattr('https.fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _vhostfilter) | list | map(attribute='name') }}"
+    _vhosts_fcgid_php: "{{ _vhosts | selectattr('fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _vhostfilter) | list | map(attribute='name') }}"
 
 - name: find php upstream version
   package_facts:
@@ -150,8 +146,8 @@
     _vhost_fcgid:
       name: '{{ item.name }}'
       data_path: '{{ item.data_path }}'
-      fcgid: '{{ item.https.fcgid }}'
-  loop: "{{ _vhosts | selectattr('https.fcgid.extensions') | selectattr('name', 'in', _vhostfilter) | list }}"
+      fcgid: '{{ item.fcgid }}'
+  loop: "{{ _vhosts | selectattr('fcgid.extensions') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -172,18 +168,18 @@
     _vhost_wsgi:
       name: '{{ item.name }}'
       document_root: '{{ item.document_root }}'
-      app: '{{ item.https.wsgi.app }}'
-      application_group: '{{ item.https.wsgi.app }}'
-      content: '{{ item.https.wsgi.content }}'
-      owner: '{{ item.https.wsgi.owner }}'
-      group: '{{ item.https.wsgi.group }}'
-      mode: '{{ item.https.wsgi.mode }}'
-      venv: '{{ item.https.wsgi.venv }}'
-      venv_system_pkgs: '{{ item.https.wsgi.venv_system_pkgs }}'
-      venv_path: '{{ item.https.wsgi.venv_path }}'
-      venv_requirements: '{{ item.https.wsgi.venv_requirements }}'
-      venv_freeze: '{{ item.https.wsgi.venv_freeze }}'
-  loop: "{{ _vhosts | selectattr('https.wsgi.app') | selectattr('name', 'in', _vhostfilter) | list }}"
+      app: '{{ item.wsgi.app }}'
+      application_group: '{{ item.wsgi.app }}'
+      content: '{{ item.wsgi.content }}'
+      owner: '{{ item.wsgi.owner }}'
+      group: '{{ item.wsgi.group }}'
+      mode: '{{ item.wsgi.mode }}'
+      venv: '{{ item.wsgi.venv }}'
+      venv_system_pkgs: '{{ item.wsgi.venv_system_pkgs }}'
+      venv_path: '{{ item.wsgi.venv_path }}'
+      venv_requirements: '{{ item.wsgi.venv_requirements }}'
+      venv_freeze: '{{ item.wsgi.venv_freeze }}'
+  loop: "{{ _vhosts | selectattr('wsgi.app') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 

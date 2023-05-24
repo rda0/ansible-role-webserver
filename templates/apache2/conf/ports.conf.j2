@@ -1,0 +1,27 @@
+# If you just change the port or add more ports here, you will likely also
+# have to change the VirtualHost statement in
+# /etc/apache2/sites-enabled/000-default.conf
+
+{% for key, value in webserver_vhost_ports.items() %}
+{% if not value.tls %}
+Listen {{ value.number }}
+{% endif %}
+{% endfor %}
+
+<IfModule ssl_module>
+{% for key, value in webserver_vhost_ports.items() %}
+{% if value.tls %}
+	Listen {{ value.number }}
+{% endif %}
+{% endfor %}
+</IfModule>
+
+<IfModule mod_gnutls.c>
+{% for key, value in webserver_vhost_ports.items() %}
+{% if value.tls %}
+	Listen {{ value.number }}
+{% endif %}
+{% endfor %}
+</IfModule>
+
+# vim: syntax=apache ts=4 sw=4 sts=4 sr noet

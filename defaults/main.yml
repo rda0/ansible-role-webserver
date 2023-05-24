@@ -213,6 +213,13 @@ webserver_vhost_home_path:
   redirect: /var/www
   share: /home
 webserver_vhosts: []
+webserver_vhost_ports:
+  http:
+    number: 80
+    tls: False
+  https:
+    number: 443
+    tls: True
 webserver_fcgid_conf_connect_timout: 20
 webserver_fcgid_conf_max_request_len: 134217728
 webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap
@@ -292,40 +299,29 @@ _vhost_defaults_static:
   db:
     delegate: "{{ webserver_db_delegate }}"
     host: "{{ webserver_db_host }}"
-  http:
-    empty: True
-    config: ''
-    includes: []
-    fcgid:
-      extensions: []
-      options: "{{ webserver_fcgid_custom_options }}"
-    wsgi:
-      app: ''
-      application_group: '%{GLOBAL}'
-      content: "{{ webserver_wsgi_app_content_default }}"
-      mode: '0664'
-      static: []
-      script_alias: '/'
-      processes: 2
-      threads: 5
-      venv: False
-      venv_system_pkgs: False
-      locale: 'en_US.UTF-8'
-  https:
-    cert: ''
-    config: ''
-    fcgid:
-      extensions: []
-      options: "{{ webserver_fcgid_custom_options }}"
-    wsgi:
-      app: ''
-      application_group: '%{GLOBAL}'
-      content: "{{ webserver_wsgi_app_content_default }}"
-      mode: '0664'
-      static: []
-      script_alias: '/'
-      processes: 2
-      threads: 5
-      venv: False
-      venv_system_pkgs: False
-      locale: 'en_US.UTF-8'
+  fcgid:
+    ports: ['https']
+    extensions: []
+    options: "{{ webserver_fcgid_custom_options }}"
+  wsgi:
+    ports: ['https']
+    app: ''
+    application_group: '%{GLOBAL}'
+    content: "{{ webserver_wsgi_app_content_default }}"
+    mode: '0664'
+    static: []
+    script_alias: '/'
+    processes: 2
+    threads: 5
+    venv: False
+    venv_system_pkgs: False
+    locale: 'en_US.UTF-8'
+  ports:
+    http:
+      cert: null
+      empty: True
+      config: ''
+      includes: []
+    https:
+      cert: ''
+      config: ''

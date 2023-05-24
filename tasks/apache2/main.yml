@@ -95,6 +95,7 @@
   notify: restart apache2
   loop:
     - apache2
+    - ports
 
 - name: deploy openssl config
   template:
@@ -250,6 +251,7 @@
   - name: include vhosts
     include_tasks: vhosts.yml
     when: include_webserver_vhosts
+    tags: webserver_tmp_vhost_debug_set_fact_performance
 
 - name: deploy apache2 logrotate conf
   template:

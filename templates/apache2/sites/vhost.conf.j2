@@ -1,6 +1,7 @@
-<VirtualHost *:80>
+{% for port_name, port_config in vhost.ports.items() %}
+<VirtualHost *:{{ webserver_vhost_ports[port_name].number }}>
   ServerName {{ vhost.server_name }}
-{% if not vhost.http.empty %}
+{% if not port_config.empty %}
   DocumentRoot {{ vhost.document_root }}
 {% else %}
   DocumentRoot {{ webserver_empty_doc_root }}
@@ -8,150 +9,32 @@
 {% if vhost.server_alias != '' %}
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
-{% if vhost.http.redirect != '' %}
-  Use RedirectTo{% if vhost.http.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.http.redirect }}
-{% endif %}
-  LogLevel {{ webserver_log_level }}
-{% if vhost.type == 'share' %}
-  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_error.log
-  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/http_access.log combined env=!dontlog
-{% elif vhost.type == 'redirect' %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_http_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/redirect_http_access.log vhost_combined env=!dontlog
-{% else %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_http_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_http_access.log combined env=!dontlog
-{% endif %}
-{% if webserver_log_lastuse %}
-  CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
-{% endif %}
-{% if not vhost.http.empty %}
-{% if vhost.http.require != '' %}
-{% if vhost.http.require == 'wsgi' %}
-  <Directory "{{ vhost.document_root }}{{ vhost.http.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.http.wsgi.app|dirname }}">
-    <Files "{{ vhost.http.wsgi.app|basename }}">
-      Require all granted
-    </Files>
-  </Directory>
-{% for dir in vhost.http.wsgi.static %}
-  Alias "/{{ dir|basename }}" "{{ vhost.document_root }}/{{ dir }}"
-  <Directory "{{ vhost.document_root }}/{{ dir }}">
-    Require all granted
-  </Directory>
-{% endfor %}
-{% else %}
-  <Directory {{ vhost.document_root }}>
-    {{ (webserver_site_config_common_requires[vhost.http.require]|indent(width=4)).rstrip() }}
-  </Directory>
-{% endif %}
-{% endif %}
-{% else %}
-{% if vhost.http.require != '' %}
-{% if vhost.type == 'server' %}
-  <Location />
-    {{ (webserver_site_config_common_requires[vhost.http.require]|indent(width=4)).rstrip() }}
-  </Location>
-{% else %}
-  <Location />
-    Require all granted
-  </Location>
-{% endif %}
-{% endif %}
-{% endif %}
-{% if not vhost.http.empty %}
-{% if vhost.name in phpfpm_pool_names %}
-  DirectoryIndex index.php index.html
-  # Enable http authorization headers
-  <IfModule setenvif_module>
-    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
-  </IfModule>
-  # Use php-fpm socket
-  <FilesMatch "\.(?i:php[3457]?)$">
-    SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
-  </FilesMatch>
-{% endif %}
-{% if vhost.http.fcgid.extensions %}
-  DirectoryIndex{% for ext in vhost.http.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
-  <IfModule suexec_module>
-    SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
-  </IfModule>
-  # Enable http authorization headers
-  <IfModule setenvif_module>
-    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
-  </IfModule>
-  <Directory {{ vhost.document_root }}>
-    Options +ExecCGI
-{% for ext in vhost.http.fcgid.extensions %}
-    AddHandler fcgid-script .{{ ext }}
-{% endfor %}
-{% for ext in vhost.http.fcgid.extensions if ext not in webserver_fcgid_fcgi_extensions %}
-    FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
-{% endfor %}
-  </Directory>
-{% endif %}
-{% if vhost.http.wsgi.app != '' %}
-{% if vhost.http.wsgi.venv %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.http.wsgi.locale }} locale={{ vhost.http.wsgi.locale }} python-home={{ vhost.document_root }}/{{ vhost.http.wsgi.venv_path }}
-{% else %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.http.wsgi.processes }} threads={{ vhost.http.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.http.wsgi.locale }} locale={{ vhost.http.wsgi.locale }}
-{% endif %}
-  WSGIProcessGroup {{ vhost.name }}
-{% if vhost.http.wsgi.application_group != '' %}
-  WSGIApplicationGroup {{ vhost.http.wsgi.application_group }}
-{% endif %}
-  WSGIScriptAlias {{ vhost.http.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.http.wsgi.app }}
-{% endif %}
-{% if vhost.website.type == 'wordpress' %}
-  <Directory {{ vhost.document_root }}>
-    {{ (webserver_site_config_common_wordpress['rewrite']|indent(width=4)).rstrip() }}
-  </Directory>
-  <Directory {{ vhost.document_root }}/wp-content/plugins/akismet>
-    {{ (webserver_site_config_common_wordpress['akismet']|indent(width=4)).rstrip() }}
-  </Directory>
-{% endif %}
-{% endif %}
-{% if vhost.http.config %}
-  {{ (vhost.http.config|indent(width=2)).rstrip() }}
-{% endif %}
-{% for include in vhost.http.includes %}
-  IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
-{% endfor %}
-</VirtualHost>
-
-<VirtualHost *:443>
-  ServerName {{ vhost.server_name }}
-{% if not vhost.https.empty %}
-  DocumentRoot {{ vhost.document_root }}
-{% else %}
-  DocumentRoot {{ webserver_empty_doc_root }}
-{% endif %}
-{% if vhost.server_alias != '' %}
-  ServerAlias {{ vhost.server_alias }}
-{% endif %}
-{% if vhost.https.cert == '' %}
+{% if port_config.cert is not none %}
+{% if port_config.cert == '' %}
   Use EnableSSL
 {% else %}
-  Use EnableSSLCert {{ vhost.https.cert }}
+  Use EnableSSLCert {{ port_config.cert }}
 {% endif %}
-{% if vhost.https.redirect != '' %}
-  Use RedirectTo{% if vhost.https.redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost.https.redirect }}
+{% endif %}
+{% if port_config.redirect != '' %}
+  Use RedirectTo{% if port_config.redirect.count(' ') == 2 %}Subdir{% endif %} {{ port_config.redirect }}
 {% endif %}
   LogLevel {{ webserver_log_level }}
 {% if vhost.type == 'share' %}
-  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_error.log
-  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/https_access.log combined env=!dontlog
+  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port_name }}_error.log
+  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port_name }}_access.log combined env=!dontlog
 {% elif vhost.type == 'redirect' %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_https_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/redirect_https_access.log vhost_combined env=!dontlog
+  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_{{ port_name }}_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/redirect_{{ port_name }}_access.log vhost_combined env=!dontlog
 {% else %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_https_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_https_access.log combined env=!dontlog
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port_name }}_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port_name }}_access.log combined env=!dontlog
 {% endif %}
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
-{% if not vhost.https.empty %}
-{% if vhost.type == 'share' %}
+{% if not port_config.empty %}
+{% if port_name == 'https' and vhost.type == 'share' %}
   Alias /website-statistics {{ vhost.home_path }}/{{ vhost.name }}/stats
   <Directory {{ vhost.home_path }}/{{ vhost.name }}/stats>
     Use PhysLDAP
@@ -160,14 +43,14 @@
     Options Multiviews Indexes
   </Directory>
 {% endif %}
-{% if vhost.https.require != '' %}
-{% if vhost.https.require == 'wsgi' %}
-  <Directory "{{ vhost.document_root }}{{ vhost.https.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.https.wsgi.app|dirname }}">
-    <Files "{{ vhost.https.wsgi.app|basename }}">
+{% if port_config.require != '' %}
+{% if port_config.require == 'wsgi' %}
+  <Directory "{{ vhost.document_root }}{{ vhost.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.wsgi.app|dirname }}">
+    <Files "{{ vhost.wsgi.app|basename }}">
       Require all granted
     </Files>
   </Directory>
-{% for dir in vhost.https.wsgi.static %}
+{% for dir in vhost.wsgi.static %}
   Alias "/{{ dir|basename }}" "{{ vhost.document_root }}/{{ dir }}"
   <Directory "{{ vhost.document_root }}/{{ dir }}">
     Require all granted
@@ -175,15 +58,15 @@
 {% endfor %}
 {% else %}
   <Directory {{ vhost.document_root }}>
-    {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
+    {{ (webserver_site_config_common_requires[port_config.require]|indent(width=4)).rstrip() }}
   </Directory>
 {% endif %}
 {% endif %}
 {% else %}
-{% if vhost.https.require != '' %}
+{% if port_config.require != '' %}
 {% if vhost.type == 'server' %}
   <Location />
-    {{ (webserver_site_config_common_requires[vhost.https.require]|indent(width=4)).rstrip() }}
+    {{ (webserver_site_config_common_requires[port_config.require]|indent(width=4)).rstrip() }}
   </Location>
 {% else %}
   <Location />
@@ -192,7 +75,7 @@
 {% endif %}
 {% endif %}
 {% endif %}
-{% if not vhost.https.empty %}
+{% if not port_config.empty %}
 {% if vhost.name in phpfpm_pool_names %}
   DirectoryIndex index.php index.html
   # Enable http authorization headers
@@ -204,8 +87,8 @@
     SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
-{% if vhost.https.fcgid.extensions %}
-  DirectoryIndex{% for ext in vhost.https.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
+{% if port_name in vhost.fcgid.ports and vhost.fcgid.extensions %}
+  DirectoryIndex{% for ext in vhost.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
   </IfModule>
@@ -215,27 +98,27 @@
   </IfModule>
   <Directory {{ vhost.document_root }}>
     Options +ExecCGI
-{% for ext in vhost.https.fcgid.extensions %}
+{% for ext in vhost.fcgid.extensions %}
     AddHandler fcgid-script .{{ ext }}
 {% endfor %}
-{% for ext in vhost.https.fcgid.extensions if ext not in webserver_fcgid_fcgi_extensions %}
+{% for ext in vhost.fcgid.extensions if ext not in webserver_fcgid_fcgi_extensions %}
     FcgidWrapper {{ vhost.home_path }}/{{ vhost.name }}/fcgid/fcgid-wrapper-{{ ext if ext in webserver_fcgid_custom_wrappers else 'generic' }} .{{ ext }}
 {% endfor %}
   </Directory>
 {% endif %}
-{% if vhost.https.wsgi.app != '' %}
-{% if vhost.http.wsgi.app == '' %}
-{% if vhost.https.wsgi.venv %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.https.wsgi.locale }} locale={{ vhost.https.wsgi.locale }} python-home={{ vhost.document_root }}/{{ vhost.https.wsgi.venv_path }}
+{% if port_name in vhost.wsgi.ports and vhost.wsgi.app != '' %}
+{% if vhost.wsgi.ports | first == port_name %}
+{% if vhost.wsgi.venv %}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}
 {% else %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.https.wsgi.processes }} threads={{ vhost.https.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.https.wsgi.locale }} locale={{ vhost.https.wsgi.locale }}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }}
 {% endif %}
 {% endif %}
   WSGIProcessGroup {{ vhost.name }}
-{% if vhost.https.wsgi.application_group != '' %}
-  WSGIApplicationGroup {{ vhost.https.wsgi.application_group }}
+{% if vhost.wsgi.application_group != '' %}
+  WSGIApplicationGroup {{ vhost.wsgi.application_group }}
 {% endif %}
-  WSGIScriptAlias {{ vhost.https.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.https.wsgi.app }}
+  WSGIScriptAlias {{ vhost.wsgi.script_alias }} {{ vhost.document_root }}/{{ vhost.wsgi.app }}
 {% endif %}
 {% if vhost.website.type == 'wordpress' %}
   <Directory {{ vhost.document_root }}>
@@ -246,12 +129,13 @@
   </Directory>
 {% endif %}
 {% endif %}
-{% if vhost.https.config %}
-  {{ (vhost.https.config|indent(width=2)).rstrip() }}
+{% if port_config.config %}
+  {{ (port_config.config|indent(width=2)).rstrip() }}
 {% endif %}
-{% for include in vhost.https.includes %}
+{% for include in port_config.includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
 {% endfor %}
 </VirtualHost>
 
+{% endfor %}
 # vim: syntax=apache
