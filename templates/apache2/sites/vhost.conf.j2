@@ -1,7 +1,7 @@
-{% for port_name, port_config in vhost.ports.items() %}
-<VirtualHost *:{{ webserver_vhost_ports[port_name].number }}>
+{% for port in vhost.ports %}
+<VirtualHost *:{{ webserver_vhost_ports[port].number }}>
   ServerName {{ vhost.server_name }}
-{% if not port_config.empty %}
+{% if not vhost[port].empty %}
   DocumentRoot {{ vhost.document_root }}
 {% else %}
   DocumentRoot {{ webserver_empty_doc_root }}
@@ -9,32 +9,32 @@
 {% if vhost.server_alias != '' %}
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
-{% if port_config.cert is not none %}
-{% if port_config.cert == '' %}
+{% if vhost[port].cert is not none %}
+{% if vhost[port].cert == '' %}
   Use EnableSSL
 {% else %}
-  Use EnableSSLCert {{ port_config.cert }}
+  Use EnableSSLCert {{ vhost[port].cert }}
 {% endif %}
 {% endif %}
-{% if port_config.redirect != '' %}
-  Use RedirectTo{% if port_config.redirect.count(' ') == 2 %}Subdir{% endif %} {{ port_config.redirect }}
+{% if vhost[port].redirect != '' %}
+  Use RedirectTo{% if vhost[port].redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost[port].redirect }}
 {% endif %}
   LogLevel {{ webserver_log_level }}
 {% if vhost.type == 'share' %}
-  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port_name }}_error.log
-  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port_name }}_access.log combined env=!dontlog
+  ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_error.log
+  CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_access.log combined env=!dontlog
 {% elif vhost.type == 'redirect' %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_{{ port_name }}_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/redirect_{{ port_name }}_access.log vhost_combined env=!dontlog
+  ErrorLog ${APACHE_LOG_DIR}/sites/redirect_{{ port }}_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/redirect_{{ port }}_access.log vhost_combined env=!dontlog
 {% else %}
-  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port_name }}_error.log
-  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port_name }}_access.log combined env=!dontlog
+  ErrorLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port }}_error.log
+  CustomLog ${APACHE_LOG_DIR}/sites/{{ vhost.name }}_{{ port }}_access.log combined env=!dontlog
 {% endif %}
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
-{% if not port_config.empty %}
-{% if port_name == 'https' and vhost.type == 'share' %}
+{% if not vhost[port].empty %}
+{% if port == 'https' and vhost.type == 'share' %}
   Alias /website-statistics {{ vhost.home_path }}/{{ vhost.name }}/stats
   <Directory {{ vhost.home_path }}/{{ vhost.name }}/stats>
     Use PhysLDAP
@@ -43,8 +43,8 @@
     Options Multiviews Indexes
   </Directory>
 {% endif %}
-{% if port_config.require != '' %}
-{% if port_config.require == 'wsgi' %}
+{% if vhost[port].require != '' %}
+{% if vhost[port].require == 'wsgi' %}
   <Directory "{{ vhost.document_root }}{{ vhost.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.wsgi.app|dirname }}">
     <Files "{{ vhost.wsgi.app|basename }}">
       Require all granted
@@ -58,15 +58,15 @@
 {% endfor %}
 {% else %}
   <Directory {{ vhost.document_root }}>
-    {{ (webserver_site_config_common_requires[port_config.require]|indent(width=4)).rstrip() }}
+    {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=4)).rstrip() }}
   </Directory>
 {% endif %}
 {% endif %}
 {% else %}
-{% if port_config.require != '' %}
+{% if vhost[port].require != '' %}
 {% if vhost.type == 'server' %}
   <Location />
-    {{ (webserver_site_config_common_requires[port_config.require]|indent(width=4)).rstrip() }}
+    {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=4)).rstrip() }}
   </Location>
 {% else %}
   <Location />
@@ -75,7 +75,7 @@
 {% endif %}
 {% endif %}
 {% endif %}
-{% if not port_config.empty %}
+{% if not vhost[port].empty %}
 {% if vhost.name in phpfpm_pool_names %}
   DirectoryIndex index.php index.html
   # Enable http authorization headers
@@ -87,7 +87,7 @@
     SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
   </FilesMatch>
 {% endif %}
-{% if port_name in vhost.fcgid.ports and vhost.fcgid.extensions %}
+{% if port in vhost.fcgid.ports and vhost.fcgid.extensions %}
   DirectoryIndex{% for ext in vhost.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
@@ -106,8 +106,8 @@
 {% endfor %}
   </Directory>
 {% endif %}
-{% if port_name in vhost.wsgi.ports and vhost.wsgi.app != '' %}
-{% if vhost.wsgi.ports | first == port_name %}
+{% if port in vhost.wsgi.ports and vhost.wsgi.app != '' %}
+{% if vhost.wsgi.ports | first == port %}
 {% if vhost.wsgi.venv %}
   WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}
 {% else %}
@@ -129,10 +129,10 @@
   </Directory>
 {% endif %}
 {% endif %}
-{% if port_config.config %}
-  {{ (port_config.config|indent(width=2)).rstrip() }}
+{% if vhost[port].config %}
+  {{ (vhost[port].config|indent(width=2)).rstrip() }}
 {% endif %}
-{% for include in port_config.includes %}
+{% for include in vhost[port].includes %}
   IncludeOptional /etc/apache2/sites-include/{{ include }}.conf
 {% endfor %}
 </VirtualHost>
