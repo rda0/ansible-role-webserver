@@ -48,7 +48,7 @@
   </Directory>
 {%   endif %}
 {%   if vhost[port].require != '' %}
-{%     if vhost[port].require == 'wsgi' %}
+{%     if port in vhost.wsgi.ports and vhost.wsgi.app != '' %}
   <Directory "{{ vhost.document_root }}{{ vhost.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.wsgi.app|dirname }}">
     <Files "{{ vhost.wsgi.app|basename }}">
       Require all granted
