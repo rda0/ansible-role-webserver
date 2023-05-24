@@ -9,11 +9,15 @@
 {% if vhost.server_alias != '' %}
   ServerAlias {{ vhost.server_alias }}
 {% endif %}
-{% if vhost[port].cert is not none %}
-{% if vhost[port].cert == '' %}
-  Use EnableSSL
+{% if webserver_vhost_ports[port].tls %}
+{% if vhost.cert == '' %}
+{% if webserver_letsencrypt_aliases | length > 1 %}
+  Use EnableSSLCert {{ (webserver_letsencrypt_aliases | selectattr('domains', 'contains', vhost.server_name) | first).name }}
 {% else %}
-  Use EnableSSLCert {{ vhost[port].cert }}
+  Use EnableSSL
+{% endif %}
+{% else %}
+  Use EnableSSLCert {{ vhost.cert }}
 {% endif %}
 {% endif %}
 {% if vhost[port].redirect != '' %}

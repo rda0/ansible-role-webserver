@@ -316,12 +316,11 @@ _vhost_defaults_static:
     venv: False
     venv_system_pkgs: False
     locale: 'en_US.UTF-8'
+  cert: ''
   ports: ['http', 'https']
   http:
-    cert: null
     empty: True
     config: ''
     includes: []
   https:
-    cert: ''
     config: ''
