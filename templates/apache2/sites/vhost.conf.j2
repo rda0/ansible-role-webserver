@@ -105,7 +105,7 @@
   <Directory {{ vhost.document_root }}>
     {{ (webserver_site_config_common_wordpress['rewrite']|indent(width=4)).rstrip() }}
   </Directory>
-  <Directory {{ vhost.document_root }}wp-content/plugins/akismet>
+  <Directory {{ vhost.document_root }}/wp-content/plugins/akismet>
     {{ (webserver_site_config_common_wordpress['akismet']|indent(width=4)).rstrip() }}
   </Directory>
 {% endif %}
