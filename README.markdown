@@ -39,6 +39,8 @@ webserver_letsencrypt_aliases:
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSLCert le-default
 ```
 
+Note: Explicitly name multiple certificates to be autoselected in `webserver_vhosts` config.
+
 ### letsencrypt staging
 
 To use the [Let's Encrypt staging environment](https://letsencrypt.org/docs/staging-environment/) to avoid hitting the rate limit set `webserver_letsencrypt_use_staging: True`
@@ -88,11 +90,10 @@ webserver_ldap: True                        # enable ldap auth
 webserver_packages_custom: []               # extra packages to install
 webserver_modules_custom: []                # extra modules to enable
 webserver_site_content_default_description: Example webserver
-include_webserver_phpfpm: True              # enable phpfpm
 include_webserver_website: True             # enable deployment of websites
 include_webserver_website_db: True          # enable deployment of databases for websites
 include_webserver_website_wordpress: True   # enable deployment of wordpress websites
-webserver_phpfpm_pools: []                  # list of phpfpm pools to create
+webserver_phpfpm_pools: []                  # list of phpfpm pools to create (enables and installs php-fpm)
 include_webserver_sites_include: True       # enable deployment of /etc/apache2/sites-include
 ```
 
@@ -121,12 +122,12 @@ include_webserver_vhosts: True
 ```
 
 The task `set fact _vhosts` in `roles-servers/webserver/tasks/apache2/vhosts.yml` sets a lot of default values
-only very few configuration options are required to create a VHost, namely that is the VHosts `name`:
+only very few configuration options are required to create a VHost, namely the VHosts `name` and `server_name`:
 
 ```yaml
 webserver_vhosts:
-  - { name: vhost1 }
-  - { name: vhost2 }
+  - { name: vhost1, server_name: vhost1.domain.tld }
+  - { name: vhost2, server_name: vhost2.domain.tld }
 ```
 
 Just add any parameters that deviate from the default value.
@@ -149,22 +150,25 @@ webserver_vhosts:
     server_name: example.phys.ethz.ch                   # main domain name
     server_alias: foo.ch bar.org                        # list of domain aliases
     home_user_owned: True                               # allow home to be accessible via ssh (disables group access)
+    fcgid:                                              # by default used in `https` port
+      ports: ['https']                                  # default, optional
+      extensions: ['cgi','php','py']                    # list of cgi extensions to enable cgi execution for
+      options:                                          # options for cgi (php has default options enabled)
+        php: ['foo=1','bar=2']                          # override php options
+    wsgi:                                               # by default used in `https` port
+      ports: ['https']                                  # default, optional
+      app: example.wsgi                                 # wsgi entry point in public/
+      venv: True                                        # deploy a venv in private/venv
+      static: ['static','other/static']                 # list of paths to serve statically
+      processes: 4                                      # default 2
+      threads: 20                                       # default 5
+    require: require_all_denied                         # default access template used for ports config if absent
+    cert: le-customer1                                  # certificate to use (optional, automatically selected)
     http: {}                                            # http vhost settings (should generally not be used)
     https:                                              # https settings
-      cert: le-customer1                                # certificate to use
       redirect: 'https baz.com to/path'                 # redirect somewhere else
       require: grant_share_all_allow_override_none      # access template from `webserver_site_config_common_requires`
       config: 'DirectoryIndex disabled'                 # custom config to include at the end of the vhost
-      fcgid:
-        extensions: ['cgi','php','py']                  # list of cgi extensions to enable cgi execution for
-        options:                                        # options for cgi (php has default options enabled)
-          php: ['foo=1','bar=2']                        # override php options
-      wsgi:
-        app: example.wsgi                               # wsgi entry point in public/
-        venv: True                                      # deploy a venv in private/venv
-        static: ['static','other/static']               # list of paths to serve statically
-        processes: 4                                    # default 2
-        threads: 20                                     # default 5
       includes: ['foo','bar']                           # *.conf files to optionally include from sites-include dir
                                                         # by default a file named like `name` is included optionally
     website:                                            # website specific settings
