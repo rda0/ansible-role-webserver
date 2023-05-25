@@ -68,6 +68,11 @@
     Require all granted
   </Directory>
 {%       endfor %}
+{%       if vhost[port].require != 'default' %}
+  <Directory {{ vhost.document_root }}>
+    {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=4)).rstrip() }}
+  </Directory>
+{%       endif %}
 {%     else %}
   <Directory {{ vhost.document_root }}>
 {%       if vhost[port].require == 'default' %}
