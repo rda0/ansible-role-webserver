@@ -71,13 +71,13 @@
 {%     endif %}
 {%   endif %}
 {% else %}
-{%   if vhost[port].require != '' %}
+{%   if vhost[port].redirect and vhost[port].require != '' %}
   <Location />
-{%       if vhost[port].require == 'default' %}
-    {{ (webserver_site_config_common_requires['require_all_granted']|indent(width=4)).rstrip() }}
-{%       else %}
+    Require all granted
+  </Location>
+{%   elif vhost[port].require not in['', 'default'] %}
+  <Location />
     {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=4)).rstrip() }}
-{%       endif %}
   </Location>
 {%   endif %}
 {% endif %}

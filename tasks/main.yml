@@ -9,7 +9,9 @@
     - name: include apache2
       include_tasks: apache2/main.yml
       when: include_webserver_apache2
-      tags: webserver_tmp_vhost_debug_set_fact_performance
+      tags:
+        - webserver_tmp_vhost_debug_set_fact_performance
+        - webserver_tmp_vhost_debug_create_vhosts
 
   - name: tags-block
     tags: webserver_nginx

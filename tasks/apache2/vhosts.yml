@@ -29,16 +29,18 @@
         venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
       http:
         redirect: "{{ ['https', item.server_name] | join(' ') }}"
-        #require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
+        require: "{{ _item.require }}"
       https:
         empty: "{{ True if _item.type == 'redirect' else False }}"
         redirect: "{{ '' if _item.server_alias == '' else ['https', item.server_name] | join(' ') }}"
+        require: "{{ _item.require }}"
         includes: "{{ [item.name] if _item.type == 'share' else [] }}"
-        #require: "{{ 'grant_share_all' if _item.type == 'share' else 'require_all_granted' }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"
-  tags: webserver_tmp_vhost_debug_set_fact_performance
+  tags:
+    - webserver_tmp_vhost_debug_set_fact_performance
+    - webserver_tmp_vhost_debug_create_vhosts
 
 #- name: debug _vhosts
 #  debug:
@@ -47,6 +49,7 @@
 - name: set fact _vhostfilter
   set_fact:
     _vhostfilter: "{{ vhostfilter | default(_vhosts | map(attribute='name') | list) }}"
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 #- name: debug _vhostfilter
 #  debug:
@@ -104,6 +107,7 @@
 - name: set fact _phpfpm_pool_names
   set_fact:
     _phpfpm_pool_names: "{{ webserver_phpfpm_pools | map(attribute='name') | list }}"
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 #- name: debug _phpfpm_pool_names
 #  debug:
@@ -112,16 +116,19 @@
 - name: set fact _vhosts_fcgid_php
   set_fact:
     _vhosts_fcgid_php: "{{ _vhosts | selectattr('fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _vhostfilter) | list | map(attribute='name') }}"
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: find php upstream version
   package_facts:
   when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
   when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: create vhosts
   template:
@@ -137,6 +144,7 @@
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
+  tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: set fact _vhosts_fcgid
   set_fact:

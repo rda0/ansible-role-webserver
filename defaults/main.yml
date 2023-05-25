@@ -286,6 +286,7 @@ _vhost_defaults_dynamic:
   secret: ''
   website:
     type: ''
+  require: default
 # static vhost defaults
 _vhost_defaults_static:
   #name: required
@@ -324,9 +325,7 @@ _vhost_defaults_static:
   ports: ['http', 'https']
   http:
     empty: True
-    require: default
     config: ''
     includes: []
   https:
-    require: default
     config: ''
