@@ -21,7 +21,15 @@
 {%   endif %}
 {% endif %}
 {% if vhost[port].redirect != '' %}
+{%   if vhost[port].redirect == 'redirect_to_requested_domain' %}
+  # Redirect to requested domain (except well-known)
+  <LocationMatch ^(?!/\.well-known/acme-challenge/)>
+    Require all granted
+    Redirect https://%{HTTP_HOST}%{REQUEST_URI}
+  </LocationMatch>
+{%   else %}
   Use RedirectTo{% if vhost[port].redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost[port].redirect }}
+{%   endif %}
 {% endif %}
   LogLevel {{ webserver_log_level }}
 {% if vhost.type == 'share' %}
