@@ -32,6 +32,11 @@
   notify: reload systemd
   when: not (webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom)
 
+- name: install php-fpm packages
+  package:
+    pkg: "{{ webserver_phpfpm_packages }}"
+  when: webserver_phpfpm_pools
+
 - name: install webserver-specific packages
   package:
     pkg: "{{ webserver_packages_custom }}"
