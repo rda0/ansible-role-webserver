@@ -103,6 +103,10 @@ webserver_service_start_after_network_online: False
 webserver_service_nginx_limit_number_of_open_files: ''
 webserver_site_enable_default: True
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSL
+webserver_site_config_default_requires:
+  server: require_all_granted
+  redirect: require_all_granted
+  share: grant_share_all
 webserver_site_config_common_requires:
   require_all_granted: |
     Require all granted
@@ -320,7 +324,9 @@ _vhost_defaults_static:
   ports: ['http', 'https']
   http:
     empty: True
+    require: default
     config: ''
     includes: []
   https:
+    require: default
     config: ''
