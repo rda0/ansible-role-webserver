@@ -13,7 +13,6 @@
     owner: root
     group: root
     mode: 0755
-  when: webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom
 
 - name: deploy systemd apache2.service override
   template:
@@ -23,14 +22,6 @@
     group: root
     mode: 0644
   notify: reload systemd
-  when: webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom
-
-- name: remove systemd apache2.service override
-  file:
-    path: /etc/systemd/system/apache2.service.d/override.conf
-    state: absent
-  notify: reload systemd
-  when: not (webserver_service_start_after_network_online or 'suexec' in webserver_modules_custom)
 
 - name: install php-fpm packages
   package:
