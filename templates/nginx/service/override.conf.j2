@@ -1,2 +1,5 @@
 [Service]
+Restart=always
+{% if webserver_service_nginx_limit_number_of_open_files != '' %}
 LimitNOFILE={{ webserver_service_nginx_limit_number_of_open_files }}
+{% endif %}
