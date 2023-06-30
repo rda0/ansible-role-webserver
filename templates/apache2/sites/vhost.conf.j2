@@ -127,7 +127,7 @@
 {%   endif %}
 {%   if port in vhost.wsgi.ports and vhost.wsgi.app != '' %}
 {%     if vhost.wsgi.ports | first == port %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }}{% if vhost.wsgi.venv %} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}{% endif +%}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }}{% if vhost.wsgi.memory_limit %} memory-limit={{ vhost.wsgi.memory_limit }}{% endif +%} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }}{% if vhost.wsgi.venv %} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}{% endif +%}
 {%     endif %}
   WSGIProcessGroup {{ vhost.name }}
 {%     if vhost.wsgi.application_group != '' %}

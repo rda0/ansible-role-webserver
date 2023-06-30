@@ -319,6 +319,7 @@ _vhost_defaults_static:
     script_alias: '/'
     processes: 2
     threads: 5
+    memory_limit: 1073741824
     venv: False
     venv_system_pkgs: False
     locale: 'en_US.UTF-8'
