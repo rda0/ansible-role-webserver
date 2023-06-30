@@ -127,11 +127,7 @@
 {%   endif %}
 {%   if port in vhost.wsgi.ports and vhost.wsgi.app != '' %}
 {%     if vhost.wsgi.ports | first == port %}
-{%       if vhost.wsgi.venv %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}
-{%       else %}
-  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }}
-{%       endif %}
+  WSGIDaemonProcess {{ vhost.name }} user={{ vhost.name }} group={{ vhost.name }} processes={{ vhost.wsgi.processes }} threads={{ vhost.wsgi.threads }} display-name=%{GROUP} home={{ vhost.document_root }} lang={{ vhost.wsgi.locale }} locale={{ vhost.wsgi.locale }}{% if vhost.wsgi.venv %} python-home={{ vhost.document_root }}/{{ vhost.wsgi.venv_path }}{% endif +%}
 {%     endif %}
   WSGIProcessGroup {{ vhost.name }}
 {%     if vhost.wsgi.application_group != '' %}
