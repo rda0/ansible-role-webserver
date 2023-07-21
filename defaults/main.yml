@@ -253,7 +253,7 @@ webserver_website_wordpress_cronjob_update_languages: True
 webserver_website_wordpress_db_host: '{{ webserver_db_host }}'
 webserver_website_wordpress_set_db_host: True
 webserver_suexec_custom_config: ''
-webserver_wsgi_venv_reinit: False
+webserver_venv_reinit: False
 webserver_wsgi_app_content_default: |
   import os
   def dummy_app(environ, start_response):
@@ -275,6 +275,7 @@ _vhosts: []
 _vhosts_fcgid: []
 _vhosts_fcgid_php: []
 _vhosts_db: []
+_vhosts_venv: []
 _vhosts_wsgi: []
 _vhostfilter: []
 _webserver_php_version: ''
@@ -309,6 +310,10 @@ _vhost_defaults_static:
     ports: ['https']
     extensions: []
     options: "{{ webserver_fcgid_custom_options }}"
+  venv:
+    mode: '0664'
+    venv: False
+    system_pkgs: False
   wsgi:
     ports: ['https']
     app: ''
@@ -320,8 +325,6 @@ _vhost_defaults_static:
     processes: 2
     threads: 5
     memory_limit: 1073741824
-    venv: False
-    venv_system_pkgs: False
     locale: 'en_US.UTF-8'
     options_custom: []
   cert: ''

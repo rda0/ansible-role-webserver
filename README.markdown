@@ -155,10 +155,10 @@ webserver_vhosts:
       extensions: ['cgi','php','py']                    # list of cgi extensions to enable cgi execution for
       options:                                          # options for cgi (php has default options enabled)
         php: ['foo=1','bar=2']                          # override php options
+    venv: { venv: True }                                # deploy a venv in private/venv
     wsgi:                                               # by default used in `https` port
       ports: ['https']                                  # default, optional
       app: example.wsgi                                 # wsgi entry point in public/
-      venv: True                                        # deploy a venv in private/venv
       static: ['static','other/static']                 # list of paths to serve statically
       processes: 4                                      # default 2
       threads: 20                                       # default 5
@@ -179,15 +179,15 @@ webserver_vhosts:
 
 For details and all other settings refer to `tasks/apache2/vhosts.yml`.
 
-### wsgi venv
+### venv
 
 The venv is deployed according to `private/requirements.txt`, this is the file that should be maintained by the user.
 If a `private/freeze.txt` is found, this will take precedence over `private/requirements.txt`.
 After generating the venv, a `private/freeze.txt` will be generated (for later exact reproducibility).
 
-To regenerate the venv use `-e '{"webserver_wsgi_venv_reinit": True}'`. In addition you may want to manually delete the `freeze.txt` beforehand.
+To regenerate the venv use `-e '{"webserver_venv_reinit": True}'`. In addition you may want to manually delete the `freeze.txt` beforehand.
 
-In rare exceptions you may need to enable access to system-wide Python packages from inside the venv using the `venv_system_pkgs: True` flag. This can be useful if the required packages have no wheels, are non-trivial to build from source, but readily available as Debian package. In general this setting should be avoided as the webshare may be impacted by Debian package and release upgrades.
+In rare exceptions you may need to enable access to system-wide Python packages from inside the venv using the `venv.system_pkgs: True` flag. This can be useful if the required packages have no wheels, are non-trivial to build from source, but readily available as Debian package. In general this setting should be avoided as the webshare may be impacted by Debian package and release upgrades.
 
 ### fifo2syslog
 

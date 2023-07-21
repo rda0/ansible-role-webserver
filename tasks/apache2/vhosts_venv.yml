@@ -1,0 +1,65 @@
+- name: tags-block
+  when: vhost_venv.venv
+  block:
+
+  - name: 'venv {{ vhost_venv.name }} deploy empty requirements'
+    copy:
+      content: ''
+      dest: '{{ vhost_venv.document_root }}/{{ vhost_venv.requirements }}'
+      owner: '{{ vhost_venv.owner }}'
+      group: '{{ vhost_venv.group }}'
+      mode: '{{ vhost_venv.mode }}'
+      force: no
+
+  - name: 'venv {{ vhost_venv.name }} check if freeze already exists'
+    stat:
+      path: '{{ vhost_venv.document_root }}/{{ vhost_venv.freeze }}'
+    register: webserver_venv_freeze
+
+  - name: 'venv {{ vhost_venv.name }} remove venv (reinit)'
+    file:
+      path: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}'
+      state: absent
+    when: webserver_venv_reinit
+
+  - name: 'venv {{ vhost_venv.name }} check if venv already exists'
+    stat:
+      path: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}'
+    register: webserver_venv_directory
+
+  - name: tags-block
+    when: not webserver_venv_directory.stat.exists
+    block:
+
+    - name: 'venv {{ vhost_venv.name }} initialize venv (pip, setuptools, wheel)'
+      pip:
+        name:
+          - pip
+          - setuptools
+          - wheel
+        state: latest  # noqa package-latest
+        virtualenv: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}'
+        virtualenv_command: /usr/bin/python3 -m venv
+        virtualenv_site_packages: "{{ vhost_venv.system_pkgs | ternary('yes', 'no') }}"
+        extra_args: --no-cache-dir
+      become: yes
+      become_user: "{{ vhost_venv.name }}"
+      register: webserver_venv_initialize
+
+    - name: 'venv {{ vhost_venv.name }} install from freeze if exists or else from requirements'
+      pip:
+        requirements: '{{ vhost_venv.document_root }}/{{ vhost_venv.freeze if webserver_venv_freeze.stat.exists else vhost_venv.requirements }}'
+        virtualenv: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}'
+        virtualenv_command: /usr/bin/python3 -m venv
+        extra_args: --no-cache-dir
+      become: yes
+      become_user: "{{ vhost_venv.name }}"
+      register: webserver_venv_install_requirements
+      when: webserver_venv_initialize.changed
+      ignore_errors: True
+
+  - name: 'venv {{ vhost_venv.name }} generate venv freeze file'
+    shell: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}/bin/pip --no-cache-dir freeze --local > {{ vhost_venv.document_root }}/{{ vhost_venv.freeze }}'
+    become: yes
+    become_user: "{{ vhost_venv.name }}"
+    when: not webserver_venv_freeze.stat.exists or ((webserver_venv_initialize is defined and webserver_venv_initialize.changed) or (webserver_venv_install_requirements is defined and webserver_venv_install_requirements.changed))

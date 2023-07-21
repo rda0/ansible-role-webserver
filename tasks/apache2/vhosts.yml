@@ -21,12 +21,15 @@
         name: "{{ item.name }}"
         user: "{{ item.name }}"
         password: "{{ _item.secret }}"
+      venv:
+        owner: "{{ item.name }}"
+        group: "{{ item.name }}"
+        path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
+        requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
+        freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
       wsgi:
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
-        venv_path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
-        venv_requirements: "{{ '../private/requirements.txt' if _item.type == 'share' else 'requirements.txt' }}"
-        venv_freeze: "{{ '../private/freeze.txt' if _item.type == 'share' else 'freeze.txt' }}"
       http:
         redirect: "{{ ['https', item.server_name] | join(' ') }}"
         require: "{{ _item.require }}"
@@ -168,6 +171,41 @@
   loop_control:
     loop_var: vhost_fcgid
 
+- name: set fact _vhosts_venv
+  set_fact:
+    _vhosts_venv: "{{ _vhosts_venv + [_vhost_venv] }}"
+  vars:
+    _vhost_venv:
+      name: '{{ item.name }}'
+      document_root: '{{ item.document_root }}'
+      owner: '{{ item.venv.owner }}'
+      group: '{{ item.venv.group }}'
+      mode: '{{ item.venv.mode }}'
+      venv: '{{ item.venv.venv }}'
+      system_pkgs: '{{ item.venv.system_pkgs }}'
+      path: '{{ item.venv.path }}'
+      requirements: '{{ item.venv.requirements }}'
+      freeze: '{{ item.venv.freeze }}'
+  loop: "{{ _vhosts | selectattr('venv.venv') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+# - name: debug _vhosts_venv
+#   debug:
+#     msg: "{{ _vhosts_venv }}"
+
+- name: install venv dependencies
+  package:
+    name: python3-venv
+    state: present
+  when: _vhosts_venv | selectattr('venv') | list
+
+- name: include venv
+  include_tasks: vhosts_venv.yml
+  loop: "{{ _vhosts_venv | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop_control:
+    loop_var: vhost_venv
+
 - name: set fact _vhosts_wsgi
   set_fact:
     _vhosts_wsgi: "{{ _vhosts_wsgi + [_vhost_wsgi] }}"
@@ -176,16 +214,10 @@
       name: '{{ item.name }}'
       document_root: '{{ item.document_root }}'
       app: '{{ item.wsgi.app }}'
-      application_group: '{{ item.wsgi.app }}'
       content: '{{ item.wsgi.content }}'
       owner: '{{ item.wsgi.owner }}'
       group: '{{ item.wsgi.group }}'
       mode: '{{ item.wsgi.mode }}'
-      venv: '{{ item.wsgi.venv }}'
-      venv_system_pkgs: '{{ item.wsgi.venv_system_pkgs }}'
-      venv_path: '{{ item.wsgi.venv_path }}'
-      venv_requirements: '{{ item.wsgi.venv_requirements }}'
-      venv_freeze: '{{ item.wsgi.venv_freeze }}'
   loop: "{{ _vhosts | selectattr('wsgi.app') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
@@ -193,12 +225,6 @@
 #- name: debug _vhosts_wsgi
 #  debug:
 #    msg: "{{ _vhosts_wsgi }}"
-
-- name: install wsgi venv dependencies
-  package:
-    name: python3-venv
-    state: present
-  when: _vhosts_wsgi | selectattr('venv') | list
 
 - name: include wsgi
   include_tasks: vhosts_wsgi.yml
