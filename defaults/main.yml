@@ -288,6 +288,8 @@ _vhost_defaults_dynamic:
   secret: ''
   website:
     type: ''
+  wsgi:
+    app: ''
   require: default
 # static vhost defaults
 _vhost_defaults_static:
@@ -315,7 +317,6 @@ _vhost_defaults_static:
     system_pkgs: False
   wsgi:
     ports: ['https']
-    app: ''
     application_group: '%{GLOBAL}'
     content: "{{ webserver_wsgi_app_content_default }}"
     mode: '0664'

@@ -22,7 +22,7 @@
         user: "{{ item.name }}"
         password: "{{ _item.secret }}"
       venv:
-        enabled: "{{ True if 'wsgi' in item else False }}"
+        enabled: "{{ True if _item.wsgi.app != '' else False }}"
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
         path: "{{ '../private/venv' if _item.type == 'share' else 'venv' }}"
