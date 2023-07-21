@@ -1,5 +1,5 @@
 - name: tags-block
-  when: vhost_venv.venv
+  when: vhost_venv.enabled
   block:
 
   - name: 'venv {{ vhost_venv.name }} deploy empty requirements'

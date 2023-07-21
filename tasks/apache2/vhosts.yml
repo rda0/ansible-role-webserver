@@ -181,12 +181,12 @@
       owner: '{{ item.venv.owner }}'
       group: '{{ item.venv.group }}'
       mode: '{{ item.venv.mode }}'
-      venv: '{{ item.venv.venv }}'
+      enabled: '{{ item.venv.enabled }}'
       system_pkgs: '{{ item.venv.system_pkgs }}'
       path: '{{ item.venv.path }}'
       requirements: '{{ item.venv.requirements }}'
       freeze: '{{ item.venv.freeze }}'
-  loop: "{{ _vhosts | selectattr('venv.venv') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _vhosts | selectattr('venv.enabled') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
@@ -198,7 +198,7 @@
   package:
     name: python3-venv
     state: present
-  when: _vhosts_venv | selectattr('venv') | list
+  when: _vhosts_venv | selectattr('enabled') | list
 
 - name: include venv
   include_tasks: vhosts_venv.yml
