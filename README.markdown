@@ -155,7 +155,7 @@ webserver_vhosts:
       extensions: ['cgi','php','py']                    # list of cgi extensions to enable cgi execution for
       options:                                          # options for cgi (php has default options enabled)
         php: ['foo=1','bar=2']                          # override php options
-    venv: { enabled: True }                             # deploy a venv in private/venv
+    venv: { enabled: True }                             # deploy a venv in private/venv (enabled by default for wsgi)
     wsgi:                                               # by default used in `https` port
       ports: ['https']                                  # default, optional
       app: example.wsgi                                 # wsgi entry point in public/

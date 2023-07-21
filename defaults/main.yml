@@ -311,7 +311,6 @@ _vhost_defaults_static:
     extensions: []
     options: "{{ webserver_fcgid_custom_options }}"
   venv:
-    enabled: False
     mode: '0664'
     system_pkgs: False
   wsgi:
