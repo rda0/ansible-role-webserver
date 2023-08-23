@@ -20,7 +20,7 @@
     loop_var: mount
   loop: "{{ webserver_mounts }}"
 
-- name: enable and start nfs mounts
+- name: mounts enable and start systemd service
   systemd:
     name: "{{ mount.target | trim('/') | replace('-', '\\x2d') | replace('/', '-') }}.mount"
     enabled: yes
@@ -29,3 +29,4 @@
   loop_control:
     loop_var: mount
   loop: "{{ webserver_mounts }}"
+  ignore_errors: "{{ ansible_check_mode }}"
