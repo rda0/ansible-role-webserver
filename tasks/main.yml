@@ -60,3 +60,11 @@
     - name: include appserver
       include_tasks: appserver/main.yml
       when: include_webserver_appserver
+
+  - name: tags-block
+    tags: webserver_mounts
+    block:
+
+    - name: include mounts
+      include_tasks: mounts/main.yml
+      when: include_webserver_mounts
