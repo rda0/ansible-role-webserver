@@ -9,6 +9,7 @@ include_webserver_sites_include: False
 include_webserver_vhosts: True
 include_webserver_stats: True
 include_webserver_authorized_keys: False
+include_webserver_appserver: False
 import_webserver_letsencrypt_cronjob: True
 webserver_letsencrypt_migrate_to_ansible: False
 

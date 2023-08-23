@@ -1,0 +1,17 @@
+- name: appserver deploy systemd services
+  template:
+    src: appserver/systemd.service.j2
+    dest: '/etc/systemd/system/appserver-{{ item.name }}.service'
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload systemd
+  loop: '{{ webserver_appservers }}'
+
+- name: appserver enable and start systemd services
+  systemd:
+    name: 'appserver-{{ item.name }}.service'
+    daemon_reload: yes
+    enabled: yes
+    state: started
+  loop: '{{ webserver_appservers }}'

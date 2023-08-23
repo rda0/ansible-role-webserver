@@ -1,0 +1,23 @@
+[Unit]
+Description=appserver {{ item.name }}
+{% for line in item.unit_extra %}
+{{ line }}
+{% endfor %}
+
+[Service]
+Type=simple
+User={{ item.user | default(item.name) }}
+Group={{ item.user | default(item.name) }}
+PrivateTmp=true
+WorkingDirectory=/home/{{ item.name }}/private/
+ExecStart=/home/{{ item.name }}/private/venv/bin/{{ item.server }} \
+    --workers=1 \
+    --host=127.0.0.1 \
+    --port={{ item.port }} \
+    --ws=none \
+    {{ item.app }}:app
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

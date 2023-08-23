@@ -52,3 +52,11 @@
     - name: include website
       include_tasks: website/main.yml
       when: include_webserver_website
+
+  - name: tags-block
+    tags: webserver_appserver
+    block:
+
+    - name: include appserver
+      include_tasks: appserver/main.yml
+      when: include_webserver_appserver
