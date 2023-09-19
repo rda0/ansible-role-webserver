@@ -59,13 +59,21 @@
 {%     if port in vhost.wsgi.ports and vhost.wsgi.app != '' %}
   <Directory "{{ vhost.document_root }}{{ vhost.wsgi.app|dirname|length|ternary('/','') }}{{ vhost.wsgi.app|dirname }}">
     <Files "{{ vhost.wsgi.app|basename }}">
+{%       if vhost[port].require == 'default' %}
       Require all granted
+{%       else %}
+      {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=6)).rstrip() }}
+{%       endif %}
     </Files>
   </Directory>
 {%       for dir in vhost.wsgi.static %}
   Alias "/{{ dir|basename }}" "{{ vhost.document_root }}/{{ dir }}"
   <Directory "{{ vhost.document_root }}/{{ dir }}">
+{%         if vhost[port].require == 'default' %}
     Require all granted
+{%         else %}
+    {{ (webserver_site_config_common_requires[vhost[port].require]|indent(width=4)).rstrip() }}
+{%         endif %}
   </Directory>
 {%       endfor %}
 {%       if vhost[port].require != 'default' %}
