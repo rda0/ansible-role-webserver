@@ -5,6 +5,7 @@
     priv: "{{ instance.name }}.*:ALL"
     host: "{{ _db_grant_host }}"
     state: present
+    column_case_sensitive: False
   delegate_to: "{{ instance.delegate }}"
   loop: "{{ _databases }}"
   loop_control:
