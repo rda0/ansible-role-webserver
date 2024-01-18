@@ -2,7 +2,7 @@
   include_role:
     name: mount
   vars:
-    mount_fstype: nfs
+    mount_type: nfs
     mount_options: soft,relatime,rsize=1048576,wsize=1048576,timeo=3,retrans=2
     mount_timeout_sec: 3
     mount_mounts: '{{ webserver_mounts }}'
