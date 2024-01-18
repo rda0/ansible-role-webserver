@@ -1,32 +1,8 @@
-- name: mounts create parent folder
-  file:
-    path: "{{ mount.target | dirname }}"
-    state: directory
-    owner: root
-    group: root
-    mode: '0755'
-  loop_control:
-    loop_var: mount
-  loop: "{{ webserver_mounts }}"
-
-- name: mounts deploy systemd unitfile for nfs
-  template:
-    src: mounts/nfs.mount.j2
-    dest: "/etc/systemd/system/{{ mount.target | trim('/') | replace('-', '\\x2d') | replace('/', '-') }}.mount"
-    owner: root
-    group: root
-    mode: 0644
-  loop_control:
-    loop_var: mount
-  loop: "{{ webserver_mounts }}"
-
-- name: mounts enable and start systemd service
-  systemd:
-    name: "{{ mount.target | trim('/') | replace('-', '\\x2d') | replace('/', '-') }}.mount"
-    enabled: yes
-    state: started
-    daemon_reload: yes
-  loop_control:
-    loop_var: mount
-  loop: "{{ webserver_mounts }}"
-  ignore_errors: "{{ ansible_check_mode }}"
+- name: mount nfs filesystems
+  include_role:
+    name: mount
+  vars:
+    mount_fstype: nfs
+    mount_options: soft,relatime,rsize=1048576,wsize=1048576,timeo=3,retrans=2
+    mount_timeout_sec: 3
+    mount_mounts: '{{ webserver_mounts }}'
