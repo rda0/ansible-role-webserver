@@ -180,6 +180,10 @@ webserver_site_config_common_wordpress:
     <FilesMatch "^logo-full-2x\.png$">
       Require all granted
     </FilesMatch>
+  tightening: |
+    <Files xmlrpc.php>
+      Require all denied
+    </Files>
 webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_phys_ldap_group_isg }}"
 webserver_site_config_default_vhost_default_allow_net: adm
 webserver_site_config_default_vhost_custom: ''
