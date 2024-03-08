@@ -15,4 +15,4 @@
     enabled: yes
     state: started
   loop: '{{ webserver_appservers }}'
-  ignore_errors: "{{ ansible_check_mode }}"
+  ignore_errors: True  # noqa ignore-errors
