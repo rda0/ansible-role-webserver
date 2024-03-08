@@ -1,6 +1,6 @@
 [Unit]
 Description=appserver {{ item.name }}
-{% for line in item.unit_extra %}
+{% for line in item.unit_extra | default([]) %}
 {{ line }}
 {% endfor %}
 
@@ -10,14 +10,19 @@ User={{ item.user | default(item.name) }}
 Group={{ item.user | default(item.name) }}
 PrivateTmp=true
 WorkingDirectory=/home/{{ item.name }}/private/
+{% if not 'ExecStart' in '\n'.join(item.service_extra | default([])) %}
 ExecStart=/home/{{ item.name }}/private/venv/bin/{{ item.server }} \
     --workers=1 \
     --host=127.0.0.1 \
     --port={{ item.port }} \
     --ws=none \
     {{ item.app }}:app
+{% endif %}
 RestartSec=10
 Restart=always
+{% for line in item.service_extra | default([]) %}
+{{ line }}
+{% endfor %}
 
 [Install]
 WantedBy=multi-user.target
