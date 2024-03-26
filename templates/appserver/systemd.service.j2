@@ -9,7 +9,9 @@ Type=simple
 User={{ item.user | default(item.name) }}
 Group={{ item.user | default(item.name) }}
 PrivateTmp=true
+{% if not 'WorkingDirectory' in '\n'.join(item.service_extra | default([])) %}
 WorkingDirectory=/home/{{ item.name }}/private/
+{% endif %}
 {% if not 'ExecStart' in '\n'.join(item.service_extra | default([])) %}
 ExecStart=/home/{{ item.name }}/private/venv/bin/{{ item.server }} \
     --workers=1 \
