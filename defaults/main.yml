@@ -204,7 +204,7 @@ webserver_letsencrypt_restore_from_backup_image_path: "{{ webserver_letsencrypt_
 
 webserver_letsencrypt_path: /opt/letsencrypt
 webserver_letsencrypt_repo: git@gitlab.phys.ethz.ch:Misc/letsencrypt-acmetiny.git
-webserver_letsencrypt_branch: "{{ 'master' if webserver_letsencrypt_initialize_manually else 'ansible' }}"
+webserver_letsencrypt_branch: master
 webserver_letsencrypt_aliases:
   - domains:
       - '{{ ansible_fqdn }}'
