@@ -203,7 +203,7 @@ webserver_letsencrypt_restore_from_backup_image: ''
 webserver_letsencrypt_restore_from_backup_image_path: "{{ webserver_letsencrypt_path }}"
 
 webserver_letsencrypt_path: /opt/letsencrypt
-webserver_letsencrypt_repo: git@gitlab.phys.ethz.ch:Misc/letsencrypt-acmetiny.git
+webserver_letsencrypt_repo: https://gitlab.phys.ethz.ch/isgphys/letsencrypt-acmetiny-make.git
 webserver_letsencrypt_branch: master
 webserver_letsencrypt_aliases:
   - domains:
