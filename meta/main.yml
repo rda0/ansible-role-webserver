@@ -1,3 +1,3 @@
 dependencies:
-  - role: handlers_common
+  - role: handlers
   - { role: ldap, when: webserver_ldap }
