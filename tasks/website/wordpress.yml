@@ -2,7 +2,7 @@
   get_url:
     url: "https://github.com/wp-cli/wp-cli/releases/download/v{{ webserver_website_wordpress_cli_version }}/wp-cli-{{ webserver_website_wordpress_cli_version }}.phar"
     dest: /usr/local/bin/wp
-    mode: 0755
+    mode: "0755"
   ignore_errors: yes  # noqa ignore-errors
 
 - name: install wp-cli dependencies
@@ -15,7 +15,7 @@
     state: directory
     owner: root
     group: adm
-    mode: 0755
+    mode: "0755"
 
 - name: deploy wordpress-updater logrotate config
   template:
@@ -23,7 +23,7 @@
     dest: /etc/logrotate.d/wordpress-updater
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: wordpress deploy updater cronjob
   template:
@@ -31,7 +31,7 @@
     dest: /etc/cron.daily/wordpress-updater
     owner: root
     group: root
-    mode: 0700
+    mode: "0700"
   vars:
     wordpress_instances: "{{ _vhosts | selectattr('website.type', 'equalto', 'wordpress') | list }}"
   when: webserver_website_wordpress_cronjob

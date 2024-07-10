@@ -5,7 +5,7 @@
     dest: /etc/apt/trusted.gpg.d/switchaai.asc
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: add switchaai repo
   copy:
@@ -13,7 +13,7 @@
     content: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_distribution_release }} main\n"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   register: switchaai_apt_repo
 
 - name: trigger apt update on repo change
@@ -33,7 +33,7 @@
     dest: '/etc/apache2/conf-available/shib.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: reload apache2
 
 - name: enable server wide shibboleth (switchaai) conf

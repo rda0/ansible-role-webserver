@@ -13,7 +13,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: deploy fifo2syslog scripts
   copy:
@@ -21,7 +21,7 @@
     dest: '/opt/fifo2syslog/{{ item }}'
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   loop:
     - apache_syslog_auth
     - fifo2syslog
@@ -32,7 +32,7 @@
     dest: /etc/systemd/system/fifo2syslog.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: enable and start service fifo2syslog
   systemd:

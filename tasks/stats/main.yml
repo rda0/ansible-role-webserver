@@ -9,7 +9,7 @@
     dest: /etc/goaccess/goaccess.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 - name: deploy goaccess-last wrapper
   copy:
@@ -17,7 +17,7 @@
     dest: /usr/local/bin/goaccess-last
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: create goaccess b-tree database directory
   file:
@@ -25,7 +25,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0700
+    mode: "0700"
   loop:
     - /var/lib/goaccess
     - /var/lib/goaccess/global
@@ -36,7 +36,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   loop:
     - /var/www/default/website-statistics/global
     - /var/www/default/website-statistics/archive
@@ -47,5 +47,5 @@
     dest: /etc/cron.daily/website-statistics
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   when: webserver_stats_generate

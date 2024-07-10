@@ -12,7 +12,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: deploy systemd nginx.service override
   template:
@@ -20,7 +20,7 @@
     dest: /etc/systemd/system/nginx.service.d/override.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: reload systemd
 
 - name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
@@ -35,7 +35,7 @@
     path: '/etc/ssl/private/dhparam_{{ webserver_https_dh_params_size }}.pem'
     owner: root
     group: ssl-cert
-    mode: 0640
+    mode: "0640"
   when: webserver_https_dh_params_custom
 
 - name: create directories in /var/www
@@ -44,7 +44,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   loop:
     - empty
     - default
@@ -55,7 +55,7 @@
     dest: '/etc/nginx/nginx.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: restart nginx
 
 - name: flush handlers
@@ -67,7 +67,7 @@
     dest: '/etc/ssl/openssl.cnf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: restart nginx
 
 - name: deploy conf.d config
@@ -76,7 +76,7 @@
     dest: '/etc/nginx/conf.d/{{ item }}.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: restart nginx
   loop:
     - 001-https
@@ -88,7 +88,7 @@
     dest: "/etc/nginx/snippets/https-{{ (item.name | default(''.join(['le', index | string]))) }}.conf"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: restart nginx
   vars:
     certname: "{{ (item.name | default(''.join(['le', index | string]))) }}"
@@ -102,7 +102,7 @@
     dest: '/etc/nginx/snippets/allow-net-{{ item.name }}.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: restart nginx
   loop:
     - { name: adm, ipv4: '{{ webserver_net4_adm }}', ipv6: '{{ webserver_net6_adm }}' }
@@ -118,7 +118,7 @@
     dest: '/var/www/default/index.html'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: webserver_site_deploy_default
 
 - name: deploy webserver logo
@@ -127,7 +127,7 @@
     dest: '/var/www/default/webserver.png'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   when: webserver_site_deploy_default
 
 - name: cleanup default config
@@ -144,7 +144,7 @@
     dest: '/etc/nginx/sites-available/000-default.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: reload nginx
   when: webserver_site_enable_default
 
@@ -169,4 +169,4 @@
     dest: /etc/logrotate.d/nginx
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"

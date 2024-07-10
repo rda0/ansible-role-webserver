@@ -21,7 +21,7 @@
     dest: '/etc/nginx/sites-available/{{ vhost.name }}.conf'
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: reload nginx
   loop: '{{ _vhosts }}'
   loop_control:

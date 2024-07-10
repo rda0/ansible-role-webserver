@@ -4,7 +4,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   loop:
     - hosts
 
@@ -14,7 +14,7 @@
     dest: "{{ webserver_letsencrypt_path }}/hosts/{{ (item.name | default(''.join(['le', index | string]))) }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   vars:
     domains: '{{ item.domains }}'
   register: webserver_letsencrypt_hosts_file
@@ -38,7 +38,7 @@
     state: directory
     owner: root
     group: ssl-cert
-    mode: 0711
+    mode: "0711"
 
 #- name: 'apply permissions on {{ webserver_letsencrypt_path }}/account.key'
 #  file:

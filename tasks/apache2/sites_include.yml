@@ -11,5 +11,5 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   when: webserver_sites_include_repo == ''
