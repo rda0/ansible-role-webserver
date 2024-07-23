@@ -8,6 +8,7 @@ include_webserver_website_wordpress: False
 include_webserver_sites_include: False
 include_webserver_vhosts: True
 include_webserver_stats: True
+include_webserver_stats_only: False
 include_webserver_authorized_keys: False
 include_webserver_appserver: False
 include_webserver_mounts: False

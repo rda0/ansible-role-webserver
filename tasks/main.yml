@@ -27,7 +27,7 @@
 
     - name: include stats
       include_tasks: stats/main.yml
-      when: include_webserver_stats and (include_webserver_apache2 or include_webserver_nginx)
+      when: include_webserver_stats and (include_webserver_apache2 or include_webserver_nginx or include_webserver_stats_only)
 
   - name: tags-block
     tags: webserver_letsencrypt
