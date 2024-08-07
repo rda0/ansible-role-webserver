@@ -62,4 +62,4 @@
     shell: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}/bin/pip --no-cache-dir freeze --local > {{ vhost_venv.document_root }}/{{ vhost_venv.freeze }}'
     become: yes
     become_user: "{{ vhost_venv.name }}"
-    when: not webserver_venv_freeze.stat.exists or ((webserver_venv_initialize is defined and webserver_venv_initialize.changed) or (webserver_venv_install_requirements is defined and webserver_venv_install_requirements.changed))
+    when: not webserver_venv_freeze.stat.exists or ((webserver_venv_initialize is defined and webserver_venv_initialize.changed and not webserver_venv_install_requirements.failed | default(False)) or (webserver_venv_install_requirements is defined and webserver_venv_install_requirements.changed and not webserver_venv_install_requirements.failed))
