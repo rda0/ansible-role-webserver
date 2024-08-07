@@ -271,6 +271,7 @@ webserver_wsgi_app_content_default: |
       start_response(status, response_headers)
       return [output.encode('utf8')]
   application = dummy_app
+webserver_wsgi_memory_limit: 1073741824
 webserver_share_authorized_keys: {}
 webserver_share_authorized_keys_vars: []
 webserver_admin_keys: []
@@ -331,7 +332,7 @@ _vhost_defaults_static:
     script_alias: '/'
     processes: 2
     threads: 5
-    memory_limit: 1073741824
+    memory_limit: "{{ webserver_wsgi_memory_limit }}"
     locale: 'en_US.UTF-8'
     options_custom: []
   cert: ''
