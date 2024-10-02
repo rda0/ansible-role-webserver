@@ -141,7 +141,9 @@
     owner: root
     group: root
     mode: "0644"
-  notify: reload apache2
+  notify:
+    - reload apache2
+    - reload fail2ban
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
   loop: "{{ _vhosts | selectattr('name', 'in', _vhostfilter) | list }}"
