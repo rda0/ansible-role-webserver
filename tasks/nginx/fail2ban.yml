@@ -1,0 +1,8 @@
+- name: enable fail2ban for nginx basic auth failures
+  copy:
+    src: nginx/fail2ban/nginx-http-auth.conf
+    dest: /etc/fail2ban/jail.d/nginx-http-auth.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload fail2ban

@@ -170,3 +170,7 @@
     owner: root
     group: root
     mode: "0644"
+
+- name: include nginx fail2ban
+  include_tasks: fail2ban.yml
+  when: include_webserver_nginx_fail2ban

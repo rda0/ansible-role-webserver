@@ -1,6 +1,7 @@
 include_webserver_apache2: True
 include_webserver_apache2_fail2ban: True
 include_webserver_nginx: False
+include_webserver_nginx_fail2ban: True
 include_webserver_letsencrypt: True
 include_webserver_phpfpm: True
 include_webserver_website: False
