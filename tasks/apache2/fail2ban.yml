@@ -1,0 +1,21 @@
+# Enable fail2ban for basic auth login failures.
+# This part is so tightly coupled to the webserver role and variables
+# that it cannot be part of the fail2ban role.
+
+- name: deploy fail2ban local filter override for apache-auth
+  copy:
+    src: apache2/fail2ban/apache-common.local
+    dest: /etc/fail2ban/filter.d/apache-common.local
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload fail2ban
+
+- name: deploy fail2ban apache-auth jail config
+  template:
+    src: apache2/fail2ban/apache-auth.conf.j2
+    dest: /etc/fail2ban/jail.d/apache-auth.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: reload fail2ban

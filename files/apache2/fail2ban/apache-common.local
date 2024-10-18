@@ -1,0 +1,7 @@
+# Local override for apache-common.conf
+
+[DEFAULT]
+
+# Expand regex from 'client' to '(client|remote)' to catch all basic auth error messages.
+# Even though we currently use it only for the apache_auth filter, it has no known side-effects on other apache filter.
+_apache_error_client = <apache-prefix>\[(:?error|<apache-pref-ignore>\S+:\S+)\]( \[pid \d+(:\S+ \d+)?\])? \[(client|remote) <HOST>(:\d{1,5})?\]

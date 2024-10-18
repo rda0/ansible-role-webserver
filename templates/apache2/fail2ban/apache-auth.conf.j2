@@ -1,0 +1,13 @@
+# ISG D-PHYS /etc/fail2ban/jail.d/apache-auth.conf
+
+[apache-auth]
+enabled = true
+port    = http, https
+filter  = apache-auth
+logpath = /var/log/apache2/sites/*https_error.log
+{# If there are vhosts of type share, include the webshare logs under home. #}
+{% if _vhosts | selectattr('type', 'equalto', 'share') | length > 0 %}
+          /home/*/logs/https_error.log
+{% endif %}
+
+action  = iptables-multiport

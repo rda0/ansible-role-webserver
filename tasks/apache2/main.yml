@@ -263,3 +263,7 @@
   file:
     path: /var/log/apache2/other_vhosts_access.log
     state: absent
+
+- name: include apache2 fail2ban
+  include_tasks: fail2ban.yml
+  when: include_webserver_apache2_fail2ban
