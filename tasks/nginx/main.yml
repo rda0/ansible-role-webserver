@@ -3,8 +3,22 @@
 
 - name: install nginx
   package:
-    pkg:
+    name:
       - nginx
+
+- name: install libnginx-mod-http-lua
+  package:
+    name:
+      - libnginx-mod-http-lua
+  when: webserver_nginx_lua_install
+
+- name: clone lua module lua-resty-limit-traffic
+  git:
+    repo: '{{ webserver_nginx_lua_module_ratelimit_repo }}'
+    dest: '{{ webserver_nginx_lua_module_ratelimit_path }}'
+    update: '{{ webserver_nginx_lua_module_ratelimit_update }}'
+    #version: ''
+  when: webserver_nginx_lua_module_ratelimit_install
 
 - name: create systemd nginx.service.d directory
   file:

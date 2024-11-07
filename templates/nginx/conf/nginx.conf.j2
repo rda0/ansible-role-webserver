@@ -38,6 +38,13 @@ http {
     # gzip_http_version 1.1;
     # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
+{% if webserver_nginx_lua_module_ratelimit_install %}
+    # https://nginx-lua.readthedocs.io/en/latest/examples/lua-nginx-module/
+    # set search paths for pure Lua external libraries (';;' is the default path):
+    # example: lua_package_path '/foo/bar/?.lua;/blah/?.lua;;'
+    lua_package_path "{{ webserver_nginx_lua_module_ratelimit_path }}/lib/?.lua;;";
+
+{% endif %}
     include /etc/nginx/conf.d/*.conf;
     include /etc/nginx/sites-enabled/*;
 }

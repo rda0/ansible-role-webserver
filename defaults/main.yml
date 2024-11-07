@@ -20,6 +20,11 @@ webserver_letsencrypt_migrate_to_ansible: False
 webserver_apache2_log_level: warn
 webserver_nginx_log_level: error
 webserver_logrotate_nginx_date_extension: False
+webserver_nginx_lua_install: False
+webserver_nginx_lua_module_ratelimit_repo: https://github.com/openresty/lua-resty-limit-traffic.git
+webserver_nginx_lua_module_ratelimit_path: /usr/local/lib/lua-resty-limit-traffic
+webserver_nginx_lua_module_ratelimit_install: False
+webserver_nginx_lua_module_ratelimit_update: True
 
 webserver_net4_adm: '{{ ((iptables_net4_adm | default({})).values() | list + (iptables_net4_adm_custom | default({})).values() | list) | sort }}'
 webserver_net6_adm: '{{ ((iptables_net6_adm | default({})).values() | list + (iptables_net6_adm_custom | default({})).values() | list) | sort }}'
