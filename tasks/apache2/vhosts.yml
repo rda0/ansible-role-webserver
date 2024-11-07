@@ -34,11 +34,13 @@
       http:
         redirect: "{{ ['https', item.server_name] | join(' ') }}"
         require: "{{ _item.require }}"
+        config: "{{ _item.config }}"
       https:
         empty: "{{ True if _item.type == 'redirect' else False }}"
         redirect: "{{ '' if _item.server_alias == '' else ['https', item.server_name] | join(' ') }}"
         require: "{{ _item.require }}"
         includes: "{{ [item.name] if _item.type == 'share' else [] }}"
+        config: "{{ _item.config }}"
   loop: '{{ webserver_vhosts }}'
   loop_control:
     label: "{{ item.name }}"

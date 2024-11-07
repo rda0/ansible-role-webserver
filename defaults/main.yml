@@ -301,6 +301,7 @@ _vhost_defaults_dynamic:
   wsgi:
     app: ''
   require: default
+  config: ''
 # static vhost defaults
 _vhost_defaults_static:
   #name: required
@@ -341,7 +342,4 @@ _vhost_defaults_static:
   ports: ['http', 'https']
   http:
     empty: True
-    config: ''
     includes: []
-  https:
-    config: ''
