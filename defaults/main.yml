@@ -17,7 +17,7 @@ include_webserver_mounts: False
 import_webserver_letsencrypt_cronjob: True
 webserver_letsencrypt_migrate_to_ansible: False
 
-webserver_log_level: warn
+webserver_apache2_log_level: warn
 webserver_logrotate_nginx_date_extension: False
 
 webserver_net4_adm: '{{ ((iptables_net4_adm | default({})).values() | list + (iptables_net4_adm_custom | default({})).values() | list) | sort }}'

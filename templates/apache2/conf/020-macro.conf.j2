@@ -89,7 +89,7 @@
 ### VHost macros
 
 <Macro ServerLog $name $protocol>
-  LogLevel {{ webserver_log_level }}
+  LogLevel {{ webserver_apache2_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/$name_$protocol_error.log
   CustomLog ${APACHE_LOG_DIR}/sites/$name_$protocol_access.log combined env=!dontlog
 {% if webserver_log_lastuse %}

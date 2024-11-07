@@ -10,7 +10,7 @@ User ${APACHE_RUN_USER}
 Group ${APACHE_RUN_GROUP}
 HostnameLookups Off
 ErrorLog ${APACHE_LOG_DIR}/error.log
-LogLevel {{ webserver_log_level }}
+LogLevel {{ webserver_apache2_log_level }}
 IncludeOptional mods-enabled/*.load
 IncludeOptional mods-enabled/*.conf
 Include ports.conf

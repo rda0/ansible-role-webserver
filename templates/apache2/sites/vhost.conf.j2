@@ -31,7 +31,7 @@
   Use RedirectTo{% if vhost[port].redirect.count(' ') == 2 %}Subdir{% endif %} {{ vhost[port].redirect }}
 {%   endif %}
 {% endif %}
-  LogLevel {{ webserver_log_level }}
+  LogLevel {{ webserver_apache2_log_level }}
 {% if vhost.type == 'share' %}
   ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_error.log
   CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_access.log combined env=!dontlog
