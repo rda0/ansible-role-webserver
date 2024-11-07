@@ -20,6 +20,7 @@ webserver_letsencrypt_migrate_to_ansible: False
 webserver_apache2_log_level: warn
 webserver_nginx_log_level: error
 webserver_logrotate_nginx_date_extension: False
+webserver_nginx_variables_hash_bucket_size: 64
 webserver_nginx_lua_install: False
 webserver_nginx_lua_module_ratelimit_repo: https://github.com/openresty/lua-resty-limit-traffic.git
 webserver_nginx_lua_module_ratelimit_path: /usr/local/lib/lua-resty-limit-traffic
