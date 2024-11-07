@@ -81,6 +81,7 @@
   loop:
     - 001-https
     - 002-security
+    - 003-logging
 
 - name: deploy config snippets for certificates
   template:
