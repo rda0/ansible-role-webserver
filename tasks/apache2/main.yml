@@ -81,6 +81,10 @@
     - global
     - sites
 
+- name: set fact _webserver_site_config_common_requires
+  set_fact:
+    _webserver_site_config_common_requires: '{{ webserver_site_config_common_requires_default | combine(webserver_site_config_common_requires_group, recursive=True) | combine(webserver_site_config_common_requires, recursive=True) }}'
+
 - name: deploy main server config
   template:
     src: 'apache2/conf/{{ item }}.conf.j2'

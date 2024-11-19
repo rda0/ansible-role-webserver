@@ -88,11 +88,11 @@ webserver_header_security_x_frame_options: ''
 webserver_doc_root: /var/www
 webserver_empty_doc_root: /var/www/empty
 webserver_log_lastuse: False
-webserver_server_admin: isg@phys.ethz.ch
-webserver_hoster_name: isg
+webserver_server_admin: ''
+webserver_hoster_name: ''
 webserver_ldap: "{{ True if include_webserver_apache2 else False }}"
 webserver_ldap_ethz: False
-webserver_ldap_trusted_ca_cert: /etc/ssl/certs/eth.crt
+webserver_ldap_trusted_ca_cert: /etc/ssl/certs/ca-certificates.crt
 webserver_modules_default:
   - env
   - headers
@@ -119,25 +119,23 @@ webserver_site_config_default_requires:
   server: require_all_granted
   redirect: require_all_granted
   share: grant_share_all
-webserver_site_config_common_requires:
+webserver_site_config_common_requires: {}
+webserver_site_config_common_requires_group: {}
+webserver_site_config_common_requires_default:
+  require_local: |
+    Require local
   require_all_granted: |
     Require all granted
   require_all_denied: |
     Require all denied
-  require_phys_ldap_valid_user: |
-    Use PhysLDAP
-    Require valid-user
-  require_phys_ldap_group_isg: |
-    Use PhysLDAP
-    Use RequirePhysLDAPGroup isg
-  require_net_can_and_phys_ldap_group_isg: |
-    Use PhysLDAP
-    <RequireAll>
-      Use RequireNetCan
-      Use RequirePhysLDAPGroup isg
-    </RequireAll>
+  require_net_lan: |
+    Use RequireNetLAN
   require_net_can: |
-      Use RequireNetCan
+    Use RequireNetCAN
+  require_all_granted_indexes: |
+    Require all granted
+    Options Multiviews Indexes SymLinksIfOwnerMatch
+    IndexOptions +SuppressDescription
   grant_share_all: |
     Require all granted
     AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
@@ -157,21 +155,6 @@ webserver_site_config_common_requires:
     AllowOverride AuthConfig
     AllowOverrideList None
     Options Multiviews SymLinksIfOwnerMatch
-  grant_share_phys_ldap: |
-    Use PhysLDAP
-    Require valid-user
-    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
-    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
-    Options Multiviews Indexes SymLinksIfOwnerMatch
-  grant_share_phys_ldap_or_net_can: |
-    Use PhysLDAP
-    <RequireAny>
-      Require valid-user
-      Use RequireNetCAN
-    </RequireAny>
-    AllowOverride AuthConfig Limit Indexes Options=None,Multiviews,Indexes,SymLinksIfOwnerMatch
-    AllowOverrideList Redirect RedirectMatch RedirectPermanent RedirectTemp
-    Options Multiviews Indexes SymLinksIfOwnerMatch
 webserver_site_config_common_wordpress:
   rewrite: |
     <IfModule rewrite_module>
@@ -194,26 +177,21 @@ webserver_site_config_common_wordpress:
     <Files xmlrpc.php>
       Require all denied
     </Files>
-webserver_site_config_default_vhost_default_require: "{{ webserver_site_config_common_requires.require_phys_ldap_group_isg }}"
+webserver_site_config_default_vhost_default_require: "{{ _webserver_site_config_common_requires.require_local }}"
 webserver_site_config_default_vhost_default_allow_net: adm
 webserver_site_config_default_vhost_custom: ''
 webserver_site_deploy_default: True
 webserver_site_content_default_title: '{{ inventory_hostname }}'
-webserver_site_content_default_description: This server is managed by the <a href="https://www.phys.ethz.ch/services/physics-isg.html">IT Services Group (ISG) in the Physics Department</a>.
+webserver_site_content_default_description: Deployed by ansible-role-webserver
 webserver_site_content_default_overview: ''
-
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
 webserver_letsencrypt_restore_from_backup: False
-
 webserver_letsencrypt_restore_from_backup_image: ''
-#webserver_letsencrypt_restore_from_backup_image: 'phd-hostname-root.raw'
-
 # The restore path may have to be adapted for instance if /opt has it's own raw image.
 webserver_letsencrypt_restore_from_backup_image_path: "{{ webserver_letsencrypt_path }}"
-
 webserver_letsencrypt_path: /opt/letsencrypt
-webserver_letsencrypt_repo: https://gitlab.phys.ethz.ch/isgphys/letsencrypt-acmetiny-make.git
+webserver_letsencrypt_repo: ''
 webserver_letsencrypt_branch: master
 webserver_letsencrypt_aliases:
   - domains:
@@ -224,7 +202,7 @@ webserver_phpfpm_packages:
   - php-fpm
 webserver_phpfpm_pools: []
 webserver_phpfpm_start_after_nss_user_lookup: False
-webserver_sites_include_repo: 'git@gitlab.phys.ethz.ch:webserver/{{ inventory_hostname }}-sites-include.git'
+webserver_sites_include_repo: ''
 webserver_vhost_data_path:
   server: /var/www
   redirect: /var/www
@@ -252,8 +230,8 @@ webserver_fcgid_custom_options:
     - upload_max_filesize=128M
 webserver_fcgid_fcgi_extensions:
   - fcgi
-webserver_db_delegate: phd-sqlweb
-webserver_db_host: sqlweb.phys.ethz.ch
+webserver_db_delegate: '{{ inventory_hostname }}'
+webserver_db_host: localhost
 webserver_db_grant_additional_hosts: []
 webserver_stats_generate: True
 webserver_website_admin_name: admin
@@ -275,7 +253,6 @@ webserver_wsgi_app_content_default: |
   def dummy_app(environ, start_response):
       status = '200 OK'
       output = 'It works!<br/><br/>'
-      output += 'To get started read: <a href="https://readme.phys.ethz.ch/web/webshares/">https://readme.phys.ethz.ch/web/webshares/<a/>'
       response_headers = [('Content-type', 'text/html'), ('Content-Length', str(len(output)))]
       start_response(status, response_headers)
       return [output.encode('utf8')]
@@ -287,6 +264,8 @@ webserver_admin_keys: []
 webserver_admin_keys_var_name: ''
 webserver_share_authorized_keys_multiuser_restrict_options: 'restrict,pty'
 
+# internal variables
+_webserver_site_config_common_requires: {}
 # private set_fact variable defaults (do not use in inventory)
 _vhosts: []
 _vhosts_fcgid: []

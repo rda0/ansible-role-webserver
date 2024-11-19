@@ -62,7 +62,7 @@
 {%       if vhost[port].require == 'default' %}
       Require all granted
 {%       else %}
-      {{ (webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=6)).rstrip() }}
+      {{ (_webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=6)).rstrip() }}
 {%       endif %}
     </Files>
   </Directory>
@@ -72,16 +72,16 @@
 {%         if vhost[port].require == 'default' %}
     Require all granted
 {%         else %}
-    {{ (webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
+    {{ (_webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
 {%         endif %}
   </Directory>
 {%       endfor %}
 {%     else %}
   <Directory {{ vhost.document_root }}>
 {%       if vhost[port].require == 'default' %}
-    {{ (webserver_site_config_common_requires[webserver_site_config_default_requires[vhost.type]]|indent(width=4)).rstrip() }}
+    {{ (_webserver_site_config_common_requires[webserver_site_config_default_requires[vhost.type]]|indent(width=4)).rstrip() }}
 {%       else %}
-    {{ (webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
+    {{ (_webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
 {%       endif %}
   </Directory>
 {%     endif %}
@@ -93,7 +93,7 @@
   </Location>
 {%   elif vhost[port].require not in['', 'default'] %}
   <Location />
-    {{ (webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
+    {{ (_webserver_site_config_common_requires[vhost[port].require]|default(vhost[port].require)|indent(width=4)).rstrip() }}
   </Location>
 {%   endif %}
 {% endif %}

@@ -167,7 +167,7 @@ webserver_vhosts:
     http: {}                                            # http vhost settings (should generally not be used)
     https:                                              # https settings
       redirect: 'https baz.com to/path'                 # redirect somewhere else
-      require: grant_share_all_allow_override_none      # access template from `webserver_site_config_common_requires`
+      require: grant_share_all_allow_override_none      # access template from `_webserver_site_config_common_requires`
       config: 'DirectoryIndex disabled'                 # custom config to include at the end of the vhost
       includes: ['foo','bar']                           # *.conf files to optionally include from sites-include dir
                                                         # by default a file named like `name` is included optionally
