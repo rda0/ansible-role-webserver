@@ -2,7 +2,7 @@
 
 [apache-auth]
 enabled = true
-port    = http, https
+port    = http,https
 filter  = apache-auth
 logpath = /var/log/apache2/sites/*https_error.log
 {# If there are vhosts of type share, include the webshare logs under home. #}
@@ -10,4 +10,6 @@ logpath = /var/log/apache2/sites/*https_error.log
           /home/*/logs/https_error.log
 {% endif %}
 
-action  = iptables-multiport
+# NB fail2ban is deprecating 'iptables-multiport' in favor of 'iptables[type=multiport]'.
+# Debian bullseye only supports the old syntax, bookworm both equally.
+banaction = iptables-multiport
