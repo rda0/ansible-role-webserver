@@ -32,7 +32,9 @@
 {%   endif %}
 {% endif %}
   LogLevel {{ webserver_apache2_log_level }}
-{% if vhost.type == 'share' %}
+{% if vhost.custom_log %}
+  {# Omit vhost log settings and let custom config define it #}
+{% elif vhost.type == 'share' %}
   ErrorLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_error.log
   CustomLog {{ vhost.home_path }}/{{ vhost.name }}/logs/{{ port }}_access.log combined env=!dontlog
 {% elif vhost.type == 'redirect' %}

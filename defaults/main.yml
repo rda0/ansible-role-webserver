@@ -280,6 +280,7 @@ _webserver_share_authorized_keys: {}
 _vhost_defaults_dynamic:
   type: 'server'
   server_alias: ''
+  custom_log: False  # Toggle to omit vhost log settings and let custom config define it
   home_user_owned: False
   secret: ''
   website:
