@@ -97,14 +97,14 @@
 
 - name: deploy /etc/auto.home
   template:
-    src: "apache2/service/auto.home.j2"
-    dest: "/etc/auto.home"
+    src: apache2/service/auto.home.j2
+    dest: /etc/auto.home
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
   notify: restart autofs
   vars:
-    vhosts: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
+    vhosts: "{{ _vhosts | selectattr('type', 'equalto', 'share') | sort(attribute='name') | list }}"
   when: vhosts | length > 0
 
 - name: flush handlers

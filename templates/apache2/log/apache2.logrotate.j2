@@ -1,4 +1,4 @@
-{% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|list %}
+{% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|sort(attribute='name')|list %}
 {{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
 {% endfor %}
 {% if _vhosts|selectattr('type', 'equalto', 'share')|list %}
