@@ -91,7 +91,14 @@ webserver_log_lastuse: False
 webserver_server_admin: ''
 webserver_hoster_name: ''
 webserver_ldap: "{{ True if include_webserver_apache2 else False }}"
+webserver_ldap_phys_name: 'ETH D-PHYS Account'
+webserver_ldap_phys_url: ''
+webserver_ldap_phys_group_cn: ''
 webserver_ldap_ethz: False
+webserver_ldap_ethz_name: 'ETH Account'
+webserver_ldap_ethz_url: ''
+webserver_ldap_ethz_bind_dn: "{{ vault_webserver_ldap_ethz_bind_dn | default('') }}"
+webserver_ldap_ethz_bind_password: "{{ vault_webserver_ldap_ethz_bind_password | default('') }}"
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/ca-certificates.crt
 webserver_modules_default:
   - env

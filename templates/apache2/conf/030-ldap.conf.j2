@@ -10,25 +10,25 @@
 
     <Macro PhysLDAP>
         AuthType Basic
-        AuthName "ETH D-PHYS Account"
+        AuthName "{{ webserver_ldap_phys_name }}"
         AuthBasicProvider ldap
-        AuthLDAPURL "ldap://ldap3.phys.ethz.ch ldap2.phys.ethz.ch ldap1.phys.ethz.ch/ou=people,dc=phys,dc=ethz,dc=ch?uid?one?(&(objectClass=dphysUser)(!(blocked=yes)))" TLS
+        AuthLDAPURL "{{ webserver_ldap_phys_url }}" TLS
         AuthLDAPGroupAttribute memberUid
         AuthLDAPGroupAttributeIsDN off
     </Macro>
 
     <Macro RequirePhysLDAPGroup $groupname>
-        Require ldap-group cn=$groupname,ou=groups,dc=phys,dc=ethz,dc=ch
+        Require ldap-group {{ webserver_ldap_phys_group_cn }}
     </Macro>
 {% if webserver_ldap_ethz %}
 
     <Macro ETHLDAP>
         AuthType Basic
-        AuthName "ETH Account"
+        AuthName "{{ webserver_ldap_ethz_name }}"
         AuthBasicProvider ldap
-        AuthLDAPUrl "ldaps://ldaps-hit-1.ethz.ch ldaps-hit-2.ethz.ch ldaps-rz-1.ethz.ch ldaps-rz-2.ethz.ch/ou=users,ou=nethz,ou=id,ou=auth,o=ethz,c=ch?uid?one?(objectClass=*)"
-        AuthLDAPBindDN "cn=dphys_web_proxy,ou=admins,ou=nethz,ou=id,ou=auth,o=ethz,c=ch"
-        AuthLDAPBindPassword "c4d2n.fg9.ag33s.g84cc"
+        AuthLDAPUrl "{{ webserver_ldap_ethz_url }}"
+        AuthLDAPBindDN "{{ webserver_ldap_ethz_bind_dn }}"
+        AuthLDAPBindPassword "{{ webserver_ldap_ethz_bind_password }}"
         SetEnv dontloglastuse
     </Macro>
 {% endif %}

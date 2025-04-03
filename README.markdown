@@ -113,7 +113,7 @@ webserver_phpfpm_pools:
 
 ### VHost deployment
 
-By default this role only creates the default VHost, which is reserved and restricted for ISG internal use only.
+By default this role only creates the default VHost, which is reserved and restricted to admins.
 
 If the following is configured (the default), it will also deploy VHosts for services and websites:
 
