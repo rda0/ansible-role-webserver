@@ -1,7 +1,7 @@
 - name: include db
-  include_tasks: db.yml
+  include_tasks: website/db.yml
   when: include_webserver_website_db
 
 - name: include wordpress
-  include_tasks: wordpress.yml
+  include_tasks: website/wordpress.yml
   when: include_webserver_website_wordpress

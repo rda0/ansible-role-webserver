@@ -33,15 +33,15 @@
     pkg: "{{ webserver_packages_custom }}"
 
 - name: include suexec
-  include_tasks: suexec.yml
+  include_tasks: apache2/suexec.yml
   when: "'suexec' in webserver_modules_custom"
 
 - name: include shibboleth
-  include_tasks: shibboleth.yml
+  include_tasks: apache2/shibboleth.yml
   when: "'shib' in webserver_modules_custom"
 
 - name: include lastuse fifo
-  include_tasks: log_lastuse.yml
+  include_tasks: apache2/log_lastuse.yml
   when: webserver_log_lastuse
 
 - name: 'deploy {{ webserver_https_dh_params_size }} bit dh parameters (takes some time)'
@@ -233,7 +233,7 @@
   tags: webserver_sites_include
   block:
   - name: include sites-include repo
-    include_tasks: sites_include.yml
+    include_tasks: apache2/sites_include.yml
     when: include_webserver_sites_include
 
 - name: tags-block
@@ -242,14 +242,14 @@
     - webserver_authorized_keys
   block:
   - name: include load authorized keys
-    include_tasks: load_authorized_keys.yml
+    include_tasks: apache2/load_authorized_keys.yml
     when: include_webserver_authorized_keys
 
 - name: tags-block
   tags: webserver_vhosts
   block:
   - name: include vhosts
-    include_tasks: vhosts.yml
+    include_tasks: apache2/vhosts.yml
     when: include_webserver_vhosts
     tags:
       - webserver_tmp_vhost_debug_set_fact_performance
@@ -269,5 +269,5 @@
     state: absent
 
 - name: include apache2 fail2ban
-  include_tasks: fail2ban.yml
+  include_tasks: apache2/fail2ban.yml
   when: include_webserver_apache2_fail2ban
