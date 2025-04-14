@@ -37,7 +37,7 @@
   when: webserver_website_wordpress_cronjob
 
 - name: include vhosts with wordpress instance
-  include_tasks: wordpress_instance.yml
+  include_tasks: website/wordpress_instance.yml
   loop: "{{ _vhosts | selectattr('website.type', 'equalto', 'wordpress') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: instance
