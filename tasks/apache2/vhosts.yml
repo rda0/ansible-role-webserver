@@ -62,7 +62,7 @@
 #    msg: "{{ _vhostfilter }}"
 
 - name: include vhosts share data
-  include_tasks: vhosts_share_data.yml
+  include_tasks: apache2/vhosts_share_data.yml
   loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
@@ -72,7 +72,7 @@
   tags: webserver_authorized_keys
   block:
   - name: include authorized keys
-    include_tasks: authorized_keys.yml
+    include_tasks: apache2/authorized_keys.yml
     when: include_webserver_authorized_keys
 
 #- name: deploy systemd mount units for share bindmounts
@@ -171,7 +171,7 @@
 #    msg: "{{ _vhosts_fcgid }}"
 
 - name: include fcgid
-  include_tasks: vhosts_fcgid.yml
+  include_tasks: apache2/vhosts_fcgid.yml
   loop: "{{ _vhosts_fcgid | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_fcgid
@@ -206,7 +206,7 @@
   when: _vhosts_venv | selectattr('enabled') | list
 
 - name: include venv
-  include_tasks: vhosts_venv.yml
+  include_tasks: apache2/vhosts_venv.yml
   loop: "{{ _vhosts_venv | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_venv
@@ -232,7 +232,7 @@
 #    msg: "{{ _vhosts_wsgi }}"
 
 - name: include wsgi
-  include_tasks: vhosts_wsgi.yml
+  include_tasks: apache2/vhosts_wsgi.yml
   loop: "{{ _vhosts_wsgi | selectattr('name', 'in', _vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_wsgi
