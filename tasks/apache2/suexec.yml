@@ -14,4 +14,4 @@
     owner: root
     group: root
     mode: '0644'
-  when: "'apache2-suexec-custom' in webserver_packages_custom and webserver_suexec_custom_config"
+  when: "'apache2-suexec-custom' in webserver_packages_custom and (webserver_suexec_custom_config | length > 0)"

@@ -10,4 +10,4 @@
 - name: set fact webserver_admin_keys
   set_fact:
     webserver_admin_keys: "{{ lookup('vars', webserver_admin_keys_var_name) }}"
-  when: webserver_admin_keys_var_name
+  when: webserver_admin_keys_var_name | length > 0

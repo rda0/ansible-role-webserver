@@ -30,7 +30,7 @@
     owner: root
     group: '{{ vhost.name }}'
     mode: '0640'
-  when: vhost.authorized_keys
+  when: vhost.authorized_keys | length > 0
   loop:
     - authorized_keys
     - config
@@ -43,4 +43,4 @@
     group: '{{ vhost.name }}'
     mode: '0640'
   diff: no
-  when: vhost.authorized_keys and vhost.website.db
+  when: (vhost.authorized_keys | length > 0) and vhost.website.db

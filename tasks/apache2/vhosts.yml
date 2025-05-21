@@ -203,7 +203,7 @@
   package:
     name: python3-venv
     state: present
-  when: _vhosts_venv | selectattr('enabled') | list
+  when: _vhosts_venv | selectattr('enabled') | list | length > 0
 
 - name: include venv
   include_tasks: apache2/vhosts_venv.yml
