@@ -20,6 +20,8 @@
     file:
       path: '{{ vhost_venv.document_root }}/{{ vhost_venv.path }}'
       state: absent
+    diff: False  # does not work
+    no_log: True  # works
     when: webserver_venv_reinit
 
   - name: 'venv {{ vhost_venv.name }} check if venv already exists'
