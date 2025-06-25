@@ -8,6 +8,4 @@ ssl_dhparam {{ webserver_https_dh_params_path }};
 ssl_session_timeout 10m;
 ssl_session_cache shared:SSL:10m;
 ssl_session_tickets off;
-ssl_stapling on;
-ssl_stapling_verify on;
 #ssl_buffer_size 1400;

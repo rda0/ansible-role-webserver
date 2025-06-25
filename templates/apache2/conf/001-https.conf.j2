@@ -8,8 +8,6 @@
 {% if webserver_https_dh_params_custom  %}
     SSLOpenSSLConfCmd DHParameters {{ webserver_https_dh_params_path }}
 {% endif %}
-    SSLUseStapling On
-    SSLStaplingCache shmcb:${APACHE_RUN_DIR}/ssl_stapling(32768)
     # With SSLSessionTickets On (default), apache needs to be restarted daily for PFS
     SSLSessionTickets Off
 </IfModule>
