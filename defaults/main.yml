@@ -194,7 +194,8 @@ webserver_site_content_default_overview: ''
 # The certificates can optionally be initialized manually or restored from backup
 webserver_letsencrypt_initialize_manually: False
 webserver_letsencrypt_restore_from_backup: False
-webserver_letsencrypt_restore_from_backup_image: ''
+webserver_letsencrypt_restore_from_backup_image: '{{ inventory_hostname }}-root.raw'
+webserver_letsencrypt_restore_from_backup_image_snapshot: ''  # optional snapshot, format: `YYYY-MM-DD_HHMM`
 # The restore path may have to be adapted for instance if /opt has it's own raw image.
 webserver_letsencrypt_restore_from_backup_image_path: "{{ webserver_letsencrypt_path }}"
 webserver_letsencrypt_path: /opt/letsencrypt

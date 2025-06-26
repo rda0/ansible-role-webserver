@@ -39,6 +39,7 @@
       - "--usermap=1-1009:letsencrypt"
       - "--groupmap=1-1009:ssl-cert"
     restore_zfs_vmbackup_image: "{{ webserver_letsencrypt_restore_from_backup_image }}"
+    restore_zfs_vmbackup_image_snapshot: "{{ webserver_letsencrypt_restore_from_backup_image_snapshot }}"
   when: webserver_letsencrypt_restore_from_backup
   tags: webserver_letsencrypt_restore_from_backup
 
