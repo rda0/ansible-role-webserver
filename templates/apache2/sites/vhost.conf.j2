@@ -102,10 +102,6 @@
 {% if not vhost[port].empty %}
 {%   if vhost.name in phpfpm_pool_names %}
   DirectoryIndex index.php index.html
-  # Enable http authorization headers
-  <IfModule setenvif_module>
-    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
-  </IfModule>
   # Use php-fpm socket
   <FilesMatch "\.(?i:php[3457]?)$">
     SetHandler "proxy:unix:/run/php/php{{ _webserver_php_version }}-fpm-{{ vhost.name }}.sock|fcgi://localhost"
@@ -115,10 +111,6 @@
   DirectoryIndex{% for ext in vhost.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
-  </IfModule>
-  # Enable http authorization headers
-  <IfModule setenvif_module>
-    SetEnvIfNoCase ^Authorization$ "(.+)" HTTP_AUTHORIZATION=$1
   </IfModule>
   <Directory {{ vhost.document_root }}>
     Options +ExecCGI
