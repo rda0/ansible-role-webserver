@@ -18,7 +18,7 @@
   vars:
     _db_grant_host: "{{ item }}"
   loop: '{{ webserver_db_grant_additional_hosts }}'
-  when: webserver_db_grant_additional_hosts
+  when: webserver_db_grant_additional_hosts | length > 0
 
 - name: deploy db parameters file
   template:
