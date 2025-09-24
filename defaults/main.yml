@@ -18,6 +18,7 @@ import_webserver_letsencrypt_cronjob: True
 webserver_letsencrypt_migrate_to_ansible: False
 
 webserver_apache2_log_level: warn
+webserver_apache2_limit_nofiles: ''
 webserver_nginx_log_level: error
 webserver_logrotate_nginx_date_extension: False
 webserver_nginx_variables_hash_bucket_size: 64
@@ -229,6 +230,7 @@ webserver_vhost_ports:
     tls: True
 webserver_fcgid_conf_connect_timout: 20
 webserver_fcgid_conf_max_request_len: 134217728
+webserver_fcgid_conf_default_max_processes: 4
 webserver_fcgid_generic_wrapper: /usr/sbin/fcgiwrap
 webserver_fcgid_custom_wrappers:
   - php
@@ -316,6 +318,7 @@ _vhost_defaults_static:
     host: "{{ webserver_db_host }}"
   fcgid:
     ports: ['https']
+    config: {}
     extensions: []
     options: "{{ webserver_fcgid_custom_options }}"
   venv:

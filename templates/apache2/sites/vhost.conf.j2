@@ -109,6 +109,7 @@
 {%   endif %}
 {%   if port in vhost.fcgid.ports and vhost.fcgid.extensions %}
   DirectoryIndex{% for ext in vhost.fcgid.extensions %} index.{{ ext }}{% endfor %} index.html
+  FcgidMaxProcessesPerClass {{ vhost.fcgid.config.max_processes | default(webserver_fcgid_conf_default_max_processes) }}
   <IfModule suexec_module>
     SuexecUserGroup {{ vhost.name }} {{ vhost.name }}
   </IfModule>

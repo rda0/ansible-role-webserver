@@ -8,3 +8,6 @@ After=nss-user-lookup.target
 
 [Service]
 Restart=always
+{% if webserver_apache2_limit_nofiles %}
+LimitNOFILE={{ webserver_apache2_limit_nofiles }}
+{% endif %}
