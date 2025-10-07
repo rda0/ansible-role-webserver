@@ -273,6 +273,7 @@ webserver_share_authorized_keys_vars: []
 webserver_admin_keys: []
 webserver_admin_keys_var_name: ''
 webserver_share_authorized_keys_multiuser_restrict_options: 'restrict,pty'
+webserver_appservers: []
 
 # internal variables
 _webserver_site_config_common_requires: {}
