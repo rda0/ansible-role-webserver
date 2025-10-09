@@ -18,7 +18,20 @@ import_webserver_letsencrypt_cronjob: True
 webserver_letsencrypt_migrate_to_ansible: False
 
 webserver_apache2_log_level: warn
-webserver_apache2_limit_nofiles: ''
+webserver_apache2_limit_custom: False  # use `True` to deploy custom limits
+webserver_apache2_limit_nofiles_hard: 1048576
+webserver_apache2_limit_nofiles_soft: 65536
+webserver_apache2_systemd_limit_nofiles: '{{ webserver_apache2_limit_nofiles_soft }}:{{ webserver_apache2_limit_nofiles_hard }}'  # systemd default: `1024:524288`
+webserver_apache2_systemd_tasks_max: 1048576
+webserver_apache2_limit_factor: 1
+webserver_apache2_limit_mpm_event_server_limit: 16
+webserver_apache2_limit_mpm_event_start_servers: 2
+webserver_apache2_limit_mpm_event_min_spare_threads: 25
+webserver_apache2_limit_mpm_event_max_spare_threads: 75
+webserver_apache2_limit_mpm_event_thread_limit: 64
+webserver_apache2_limit_mpm_event_threads_per_child: 25
+webserver_apache2_limit_mpm_event_max_request_workers: 150
+webserver_apache2_limit_mpm_event_max_connections_per_child: 0
 webserver_nginx_log_level: error
 webserver_logrotate_nginx_date_extension: False
 webserver_nginx_variables_hash_bucket_size: 64
@@ -108,6 +121,7 @@ webserver_modules_default:
   - ssl
   - http2
   - status
+  - mpm_event
 webserver_modules_custom: []
 webserver_packages_custom: []
 webserver_config_default:

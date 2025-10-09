@@ -23,6 +23,20 @@
     mode: "0644"
   notify: reload systemd
 
+- name: set custom APACHE_ULIMIT_MAX_FILES in envvars
+  lineinfile:
+    path: /etc/apache2/envvars
+    regexp: '^APACHE_ULIMIT_MAX_FILES='
+    line: "APACHE_ULIMIT_MAX_FILES='ulimit -n {{ webserver_apache2_limit_nofiles_soft }}'"
+  when: webserver_apache2_limit_custom
+
+- name: remove custom APACHE_ULIMIT_MAX_FILES in envvars
+  lineinfile:
+    path: /etc/apache2/envvars
+    state: absent
+    regexp: '^APACHE_ULIMIT_MAX_FILES='
+  when: not webserver_apache2_limit_custom
+
 - name: install php-fpm packages
   package:
     pkg: "{{ webserver_phpfpm_packages }}"
@@ -165,6 +179,7 @@
     - status
     - userdir
     - fcgid
+    - mpm_event
 
 - name: enable modules default
   command: 'a2enmod {{ item }}'

@@ -1,0 +1,32 @@
+{% if webserver_apache2_limit_custom %}
+# event MPM
+# StartServers: initial number of server processes to start
+# MinSpareThreads: minimum number of worker threads which are kept spare
+# MaxSpareThreads: maximum number of worker threads which are kept spare
+# ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestWorkers: maximum number of worker threads
+# MaxConnectionsPerChild: maximum number of requests a server process serves
+ServerLimit             {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_server_limit) | int, 1] | max | int }}
+StartServers            {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_start_servers) | int, 1] | max | int }}
+MinSpareThreads         {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_min_spare_threads) | int, 1] | max | int }}
+MaxSpareThreads         {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_max_spare_threads) | int, 1] | max | int }}
+ThreadLimit             {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_thread_limit) | int, 1] | max | int }}
+ThreadsPerChild         {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_threads_per_child) | int, 1] | max | int }}
+MaxRequestWorkers       {{ [(webserver_apache2_limit_factor ** 2 * webserver_apache2_limit_mpm_event_max_request_workers) | int, 1] | max | int }}
+MaxConnectionsPerChild  {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_event_max_connections_per_child) | int, 0] | max | int }}
+{% else %}
+# event MPM
+# StartServers: initial number of server processes to start
+# MinSpareThreads: minimum number of worker threads which are kept spare
+# MaxSpareThreads: maximum number of worker threads which are kept spare
+# ThreadsPerChild: constant number of worker threads in each server process
+# MaxRequestWorkers: maximum number of worker threads
+# MaxConnectionsPerChild: maximum number of requests a server process serves
+StartServers            2
+MinSpareThreads         25
+MaxSpareThreads         75
+ThreadLimit             64
+ThreadsPerChild         25
+MaxRequestWorkers       150
+MaxConnectionsPerChild  0
+{% endif %}
