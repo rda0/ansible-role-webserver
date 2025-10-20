@@ -1,0 +1,28 @@
+{% if webserver_apache2_limit_custom %}
+# prefork MPM
+# StartServers: number of server processes to start
+# MinSpareServers: minimum number of server processes which are kept spare
+# MaxSpareServers: maximum number of server processes which are kept spare
+# MaxRequestWorkers: maximum number of server processes allowed to start
+# MaxConnectionsPerChild: maximum number of requests a server process serves
+
+ServerLimit             {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_max_request_workers) | int, webserver_apache2_limit_mpm_prefork_server_limit] | max | int }}
+StartServers            {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_start_servers) | int, 1] | max | int }}
+MinSpareServers         {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_min_spare_servers) | int, 1] | max | int }}
+MaxSpareServers         {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_max_spare_servers) | int, 1] | max | int }}
+MaxRequestWorkers       {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_max_request_workers) | int, 1] | max | int }}
+MaxConnectionsPerChild  {{ [(webserver_apache2_limit_factor * webserver_apache2_limit_mpm_prefork_max_connections_per_child) | int, 0] | max | int }}
+{% else %}
+# prefork MPM
+# StartServers: number of server processes to start
+# MinSpareServers: minimum number of server processes which are kept spare
+# MaxSpareServers: maximum number of server processes which are kept spare
+# MaxRequestWorkers: maximum number of server processes allowed to start
+# MaxConnectionsPerChild: maximum number of requests a server process serves
+
+StartServers            5
+MinSpareServers         5
+MaxSpareServers         10
+MaxRequestWorkers       150
+MaxConnectionsPerChild  0
+{% endif %}

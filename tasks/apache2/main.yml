@@ -179,7 +179,7 @@
     - status
     - userdir
     - fcgid
-    - mpm_event
+    - 'mpm_{{ webserver_apache2_mpm }}'
 
 - name: enable modules default
   command: 'a2enmod {{ item }}'
