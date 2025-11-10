@@ -21,7 +21,7 @@ To add an additional service domain, use:
 ```yaml
 webserver_letsencrypt_aliases:
   - domains:
-      - '{{ ansible_fqdn }}'
+      - '{{ ansible_facts.fqdn }}'
       - example.phys.ethz.ch
 ```
 
@@ -31,10 +31,10 @@ Multiple and custom named certificates can be created:
 webserver_letsencrypt_aliases:
   - name: le-default
     domains:
-      - '{{ ansible_fqdn }}'
+      - '{{ ansible_facts.fqdn }}'
   - name: le-customer1
     domains:
-      - '{{ ansible_fqdn }}'
+      - '{{ ansible_facts.fqdn }}'
       - customer1.phys.ethz.ch
 webserver_site_config_default_vhost_default_https_enablessl: Use EnableSSLCert le-default
 ```
@@ -285,7 +285,7 @@ Prepare ansible inventory:
 include_webserver_apache2: False
 webserver_letsencrypt_aliases:
   - domains:
-      - '{{ ansible_fqdn }}'
+      - '{{ ansible_facts.fqdn }}'
       - service.phys.ethz.ch
       - ...
 ```

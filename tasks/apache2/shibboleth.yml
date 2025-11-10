@@ -10,7 +10,7 @@
 - name: add switchaai repo
   copy:
     dest: /etc/apt/sources.list.d/switchaai.list
-    content: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_distribution_release }} main\n"
+    content: "deb http://pkg.switch.ch/switchaai/debian {{ ansible_facts.distribution_release }} main\n"
     owner: root
     group: root
     mode: "0644"

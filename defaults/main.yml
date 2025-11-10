@@ -225,7 +225,7 @@ webserver_letsencrypt_repo: ''
 webserver_letsencrypt_branch: master
 webserver_letsencrypt_aliases:
   - domains:
-      - '{{ ansible_fqdn }}'
+      - '{{ ansible_facts.fqdn }}'
 webserver_letsencrypt_deploy_account_key: True
 webserver_letsencrypt_use_staging: False
 webserver_phpfpm_packages:

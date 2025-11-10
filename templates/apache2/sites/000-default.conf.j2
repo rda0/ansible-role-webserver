@@ -1,7 +1,7 @@
 # Matches any ip:port combos not covered by a vhost, effectively prevents any request going to the main server
 # Any use of * in a virtual host declaration will have higher precedence than _default_
 <VirtualHost _default_:*>
-  ServerName {{ ansible_fqdn }}
+  ServerName {{ ansible_facts.fqdn }}
   DocumentRoot {{ webserver_empty_doc_root }}
   LogLevel {{ webserver_apache2_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/other_ip_error.log
@@ -13,7 +13,7 @@
 
 # Matches some loopack ips (not all), mainly for monitoring (netdata)
 <VirtualHost 127.0.0.1:80 [::1]:80>
-  ServerName {{ ansible_fqdn }}
+  ServerName {{ ansible_facts.fqdn }}
   DocumentRoot {{ webserver_empty_doc_root }}
   LogLevel {{ webserver_apache2_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/local_http_error.log
@@ -31,9 +31,9 @@
 
 # The default vhosts for the requests to the hostname
 <VirtualHost *:80>
-  ServerName {{ ansible_fqdn }}
+  ServerName {{ ansible_facts.fqdn }}
   DocumentRoot {{ webserver_empty_doc_root }}
-  Use RedirectTo https {{ ansible_fqdn }}
+  Use RedirectTo https {{ ansible_facts.fqdn }}
   LogLevel {{ webserver_apache2_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/default_http_error.log
   CustomLog ${APACHE_LOG_DIR}/sites/default_http_access.log combined env=!dontlog
@@ -45,10 +45,10 @@
   </Location>
 </VirtualHost>
 <VirtualHost *:443>
-  ServerName {{ ansible_fqdn }}
+  ServerName {{ ansible_facts.fqdn }}
   DocumentRoot /var/www/default
   {{ (webserver_site_config_default_vhost_default_https_enablessl|indent(width=2)).rstrip() }}
-  Use RedirectTo https {{ ansible_fqdn }}
+  Use RedirectTo https {{ ansible_facts.fqdn }}
   LogLevel {{ webserver_apache2_log_level }}
   ErrorLog ${APACHE_LOG_DIR}/sites/default_https_error.log
   CustomLog ${APACHE_LOG_DIR}/sites/default_https_access.log combined env=!dontlog
