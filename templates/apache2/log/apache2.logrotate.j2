@@ -1,7 +1,7 @@
-{% for vhost in _vhosts|selectattr('type', 'equalto', 'share')|sort(attribute='name')|list %}
+{% for vhost in _webserver_vhosts|selectattr('type', 'equalto', 'share')|sort(attribute='name')|list %}
 {{ vhost.data_path }}/{{ vhost.name }}/logs/*.log
 {% endfor %}
-{% if _vhosts|selectattr('type', 'equalto', 'share')|list %}
+{% if _webserver_vhosts|selectattr('type', 'equalto', 'share')|list %}
 {
 	weekly
 	missingok

@@ -1,6 +1,6 @@
 - name: include authorized keys share data
   include_tasks: apache2/authorized_keys_share_data.yml
-  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"

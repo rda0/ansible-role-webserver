@@ -121,7 +121,7 @@ If the following is configured (the default), it will also deploy VHosts for ser
 include_webserver_vhosts: True
 ```
 
-The task `set fact _vhosts` in `roles-servers/webserver/tasks/apache2/vhosts.yml` sets a lot of default values
+The task `set fact _webserver_vhosts` in `roles-servers/webserver/tasks/apache2/vhosts.yml` sets a lot of default values
 only very few configuration options are required to create a VHost, namely the VHosts `name` and `server_name`:
 
 ```yaml

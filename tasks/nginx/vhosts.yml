@@ -1,6 +1,6 @@
-- name: set fact _vhosts
+- name: set fact _webserver_vhosts
   set_fact:
-    _vhosts: "{{ _vhosts + [_vhost] }}"
+    _webserver_vhosts: "{{ _webserver_vhosts + [_vhost] }}"
   vars:
     _vhost:
       name: '{{ item.name }}'
@@ -23,7 +23,7 @@
     group: root
     mode: "0644"
   notify: reload nginx
-  loop: '{{ _vhosts }}'
+  loop: '{{ _webserver_vhosts }}'
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -34,7 +34,7 @@
     dest: '/etc/nginx/sites-enabled/{{ vhost.name }}.conf'
     state: link
   notify: reload nginx
-  loop: '{{ _vhosts }}'
+  loop: '{{ _webserver_vhosts }}'
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"

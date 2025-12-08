@@ -1,8 +1,8 @@
-- name: set fact _vhosts
+- name: set fact _webserver_vhosts
   set_fact:
-    _vhosts: "{{ _vhosts + [_vhost_defaults_static | combine(_item, recursive=True) | combine(_dynamic, recursive=True) | combine(item, recursive=True)] }}"
+    _webserver_vhosts: "{{ _webserver_vhosts + [_webserver_vhost_defaults_static | combine(_item, recursive=True) | combine(_dynamic, recursive=True) | combine(item, recursive=True)] }}"
   vars:
-    _item: '{{ _vhost_defaults_dynamic | combine(item, recursive=True) }}'
+    _item: '{{ _webserver_vhost_defaults_dynamic | combine(item, recursive=True) }}'
     _dynamic:
       data_path: "{{ webserver_vhost_data_path[_item.type] }}"
       home_path: "{{ webserver_vhost_home_path[_item.type] }}"
@@ -48,22 +48,22 @@
     - webserver_tmp_vhost_debug_set_fact_performance
     - webserver_tmp_vhost_debug_create_vhosts
 
-#- name: debug _vhosts
+#- name: debug _webserver_vhosts
 #  debug:
-#    msg: "{{ _vhosts }}"
+#    msg: "{{ _webserver_vhosts }}"
 
-- name: set fact _vhostfilter
+- name: set fact _webserver_vhostfilter
   set_fact:
-    _vhostfilter: "{{ vhostfilter | default(_vhosts | map(attribute='name') | list) }}"
+    _webserver_vhostfilter: "{{ vhostfilter | default(_webserver_vhosts | map(attribute='name') | list) }}"
   tags: webserver_tmp_vhost_debug_create_vhosts
 
-#- name: debug _vhostfilter
+#- name: debug _webserver_vhostfilter
 #  debug:
-#    msg: "{{ _vhostfilter }}"
+#    msg: "{{ _webserver_vhostfilter }}"
 
 - name: include vhosts share data
   include_tasks: apache2/vhosts_share_data.yml
-  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
@@ -79,7 +79,7 @@
 #  template:
 #    src: "apache2/service/share_path.mount.j2"
 #    dest: "/etc/systemd/system/{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
-#  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
+#  loop: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | list }}"
 #  loop_control:
 #    loop_var: vhost
 #    label: "/etc/systemd/system/{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
@@ -90,7 +90,7 @@
 #    enabled: yes
 #    state: started
 #    name: "{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
-#  loop: "{{ _vhosts | selectattr('type', 'equalto', 'share') | list }}"
+#  loop: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | list }}"
 #  loop_control:
 #    loop_var: vhost
 #    label: "{{ vhost.home_path | regex_replace('^\\/', '') | replace('/', '-') }}-{{ vhost.name }}.mount"
@@ -104,7 +104,7 @@
     mode: '0644'
   notify: restart autofs
   vars:
-    vhosts: "{{ _vhosts | selectattr('type', 'equalto', 'share') | sort(attribute='name') | list }}"
+    vhosts: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | sort(attribute='name') | list }}"
   when: vhosts | length > 0
 
 - name: flush handlers
@@ -119,21 +119,21 @@
 #  debug:
 #    msg: "{{ _phpfpm_pool_names }}"
 
-- name: set fact _vhosts_fcgid_php
+- name: set fact _webserver_vhosts_fcgid_php
   set_fact:
-    _vhosts_fcgid_php: "{{ _vhosts | selectattr('fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _vhostfilter) | list | map(attribute='name') }}"
+    _webserver_vhosts_fcgid_php: "{{ _webserver_vhosts | selectattr('fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _webserver_vhostfilter) | list | map(attribute='name') }}"
   tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: find php upstream version
   package_facts:
-  when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
+  when: webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0
   tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-  when: webserver_phpfpm_pools | length > 0 or _vhosts_fcgid_php | length > 0
+  when: webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0
   tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: create vhosts
@@ -148,37 +148,37 @@
     - reload fail2ban
   vars:
     phpfpm_pool_names: '{{ _phpfpm_pool_names }}'
-  loop: "{{ _vhosts | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"
   tags: webserver_tmp_vhost_debug_create_vhosts
 
-- name: set fact _vhosts_fcgid
+- name: set fact _webserver_vhosts_fcgid
   set_fact:
-    _vhosts_fcgid: "{{ _vhosts_fcgid + [_vhost_fcgid] }}"
+    _webserver_vhosts_fcgid: "{{ _webserver_vhosts_fcgid + [_vhost_fcgid] }}"
   vars:
     _vhost_fcgid:
       name: '{{ item.name }}'
       data_path: '{{ item.data_path }}'
       fcgid: '{{ item.fcgid }}'
-  loop: "{{ _vhosts | selectattr('fcgid.extensions') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('fcgid.extensions') | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
-#- name: debug _vhosts_fcgid
+#- name: debug _webserver_vhosts_fcgid
 #  debug:
-#    msg: "{{ _vhosts_fcgid }}"
+#    msg: "{{ _webserver_vhosts_fcgid }}"
 
 - name: include fcgid
   include_tasks: apache2/vhosts_fcgid.yml
-  loop: "{{ _vhosts_fcgid | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts_fcgid | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_fcgid
 
-- name: set fact _vhosts_venv
+- name: set fact _webserver_vhosts_venv
   set_fact:
-    _vhosts_venv: "{{ _vhosts_venv + [_vhost_venv] }}"
+    _webserver_vhosts_venv: "{{ _webserver_vhosts_venv + [_vhost_venv] }}"
   vars:
     _vhost_venv:
       name: '{{ item.name }}'
@@ -191,29 +191,29 @@
       path: '{{ item.venv.path }}'
       requirements: '{{ item.venv.requirements }}'
       freeze: '{{ item.venv.freeze }}'
-  loop: "{{ _vhosts | selectattr('venv.enabled') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('venv.enabled') | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
-# - name: debug _vhosts_venv
+# - name: debug _webserver_vhosts_venv
 #   debug:
-#     msg: "{{ _vhosts_venv }}"
+#     msg: "{{ _webserver_vhosts_venv }}"
 
 - name: install venv dependencies
   package:
     name: python3-venv
     state: present
-  when: _vhosts_venv | selectattr('enabled') | list | length > 0
+  when: _webserver_vhosts_venv | selectattr('enabled') | list | length > 0
 
 - name: include venv
   include_tasks: apache2/vhosts_venv.yml
-  loop: "{{ _vhosts_venv | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts_venv | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_venv
 
-- name: set fact _vhosts_wsgi
+- name: set fact _webserver_vhosts_wsgi
   set_fact:
-    _vhosts_wsgi: "{{ _vhosts_wsgi + [_vhost_wsgi] }}"
+    _webserver_vhosts_wsgi: "{{ _webserver_vhosts_wsgi + [_vhost_wsgi] }}"
   vars:
     _vhost_wsgi:
       name: '{{ item.name }}'
@@ -223,17 +223,17 @@
       owner: '{{ item.wsgi.owner }}'
       group: '{{ item.wsgi.group }}'
       mode: '{{ item.wsgi.mode }}'
-  loop: "{{ _vhosts | selectattr('wsgi.app') | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('wsgi.app') | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     label: "{{ item.name }}"
 
-#- name: debug _vhosts_wsgi
+#- name: debug _webserver_vhosts_wsgi
 #  debug:
-#    msg: "{{ _vhosts_wsgi }}"
+#    msg: "{{ _webserver_vhosts_wsgi }}"
 
 - name: include wsgi
   include_tasks: apache2/vhosts_wsgi.yml
-  loop: "{{ _vhosts_wsgi | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts_wsgi | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost_wsgi
 
@@ -243,7 +243,7 @@
     dest: '/etc/apache2/sites-enabled/{{ vhost.name }}.conf'
     state: link
   notify: reload apache2
-  loop: "{{ _vhosts | selectattr('name', 'in', _vhostfilter) | list }}"
+  loop: "{{ _webserver_vhosts | selectattr('name', 'in', _webserver_vhostfilter) | list }}"
   loop_control:
     loop_var: vhost
     label: "{{ vhost.name }}"

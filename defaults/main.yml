@@ -299,17 +299,16 @@ webserver_appservers: []
 # internal variables
 _webserver_site_config_common_requires: {}
 # private set_fact variable defaults (do not use in inventory)
-_vhosts: []
-_vhosts_fcgid: []
-_vhosts_fcgid_php: []
-_vhosts_db: []
-_vhosts_venv: []
-_vhosts_wsgi: []
-_vhostfilter: []
+_webserver_vhosts: []
+_webserver_vhosts_fcgid: []
+_webserver_vhosts_fcgid_php: []
+_webserver_vhosts_venv: []
+_webserver_vhosts_wsgi: []
+_webserver_vhostfilter: []
 _webserver_php_version: ''
 _webserver_share_authorized_keys: {}
-# dynamic vhost defaults used in set_fact _vhosts task
-_vhost_defaults_dynamic:
+# dynamic vhost defaults used in set_fact _webserver_vhosts task
+_webserver_vhost_defaults_dynamic:
   type: 'server'
   server_alias: ''
   custom_log: False  # Toggle to omit vhost log settings and let custom config define it
@@ -322,7 +321,7 @@ _vhost_defaults_dynamic:
   require: default
   config: ''
 # static vhost defaults
-_vhost_defaults_static:
+_webserver_vhost_defaults_static:
   #name: required
   #server_name: required
   server_admin: "{{ webserver_server_admin }}"
