@@ -3,7 +3,10 @@
     missingok
     rotate 14
     compress
+{% if not webserver_logrotate_nginx_date_extension %}
+{# this appears to confuse logrotate sometimes when using dates #}
     delaycompress
+{% endif %}
     ifempty
     create 0640 www-data adm
     sharedscripts
