@@ -2,3 +2,8 @@
   service:
     name: "php{{ _webserver_php_version }}-fpm"
     state: restarted
+
+- name: reload autofs
+  service:
+    name: autofs
+    state: reloaded

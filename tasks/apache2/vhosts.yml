@@ -102,7 +102,7 @@
     owner: root
     group: root
     mode: '0644'
-  notify: restart autofs
+  notify: reload autofs
   vars:
     vhosts: "{{ _webserver_vhosts | selectattr('type', 'equalto', 'share') | sort(attribute='name') | list }}"
   when: vhosts | length > 0
