@@ -50,10 +50,6 @@
   include_tasks: apache2/suexec.yml
   when: "'suexec' in webserver_modules_custom"
 
-- name: include shibboleth
-  include_tasks: apache2/shibboleth.yml
-  when: "'shib' in webserver_modules_custom"
-
 - name: include lastuse fifo
   include_tasks: apache2/log_lastuse.yml
   when: webserver_log_lastuse
