@@ -1,9 +1,9 @@
 - name: tags-block
   tags: webserver_letsencrypt_migrate_to_ansible
   block:
-  - name: include migrate to ansible
-    include_tasks: letsencrypt/migrate_to_ansible.yml
-    when: webserver_letsencrypt_migrate_to_ansible
+    - name: include migrate to ansible
+      include_tasks: letsencrypt/migrate_to_ansible.yml
+      when: webserver_letsencrypt_migrate_to_ansible
 
 - name: install letsencrypt dependencies
   package:
@@ -80,16 +80,16 @@
 - name: tags-block
   tags: webserver_letsencrypt_initialize_automatic
   block:
-  - name: include initialize automatic
-    include_tasks: letsencrypt/initialize_automatic.yml
-    when: not webserver_letsencrypt_initialize_manually
+    - name: include initialize automatic
+      include_tasks: letsencrypt/initialize_automatic.yml
+      when: not webserver_letsencrypt_initialize_manually
 
 - name: tags-block
   tags: webserver_letsencrypt_initialize_manually
   block:
-  - name: include initialize manually
-    include_tasks: letsencrypt/initialize_manually.yml
-    when: webserver_letsencrypt_initialize_manually
+    - name: include initialize manually
+      include_tasks: letsencrypt/initialize_manually.yml
+      when: webserver_letsencrypt_initialize_manually
 
 - name: import tasks from cronjob.yml
   import_tasks: cronjob.yml
