@@ -15,6 +15,7 @@
         AuthLDAPURL "{{ webserver_ldap_phys_url }}" TLS
         AuthLDAPGroupAttribute memberUid
         AuthLDAPGroupAttributeIsDN off
+        SetEnv PHYS_LDAP_AUTH_LOG 1
     </Macro>
 
     <Macro RequirePhysLDAPGroup $groupname>
