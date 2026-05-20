@@ -26,8 +26,14 @@ server {
 {% if vhost.https_port %}
 {% for domain in vhost.server_alias %}
 server {
+{% if ansible_facts.distribution_release in ['bookworm'] %}     #TODO remove
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
+{% else %}
+    listen {{ vhost.https_port }} ssl;
+    listen [::]:{{ vhost.https_port }} ssl;
+    http2 on;
+{% endif %}
     include snippets/https-{{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}.conf;
     server_name {{ domain }};
     location /.well-known/acme-challenge/ {
@@ -43,8 +49,14 @@ server {
 
 {% endfor %}
 server {
+{% if ansible_facts.distribution_release in ['bookworm'] %}     #TODO remove
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
+{% else %}
+    listen {{ vhost.https_port }} ssl;
+    listen [::]:{{ vhost.https_port }} ssl;
+    http2 on;
+{% endif %}
     include snippets/https-{{ (webserver_letsencrypt_aliases[0]['name'])|default('le0') }}.conf;
     server_name {{ vhost.server_name }};
     location /.well-known/acme-challenge/ {
