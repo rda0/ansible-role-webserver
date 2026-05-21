@@ -26,7 +26,7 @@ server {
 {% if vhost.https_port %}
 {% for domain in vhost.server_alias %}
 server {
-{% if ansible_facts.distribution_release in ['bookworm'] %}     #TODO remove
+{% if ansible_facts.distribution_release in ['bookworm'] %}
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
 {% else %}
@@ -49,7 +49,7 @@ server {
 
 {% endfor %}
 server {
-{% if ansible_facts.distribution_release in ['bookworm'] %}     #TODO remove
+{% if ansible_facts.distribution_release in ['bookworm'] %}
     listen {{ vhost.https_port }} ssl http2;
     listen [::]:{{ vhost.https_port }} ssl http2;
 {% else %}

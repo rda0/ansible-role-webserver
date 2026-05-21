@@ -22,7 +22,7 @@ server {
 }
 
 server {
-{% if ansible_facts.distribution_release in ['bookworm'] %}     #TODO remove
+{% if ansible_facts.distribution_release in ['bookworm'] %}
     listen 443 ssl http2 default_server;
     listen [::]:443 ssl http2 default_server;
 {% else %}
