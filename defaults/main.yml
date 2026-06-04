@@ -138,6 +138,7 @@ webserver_config_default:
   - 020-macro
   - 021-macro-networks
   - 030-ldap
+  - 031-oidc
 webserver_config_enable_custom: []
 webserver_config_disable_custom: []
 webserver_service_start_after_network_online: False

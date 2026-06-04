@@ -1,0 +1,31 @@
+<IfModule auth_openidc_module>
+    # Global OIDC settings (shared cache, etc.)
+    OIDCCacheType shm
+    OIDCCacheShmMax 500000
+    OIDCCacheShmEntrySizeMax 10240
+    OIDCSessionInactivityTimeout 3600
+    OIDCSessionMaxDuration 86400
+
+    <Macro PhysOIDC $hostname $slug $client_id $client_secret $crypto_passphrase>
+        # Provider config (per-app)
+        OIDCProviderMetadataURL https://auth.phys.ethz.ch/application/o/$slug/.well-known/openid-configuration
+        OIDCClientID $client_id
+        OIDCClientSecret $client_secret
+
+        # Session/cookie settings (per-app)
+        OIDCRedirectURI https://$hostname/oidc/callback
+        OIDCCryptoPassphrase $crypto_passphrase
+        OIDCScope "openid profile email groups"
+
+        # Pass claims as environment variables
+        OIDCClaimPrefix OIDC_
+        OIDCRemoteUserClaim preferred_username
+        OIDCPassClaimsAs environment
+
+        SetEnv PHYS_OIDC_AUTH_LOG 1
+    </Macro>
+
+    <Macro RequirePhysOIDCGroup $groupname>
+        Require claim groups:$groupname
+    </Macro>
+</IfModule>
