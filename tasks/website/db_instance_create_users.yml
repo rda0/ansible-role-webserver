@@ -1,5 +1,5 @@
 - name: 'database create users'
-  community.mysql.mysql_user:
+  ansible.mysql.mysql_user:
     name: "{{ instance.user }}"
     password: "{{ instance.password }}"
     priv: "{{ instance.name }}.*:ALL"

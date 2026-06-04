@@ -1,5 +1,5 @@
 - name: 'database create instances'
-  community.mysql.mysql_db:
+  ansible.mysql.mysql_db:
     name: "{{ instance.name }}"
     state: present
   delegate_to: "{{ instance.delegate }}"
