@@ -1,3 +1,12 @@
+# macro to bind vhosts to authentik via OIDC
+#
+# parameters:
+# $hostname: must match the redirect URIs in the authentik provider
+# $slug: from the authentik application
+# $client_id: from the authentik provider
+# $client_secret: from the authentik provider
+# $crypto_passphrase: generate via `head /dev/urandom | tr -dc A-Za-z0-9 | head -c 32`
+
 <IfModule auth_openidc_module>
     # Global OIDC settings (shared cache, etc.)
     OIDCCacheType shm
