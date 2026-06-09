@@ -9,9 +9,9 @@
 
 <IfModule auth_openidc_module>
     # Global OIDC settings (shared cache, etc.)
-    OIDCCacheType shm
-    OIDCCacheShmMax 20000
-    OIDCCacheShmEntrySizeMax 10240
+    OIDCCacheType file
+    OIDCCacheDir /var/cache/apache2/mod_auth_openidc/cache
+    OIDCCacheFileCleanInterval 120
     OIDCSessionInactivityTimeout 3600
     OIDCSessionMaxDuration 86400
 
