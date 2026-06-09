@@ -121,6 +121,10 @@ webserver_ldap_ethz_url: ''
 webserver_ldap_ethz_bind_dn: "{{ vault_webserver_ldap_ethz_bind_dn | default('') }}"
 webserver_ldap_ethz_bind_password: "{{ vault_webserver_ldap_ethz_bind_password | default('') }}"
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/ca-certificates.crt
+webserver_oidc: False
+webserver_oidc_packages:
+  - libapache2-mod-auth-openidc
+webserver_oidc_cache_dir: /var/cache/apache2/mod_auth_openidc/cache
 webserver_modules_default:
   - env
   - headers

@@ -42,6 +42,20 @@
     pkg: "{{ webserver_phpfpm_packages }}"
   when: webserver_phpfpm_pools | length > 0
 
+- name: install oidc packages
+  package:
+    pkg: "{{ webserver_oidc_packages }}"
+  when: webserver_oidc
+
+- name: create oidc cache dir
+  file:
+    path: '{{ webserver_oidc_cache_dir }}'
+    state: directory
+    owner: www-data
+    group: www-data
+    mode: '0700'
+  when: webserver_oidc
+
 - name: install webserver-specific packages
   package:
     pkg: "{{ webserver_packages_custom }}"
@@ -193,6 +207,15 @@
     - authnz_ldap
     - ldap
   when: webserver_ldap
+
+- name: enable modules oidc
+  command: 'a2enmod {{ item }}'
+  args:
+    creates: '/etc/apache2/mods-enabled/{{ item }}.load'
+  notify: restart apache2
+  loop:
+    - auth_openidc
+  when: webserver_oidc
 
 - name: enable modules custom
   command: 'a2enmod {{ item }}'
