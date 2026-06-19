@@ -31,6 +31,7 @@
       wsgi:
         owner: "{{ item.name }}"
         group: "{{ item.name }}"
+      oidc: "{{ _item.oidc }}"
       http:
         redirect: "{{ ['https', item.server_name] | join(' ') }}"
         require: "{{ _item.require }}"

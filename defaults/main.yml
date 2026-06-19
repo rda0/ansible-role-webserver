@@ -323,6 +323,7 @@ _webserver_vhost_defaults_dynamic:
     type: ''
   wsgi:
     app: ''
+  oidc: ''
   require: default
   config: ''
 # static vhost defaults

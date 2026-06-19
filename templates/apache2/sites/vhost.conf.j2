@@ -47,6 +47,9 @@
 {% if webserver_log_lastuse %}
   CustomLog ${APACHE_LOG_DIR}/lastuse.fifo lastuse env=!dontloglastuse
 {% endif %}
+{%   if port == 'https' and vhost.oidc != '' %}
+  Use PhysOIDC {{ vhost.oidc.hostname }} {{ vhost.oidc.slug }} {{ vhost.oidc.client_id }} {{ vhost.oidc.client_secret }} {{ vhost.oidc.crypto_passphrase }}
+{% endif %}
 {% if not vhost[port].empty %}
 {%   if port == 'https' and vhost.type == 'share' %}
   Alias /website-statistics {{ vhost.home_path }}/{{ vhost.name }}/stats
