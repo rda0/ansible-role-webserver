@@ -125,6 +125,11 @@
     _webserver_vhosts_fcgid_php: "{{ _webserver_vhosts | selectattr('fcgid.extensions', 'contains', 'php') | selectattr('name', 'in', _webserver_vhostfilter) | list | map(attribute='name') }}"
   tags: webserver_tmp_vhost_debug_create_vhosts
 
+- name: install php
+  package:
+    name: php
+  when: _webserver_vhosts_fcgid_php | length > 0
+
 - name: find php upstream version
   package_facts:
   when: webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0
@@ -133,8 +138,15 @@
 - name: set fact _webserver_php_version
   set_fact:
     # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
+    _webserver_php_version: "{{ ansible_facts.packages['php'].0.version.split(':')[1].split('+')[0] }}"
+  when: (webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0) and 'php' in ansible_facts.packages
+  tags: webserver_tmp_vhost_debug_create_vhosts
+
+- name: set fact _webserver_php_version
+  set_fact:
+    # find php upstream_version from "epoch:upstream_version+debian_revision", i.e. 2:7.4+76 -> 7.4
     _webserver_php_version: "{{ ansible_facts.packages['php-fpm'].0.version.split(':')[1].split('+')[0] }}"
-  when: webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0
+  when: (webserver_phpfpm_pools | length > 0 or _webserver_vhosts_fcgid_php | length > 0) and 'php-fpm' in ansible_facts.packages
   tags: webserver_tmp_vhost_debug_create_vhosts
 
 - name: create vhosts
