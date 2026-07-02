@@ -42,6 +42,11 @@
     pkg: "{{ webserver_phpfpm_packages }}"
   when: webserver_phpfpm_pools | length > 0
 
+- name: install krb packages
+  package:
+    pkg: "{{ webserver_krb_packages }}"
+  when: webserver_krb
+
 - name: install oidc packages
   package:
     pkg: "{{ webserver_oidc_packages }}"
@@ -207,6 +212,15 @@
     - authnz_ldap
     - ldap
   when: webserver_ldap
+
+- name: enable modules auth_gssapi for krb
+  command: 'a2enmod {{ item }}'
+  args:
+    creates: '/etc/apache2/mods-enabled/{{ item }}.load'
+  notify: restart apache2
+  loop:
+    - auth_gssapi
+  when: webserver_krb
 
 - name: enable modules oidc
   command: 'a2enmod {{ item }}'

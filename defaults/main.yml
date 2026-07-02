@@ -121,6 +121,11 @@ webserver_ldap_ethz_url: ''
 webserver_ldap_ethz_bind_dn: "{{ vault_webserver_ldap_ethz_bind_dn | default('') }}"
 webserver_ldap_ethz_bind_password: "{{ vault_webserver_ldap_ethz_bind_password | default('') }}"
 webserver_ldap_trusted_ca_cert: /etc/ssl/certs/ca-certificates.crt
+webserver_krb: False  # enables mod_auth_gssapi with mech krb5
+webserver_krb_fallback_basic: False  # use basic auth (krb5) if negotiate fails
+webserver_krb_fallback_ldap: False  # use basic auth (ldap) when no `authorization: Negotiate` is in the initial request
+webserver_krb_packages:
+  - libapache2-mod-auth-gssapi
 webserver_oidc: False
 webserver_oidc_packages:
   - libapache2-mod-auth-openidc

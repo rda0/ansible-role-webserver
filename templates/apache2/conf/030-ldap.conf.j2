@@ -9,13 +9,46 @@
     LDAPOpCacheTTL 600
 
     <Macro PhysLDAP>
+{% if webserver_krb %}
+        <IfModule auth_gssapi_module>
+{%   if webserver_krb_fallback_ldap %}
+            <If "%{HTTP:Authorization} =~ /Negotiate/">
+                AuthType GSSAPI
+                SetEnv PHYS_KRB_AUTH_LOG 1
+            </If>
+            <Else>
+                AuthType Basic
+                SetEnv PHYS_LDAP_AUTH_LOG 1
+            </Else>
+{%   else %}
+            AuthType GSSAPI
+            SetEnv PHYS_KRB_AUTH_LOG 1
+{%   endif %}
+            GssapiAllowedMech krb5
+            GssapiCredStore client_keytab:/var/lib/gssproxy/http-apache.keytab
+            GssapiUseSessions On
+            GssapiLocalName On
+{%   if webserver_krb_fallback_basic %}
+            GssapiBasicAuth On
+            GssapiBasicAuthMech krb5
+{%   endif %}
+{#          GssapiNegotiateOnce On  # https://github.com/gssapi/mod_auth_gssapi#gssapinegotiateonce #}
+{#          Session On  # requires mod_session, use in combo with https://github.com/gssapi/mod_auth_gssapi#gssapiusesessions #}
+{#          SessionCookieName gssapi_session path=/private;httponly;secure;  # requires mod_session_cookie #}
+{#          BrowserMatch Windows gssapi-no-negotiate  # https://github.com/gssapi/mod_auth_gssapi#gssapi-no-negotiate #}
+        </IfModule>
+{% else %}
         AuthType Basic
+{% endif %}
         AuthName "{{ webserver_ldap_phys_name }}"
         AuthBasicProvider ldap
         AuthLDAPURL "{{ webserver_ldap_phys_url }}" TLS
         AuthLDAPGroupAttribute memberUid
         AuthLDAPGroupAttributeIsDN off
+{% if not webserver_krb %}
+{# TODO: move this directive below AuthType Basic #}
         SetEnv PHYS_LDAP_AUTH_LOG 1
+{% endif %}
     </Macro>
 
     <Macro RequirePhysLDAPGroup $groupname>
