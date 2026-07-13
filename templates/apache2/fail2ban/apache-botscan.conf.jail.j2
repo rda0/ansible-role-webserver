@@ -1,0 +1,11 @@
+# custom jail to prevent too many PHP requests on Apache web server
+
+[apache-botscan]
+enabled = true
+port    = http,https
+filter  = apache-botscan
+logpath = /var/log/apache2/global/access.log
+
+findtime = {{ webserver_apache2_fail2ban_botscan_findtime }}
+maxretry = {{ webserver_apache2_fail2ban_botscan_maxretry }}
+banaction = iptables-multiport

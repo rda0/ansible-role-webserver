@@ -1,0 +1,9 @@
+# custom jail to prevent web scanning on Apache web server
+
+[apache-botpattern]
+enabled = true
+port    = http,https
+filter  = apache-botpattern
+logpath = /var/log/apache2/global/access.log
+
+banaction = iptables-multiport

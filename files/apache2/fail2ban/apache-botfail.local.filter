@@ -1,0 +1,9 @@
+[Definition]
+
+datepattern = {^LN-BEG}
+
+prefregex =
+
+failregex = ^[^:]+:[^ ]+ <HOST> .* \"(?:GET|POST|HEAD) .* HTTP\/\d+(?:\.\d+)?\" (?:4|5)\d{2} .*$
+
+ignoreregex =

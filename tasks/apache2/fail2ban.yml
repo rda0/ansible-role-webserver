@@ -29,3 +29,29 @@
     group: root
     mode: "0644"
   notify: reload fail2ban
+
+- name: deploy fail2ban bot filters
+  copy:
+    src: 'apache2/fail2ban/{{ item }}.filter'
+    dest: '/etc/fail2ban/filter.d/{{ item }}'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload fail2ban
+  loop:
+    - apache-botfail.local
+    - apache-botpattern.local
+    - apache-botscan.local
+
+- name: deploy fail2ban bot jails
+  template:
+    src: 'apache2/fail2ban/{{ item }}.jail.j2'
+    dest: '/etc/fail2ban/jail.d/{{ item }}'
+    owner: root
+    group: root
+    mode: '0644'
+  notify: reload fail2ban
+  loop:
+    - apache-botfail.conf
+    - apache-botpattern.conf
+    - apache-botscan.conf

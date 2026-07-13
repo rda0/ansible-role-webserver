@@ -1,0 +1,11 @@
+# custom jail to prevent too many requests on Apache web server
+
+[apache-botfail]
+enabled = true
+port    = http,https
+filter  = apache-botfail
+logpath = /var/log/apache2/global/access.log
+
+findtime = {{ webserver_apache2_fail2ban_botfail_findtime }}
+maxretry = {{ webserver_apache2_fail2ban_botfail_maxretry }}
+banaction = iptables-multiport
