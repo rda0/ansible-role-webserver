@@ -1,6 +1,6 @@
 [Definition]
 
-datepattern = {^LN-BEG}
+datepattern = \[%%d/%%b/%%Y:%%H:%%M:%%S %%z\]
 
 prefregex =
 
